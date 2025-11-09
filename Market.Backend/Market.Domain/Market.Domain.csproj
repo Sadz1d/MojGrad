@@ -11,10 +11,4 @@
   </ItemGroup>
 
 
-
-  <ItemGroup>
-    <Folder Include="Entities\Reports\" />
-  </ItemGroup>
-
-
 </Project>
