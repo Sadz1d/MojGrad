@@ -11,8 +11,8 @@ namespace Market.Domain.Entities.Identity;
 
 public sealed class MarketUserEntity : BaseEntity
 {
-    public string FirstName { get; set; } = default!;
-    public string LastName { get; set; } = default!;
+    public string? FirstName { get; set; } = default!;
+    public string? LastName { get; set; } = default!;
     public string Email { get; set; }
     public string PasswordHash { get; set; }
     public bool IsAdmin { get; set; }
