@@ -10,4 +10,11 @@
     <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.9" />
   </ItemGroup>
 
+<<<<<<< HEAD
+=======
+  <ItemGroup>
+    <Folder Include="Entities\Reports\" />
+  </ItemGroup>
+
+>>>>>>> origin/main
 </Project>
