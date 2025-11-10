@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Market.Application.Modules.Media.MediaLink.Queries.List
 {
-    internal class ListMediaQuery
+    internal class ListMediaLinkQuery
     {
     }
 }
