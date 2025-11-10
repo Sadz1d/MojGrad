@@ -1,4 +1,5 @@
 //using Market.Application.Abstractions.Messaging;
+using Market.Application.Modules.Media.Queries.GetById;
 using Market.Application.Modules.Media.Queries.List;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -18,6 +19,16 @@ public sealed class MediaAttachmentController : ControllerBase
         [FromQuery] ListMediaAttachmentsQuery query,
         CancellationToken ct)
     {
+        var result = await _sender.Send(query, ct);
+        return result;
+    }
+
+    [HttpGet("{id:int}")]
+    public async Task<GetMediaAttachmentByIdQueryDto> GetById(
+       [FromRoute] int id,
+       CancellationToken ct)
+    {
+        var query = new GetMediaAttachmentByIdQuery { Id = id };
         var result = await _sender.Send(query, ct);
         return result;
     }
