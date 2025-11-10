@@ -1,7 +1,10 @@
+using Market.Application.Modules.Civic.CitizenProposals.Commands.Create;
+using Market.Application.Modules.Civic.CitizenProposals.Commands.Delete;
+using Market.Application.Modules.Civic.CitizenProposals.Commands.Update;
+using Market.Application.Modules.Civic.CitizenProposals.Queries.GetById;
+using Market.Application.Modules.Civic.CitizenProposals.Queries.List;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Market.Application.Modules.Civic.CitizenProposals.Queries.List;
-using Market.Application.Modules.Civic.CitizenProposals.Queries.GetById;
 
 namespace Market.API.Controllers;
 
@@ -30,5 +33,29 @@ public sealed class CitizenProposalsController : ControllerBase
         var result = await sender.Send(new GetCitizenProposalByIdQuery { Id = id }, ct);
         return result;
     }
+    // POST create (novo)
+    [HttpPost]
+    public async Task<IActionResult> Create([FromBody] CreateCitizenProposalCommand command, CancellationToken ct)
+    {
+        var id = await sender.Send(command, ct);
+        return CreatedAtAction(nameof(GetById), new { id }, new { id });
+    }
 
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> Delete(int id, CancellationToken ct)
+    {
+        await sender.Send(new DeleteCitizenProposalCommand { Id = id }, ct);
+        return NoContent(); // 204
+    }
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> Update(int id,
+    [FromBody] UpdateCitizenProposalCommand command,
+    CancellationToken ct)
+    {
+        // ID iz rute ima prednost (kao kod profa)
+        command.Id = id;
+
+        await sender.Send(command, ct);
+        return NoContent(); // 204
+    }
 }

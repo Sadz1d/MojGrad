@@ -27,7 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Modules\Civic\CitizenProposals\Commands\" />
+    <Folder Include="Modules\Civic\CitizenProposals\Commands\Status\" />
     <Folder Include="Modules\Civic\WatchLists\" />
     <Folder Include="Modules\Events\" />
     <Folder Include="Modules\Identity\Commands\" />
