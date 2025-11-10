@@ -28,7 +28,11 @@
 
   <ItemGroup>
     <Folder Include="Modules\Civic\CitizenProposals\Commands\Status\" />
+<<<<<<< HEAD
     <Folder Include="Modules\Civic\WatchLists\" />
+=======
+    <Folder Include="Modules\Civic\WatchLists\Commands\Update\" />
+>>>>>>> parent of 623b722 (Commit UpdateWatchList)
     <Folder Include="Modules\Events\" />
     <Folder Include="Modules\Identity\Commands\" />
     <Folder Include="Modules\Identity\Queries\" />

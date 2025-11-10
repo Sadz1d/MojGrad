@@ -1,0 +1,51 @@
+using Market.Application.Modules.Civic.WatchList.Commands.Create;
+using Market.Application.Modules.Civic.WatchList.Commands.Delete;
+using Market.Application.Modules.Civic.WatchList.Queries.List;
+using Market.Application.Modules.Civic.WatchList.Queries.GetById;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
+
+namespace Market.API.Controllers
+{
+    [ApiController]
+    [Route("api/civic/watch-list")]
+    public sealed class WatchListController : ControllerBase
+    {
+        private readonly ISender sender;
+        public WatchListController(ISender sender) => this.sender = sender;
+
+        // GET /api/civic/watch-list?userId=1&categoryId=2&search=road&page=1&pageSize=20
+        [HttpGet]
+        public async Task<PageResult<ListWatchListQueryDto>> List(
+            [FromQuery] ListWatchListQuery query,
+            CancellationToken ct)
+        {
+            var result = await sender.Send(query, ct);
+            return result;
+        }
+
+        // GET /api/civic/watch-list/{id}
+        [HttpGet("{id:int}")]
+        public async Task<GetWatchListByIdQueryDto> GetById(int id, CancellationToken ct)
+        {
+            var result = await sender.Send(new GetWatchListByIdQuery { Id = id }, ct);
+            return result;
+        }
+
+        // POST /api/civic/watch-list
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] CreateWatchListCommand command, CancellationToken ct)
+        {
+            var id = await sender.Send(command, ct);
+            return CreatedAtAction(nameof(GetById), new { id }, new { id });
+        }
+
+        // DELETE /api/civic/watch-list/{id}
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> Delete(int id, CancellationToken ct)
+        {
+            await sender.Send(new DeleteWatchListCommand { Id = id }, ct);
+            return NoContent(); // 204
+        }
+    }
+}
