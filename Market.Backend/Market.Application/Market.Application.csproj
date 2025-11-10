@@ -27,8 +27,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Modules\Civic\WatchLists\Commands\Delete\" />
+    <Folder Include="Modules\Civic\WatchLists\Commands\Status\" />
     <Folder Include="Modules\Civic\CitizenProposals\Commands\Status\" />
-    <Folder Include="Modules\Civic\WatchLists\" />
+    <Folder Include="Modules\Civic\WatchLists\Commands\Update\" />
+    <Folder Include="Modules\Civic\WatchLists\Queries\GetById\" />
     <Folder Include="Modules\Events\" />
     <Folder Include="Modules\Identity\Commands\" />
     <Folder Include="Modules\Identity\Queries\" />
