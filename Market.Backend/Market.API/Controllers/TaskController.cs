@@ -1,5 +1,6 @@
 using Market.Application.Modules.Reports.Tasks.Commands.Create;
 using Market.Application.Modules.Reports.Tasks.Commands.Delete;
+using Market.Application.Modules.Reports.Tasks.Commands.Update;
 using Market.Application.Modules.Reports.Tasks.Queries.GetById;
 using Market.Application.Modules.Reports.Tasks.Queries.List;
 using MediatR;
@@ -46,4 +47,13 @@ public sealed class TasksController : ControllerBase
         await sender.Send(new DeleteTaskCommand { Id = id }, ct);
         return NoContent();
     }
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> Update(int id, [FromBody] UpdateTaskCommand command, CancellationToken ct)
+    {
+        command.Id = id;
+        await sender.Send(command, ct);
+        return NoContent();
+    }
+
+
 }
