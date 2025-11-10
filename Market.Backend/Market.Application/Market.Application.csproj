@@ -33,7 +33,6 @@
     <Folder Include="Modules\Identity\Commands\" />
     <Folder Include="Modules\Identity\Queries\" />
     <Folder Include="Modules\Media\Commands\" />
-    <Folder Include="Modules\Media\MediaAttachment\Commands\Delete\" />
     <Folder Include="Modules\Media\MediaAttachment\Commands\Status\" />
     <Folder Include="Modules\Media\MediaAttachment\Commands\Update\" />
     <Folder Include="Modules\Media\Queries\" />

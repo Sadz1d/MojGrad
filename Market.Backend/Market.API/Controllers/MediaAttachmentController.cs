@@ -1,9 +1,11 @@
 //using Market.Application.Abstractions.Messaging;
 using Market.Application.Modules.Media.Commands.Create;
+using Market.Application.Modules.Media.Commands.Delete;
 using Market.Application.Modules.Media.Queries.GetById;
 using Market.Application.Modules.Media.Queries.List;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using System.Reflection;
 
 namespace Market.API.Controllers;
 
@@ -41,5 +43,12 @@ public sealed class MediaAttachmentController : ControllerBase
     {
         var id = await _sender.Send(command, ct);
         return CreatedAtAction(nameof(GetById), new { id }, new { id });
+    }
+
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> Delete(int id, CancellationToken ct)
+    {
+        await _sender.Send(new DeleteMediaAttachmentCommand { Id = id }, ct);
+        return NoContent(); // 204
     }
 }
