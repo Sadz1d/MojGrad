@@ -1,6 +1,7 @@
 //using Market.Application.Abstractions.Messaging;
 using Market.Application.Modules.Media.Commands.Create;
 using Market.Application.Modules.Media.Commands.Delete;
+using Market.Application.Modules.Media.Commands.Update;
 using Market.Application.Modules.Media.Queries.GetById;
 using Market.Application.Modules.Media.Queries.List;
 using MediatR;
@@ -49,6 +50,19 @@ public sealed class MediaAttachmentController : ControllerBase
     public async Task<IActionResult> Delete(int id, CancellationToken ct)
     {
         await _sender.Send(new DeleteMediaAttachmentCommand { Id = id }, ct);
+        return NoContent(); // 204
+    }
+
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> Update(
+        int id,
+        [FromBody] UpdateMediaAttachmentCommand command,
+        CancellationToken ct)
+    {
+        // ID iz rute ima prednost
+        command.Id = id;
+
+        await _sender.Send(command, ct);
         return NoContent(); // 204
     }
 }
