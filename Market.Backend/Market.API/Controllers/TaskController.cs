@@ -1,3 +1,4 @@
+using Market.Application.Modules.Reports.Tasks.Queries.GetById;
 using Market.Application.Modules.Reports.Tasks.Queries.List;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -18,6 +19,13 @@ public sealed class TasksController : ControllerBase
         CancellationToken ct)
     {
         var result = await sender.Send(query, ct);
+        return result;
+    }
+    // GET /api/reports/tasks/{id}
+    [HttpGet("{id:int}")]
+    public async Task<GetTaskByIdQueryDto> GetById(int id, CancellationToken ct)
+    {
+        var result = await sender.Send(new GetTaskByIdQuery { Id = id }, ct);
         return result;
     }
 }
