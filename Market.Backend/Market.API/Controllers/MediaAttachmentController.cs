@@ -1,4 +1,5 @@
 //using Market.Application.Abstractions.Messaging;
+using Market.Application.Modules.Media.Commands.Create;
 using Market.Application.Modules.Media.Queries.GetById;
 using Market.Application.Modules.Media.Queries.List;
 using MediatR;
@@ -31,5 +32,14 @@ public sealed class MediaAttachmentController : ControllerBase
         var query = new GetMediaAttachmentByIdQuery { Id = id };
         var result = await _sender.Send(query, ct);
         return result;
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Create(
+       [FromBody] CreateMediaAttachmentCommand command,
+       CancellationToken ct)
+    {
+        var id = await _sender.Send(command, ct);
+        return CreatedAtAction(nameof(GetById), new { id }, new { id });
     }
 }
