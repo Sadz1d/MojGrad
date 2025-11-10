@@ -1,4 +1,5 @@
 using Market.Application.Modules.Civic.WatchList.Commands.Create;
+using Market.Application.Modules.Civic.WatchList.Commands.Update;
 using Market.Application.Modules.Civic.WatchList.Commands.Delete;
 using Market.Application.Modules.Civic.WatchList.Queries.List;
 using Market.Application.Modules.Civic.WatchList.Queries.GetById;
@@ -38,6 +39,17 @@ namespace Market.API.Controllers
         {
             var id = await sender.Send(command, ct);
             return CreatedAtAction(nameof(GetById), new { id }, new { id });
+        }
+
+        // PUT /api/civic/watch-list/{id}
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> Update(int id,
+            [FromBody] UpdateWatchListCommand command,
+            CancellationToken ct)
+        {
+            command.Id = id; // ID iz rute ima prednost
+            await sender.Send(command, ct);
+            return NoContent(); // 204
         }
 
         // DELETE /api/civic/watch-list/{id}
