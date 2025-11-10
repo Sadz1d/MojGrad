@@ -1,8 +1,12 @@
 ﻿// behavior
 namespace Market.Application.Common.Behaviors;
+using MediatR;
+using FluentValidation;
+
 
 public sealed class ValidationBehavior<TRequest, TResponse>
     : IPipelineBehavior<TRequest, TResponse>
+    where TRequest : notnull
 {
     private readonly IEnumerable<IValidator<TRequest>> _validators;
     public ValidationBehavior(IEnumerable<IValidator<TRequest>> validators) => _validators = validators;
@@ -18,4 +22,8 @@ public sealed class ValidationBehavior<TRequest, TResponse>
         }
         return await next();
     }
+
+
+  
+
 }

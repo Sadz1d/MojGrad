@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Modules\Catalog\ProductCategories\**" />
+    <EmbeddedResource Remove="Modules\Catalog\ProductCategories\**" />
+    <None Remove="Modules\Catalog\ProductCategories\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="FluentValidation" Version="12.0.0" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.0.0" />
     <PackageReference Include="MediatR" Version="12.5.0" />
@@ -21,10 +27,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Modules\Civic\Commands\" />
-    <Folder Include="Modules\Civic\Queries\" />
-    <Folder Include="Modules\Events\Commands\" />
-    <Folder Include="Modules\Events\Queries\" />
+    <Folder Include="Modules\Civic\CitizenProposals\Commands\" />
+    <Folder Include="Modules\Civic\CitizenProposals\Queries\GetById\" />
+    <Folder Include="Modules\Civic\WatchLists\" />
+    <Folder Include="Modules\Events\" />
     <Folder Include="Modules\Identity\Commands\" />
     <Folder Include="Modules\Identity\Queries\" />
     <Folder Include="Modules\Media\Commands\" />

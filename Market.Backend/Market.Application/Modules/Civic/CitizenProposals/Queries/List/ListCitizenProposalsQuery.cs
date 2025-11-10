@@ -1,7 +1,7 @@
-﻿namespace Market.Application.Modules.Catalog.ProductCategories.Queries.List;
+﻿namespace Market.Application.Modules.Civic.CitizenProposals.Queries.List;
 
-public sealed class ListProductCategoriesQuery : BasePagedQuery<ListProductCategoriesQueryDto>
+public sealed class ListCitizenProposalsQuery : BasePagedQuery<ListCitizenProposalsQueryDto>
 {
     public string? Search { get; init; }
-    public bool? OnlyEnabled { get; init; }
+    //public bool? OnlyEnabled { get; init; }
 }
