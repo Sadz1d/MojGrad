@@ -1,3 +1,4 @@
+using Market.Application.Modules.Civic.WatchList.Commands.Create;
 using Market.Application.Modules.Civic.WatchList.Queries.List;
 using Market.Application.Modules.Civic.WatchList.Queries.GetById;
 using MediatR;
@@ -28,6 +29,14 @@ namespace Market.API.Controllers
         {
             var result = await sender.Send(new GetWatchListByIdQuery { Id = id }, ct);
             return result;
+        }
+
+        // POST /api/civic/watch-list
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] CreateWatchListCommand command, CancellationToken ct)
+        {
+            var id = await sender.Send(command, ct);
+            return CreatedAtAction(nameof(GetById), new { id }, new { id });
         }
     }
 }
