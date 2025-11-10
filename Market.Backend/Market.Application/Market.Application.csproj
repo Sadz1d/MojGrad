@@ -20,4 +20,23 @@
     <ProjectReference Include="..\Market.Shared\Market.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Modules\Civic\Commands\" />
+    <Folder Include="Modules\Civic\Queries\" />
+    <Folder Include="Modules\Events\Commands\" />
+    <Folder Include="Modules\Events\Queries\" />
+    <Folder Include="Modules\Identity\Commands\" />
+    <Folder Include="Modules\Identity\Queries\" />
+    <Folder Include="Modules\Media\Commands\" />
+    <Folder Include="Modules\Media\Queries\" />
+    <Folder Include="Modules\Reports\Commands\" />
+    <Folder Include="Modules\Reports\Queries\" />
+    <Folder Include="Modules\Rewards\Commands\" />
+    <Folder Include="Modules\Rewards\Queries\" />
+    <Folder Include="Modules\Surveys\Commands\" />
+    <Folder Include="Modules\Surveys\Queries\" />
+    <Folder Include="Modules\Volonteering\Commands\" />
+    <Folder Include="Modules\Volonteering\Queries\" />
+  </ItemGroup>
+
 </Project>
