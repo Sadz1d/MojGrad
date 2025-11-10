@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Market.Application.Modules.Reports.Tasks.Queries.List;
 
-namespace Market.Application.Modules.Reports.Task.Queries.List
+public sealed class ListTasksQueryDto
 {
-    internal class ListTaskQueryDto
-    {
-    }
+    public required int Id { get; init; }
+    public required string ReportTitle { get; init; }       // Naziv povezanog izvještaja
+    public required string WorkerName { get; init; }        // Ime korisnika (radnika)
+    public DateTime? AssignmentDate { get; init; }
+    public DateTime? Deadline { get; init; }
+    public required string TaskStatus { get; init; }
 }
