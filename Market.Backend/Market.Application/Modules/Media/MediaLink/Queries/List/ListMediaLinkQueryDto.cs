@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Market.Application.Modules.Media.MediaAttachment.Queries.List
+namespace Market.Application.Modules.Media.MediaLink.Queries.List
 {
     internal class ListMediaQueryDto
     {
