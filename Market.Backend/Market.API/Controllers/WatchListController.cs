@@ -1,4 +1,5 @@
 using Market.Application.Modules.Civic.WatchList.Queries.List;
+using Market.Application.Modules.Civic.WatchList.Queries.GetById;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,6 +19,14 @@ namespace Market.API.Controllers
             CancellationToken ct)
         {
             var result = await sender.Send(query, ct);
+            return result;
+        }
+
+        // GET /api/civic/watch-list/{id}
+        [HttpGet("{id:int}")]
+        public async Task<GetWatchListByIdQueryDto> GetById(int id, CancellationToken ct)
+        {
+            var result = await sender.Send(new GetWatchListByIdQuery { Id = id }, ct);
             return result;
         }
     }
