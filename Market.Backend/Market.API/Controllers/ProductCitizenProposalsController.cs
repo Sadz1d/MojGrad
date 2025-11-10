@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Market.Application.Modules.Civic.CitizenProposals.Queries.List;
+using Market.Application.Modules.Civic.CitizenProposals.Queries.GetById;
 
 namespace Market.API.Controllers;
 
@@ -20,4 +21,14 @@ public sealed class CitizenProposalsController : ControllerBase
         var result = await sender.Send(query, ct);
         return result;
     }
+
+
+
+    [HttpGet("{id:int}")]
+    public async Task<GetCitizenProposalByIdQueryDto> GetById(int id, CancellationToken ct)
+    {
+        var result = await sender.Send(new GetCitizenProposalByIdQuery { Id = id }, ct);
+        return result;
+    }
+
 }

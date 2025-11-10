@@ -3,5 +3,5 @@
 public sealed class ListCitizenProposalsQuery : BasePagedQuery<ListCitizenProposalsQueryDto>
 {
     public string? Search { get; init; }
-    //public bool? OnlyEnabled { get; init; }
+    public bool? OnlyEnabled { get; init; }
 }

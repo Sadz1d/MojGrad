@@ -9,6 +9,8 @@ public class CitizenProposalEntity : BaseEntity
     public string Title { get; set; } = default!;
     public string Text { get; set; } = default!;
     public DateTime PublicationDate { get; set; }
+    public bool IsEnabled { get; set; } = true;
+
 
     public MarketUserEntity User { get; set; } = default!;
 

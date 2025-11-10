@@ -26,8 +26,8 @@ public sealed class ListCitizenProposalsQueryHandler
                 p.Text.ToLower().Contains(term));
         }
 
-        //if (request.OnlyEnabled.HasValue)
-        //    q = q.Where(p => p.IsEnabled == request.OnlyEnabled.Value);
+        if (request.OnlyEnabled.HasValue)
+            q = q.Where(p => p.IsEnabled == request.OnlyEnabled.Value);
 
         var projected = q
             .OrderByDescending(p => p.PublicationDate)
@@ -40,7 +40,7 @@ public sealed class ListCitizenProposalsQueryHandler
                     : "Anonimno",
                 PublicationDate = p.PublicationDate,
                 ShortText = p.Text.Length > 120 ? p.Text.Substring(0, 120) + "..." : p.Text,
-                //IsEnabled = p.IsEnabled
+                IsEnabled = p.IsEnabled
             });
 
         return await PageResult<ListCitizenProposalsQueryDto>

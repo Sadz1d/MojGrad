@@ -28,7 +28,6 @@
 
   <ItemGroup>
     <Folder Include="Modules\Civic\CitizenProposals\Commands\" />
-    <Folder Include="Modules\Civic\CitizenProposals\Queries\GetById\" />
     <Folder Include="Modules\Civic\WatchLists\" />
     <Folder Include="Modules\Events\" />
     <Folder Include="Modules\Identity\Commands\" />

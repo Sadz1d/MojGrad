@@ -8,5 +8,5 @@ public sealed class ListCitizenProposalsQueryDto
     public required string AuthorName { get; init; }  // Ime korisnika (iz User)
     public required DateTime PublicationDate { get; init; } // Datum objave
     public string? ShortText { get; init; }           // Prvih n karaktera teksta
-    //public required bool IsEnabled { get; init; }
+    public required bool IsEnabled { get; init; }
 }
