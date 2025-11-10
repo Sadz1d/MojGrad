@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Market.Application.Modules.Identity.Profile.Queries.List
 {
-    internal class ListProfileQuery
+    internal class ListRefreshTokenQuery
     {
     }
 }
