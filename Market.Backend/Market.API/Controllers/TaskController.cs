@@ -1,3 +1,5 @@
+using Market.Application.Modules.Reports.Tasks.Commands.Create;
+using Market.Application.Modules.Reports.Tasks.Commands.Delete;
 using Market.Application.Modules.Reports.Tasks.Queries.GetById;
 using Market.Application.Modules.Reports.Tasks.Queries.List;
 using MediatR;
@@ -27,5 +29,21 @@ public sealed class TasksController : ControllerBase
     {
         var result = await sender.Send(new GetTaskByIdQuery { Id = id }, ct);
         return result;
+    }
+
+    // POST /api/reports/tasks
+    [HttpPost]
+    public async Task<int> Create([FromBody] CreateTaskCommand command, CancellationToken ct)
+    {
+        var id = await sender.Send(command, ct);
+        return id;
+    }
+
+    // DELETE /api/reports/tasks/{id}
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> Delete(int id, CancellationToken ct)
+    {
+        await sender.Send(new DeleteTaskCommand { Id = id }, ct);
+        return NoContent();
     }
 }

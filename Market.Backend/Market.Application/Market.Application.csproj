@@ -36,6 +36,8 @@
     <Folder Include="Modules\Media\Queries\" />
     <Folder Include="Modules\Reports\Commands\" />
     <Folder Include="Modules\Reports\Queries\" />
+    <Folder Include="Modules\Reports\Task\Commands\Status\" />
+    <Folder Include="Modules\Reports\Task\Commands\Update\" />
     <Folder Include="Modules\Rewards\Commands\" />
     <Folder Include="Modules\Rewards\Queries\" />
     <Folder Include="Modules\Surveys\Commands\" />
