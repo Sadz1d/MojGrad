@@ -4,13 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-
-namespace Market.Application.Modules.Media.MediaLinks.Queries.List;
-
-public sealed class ListMediaLinksQuery
-    : BasePagedQuery<ListMediaLinksQueryDto>
+namespace Market.Application.Modules.Media.MediaLink.Queries.List
 {
-    public string? EntityType { get; init; }   // npr. "ProblemReport", "ProofOfResolution"
-    public int? EntityId { get; init; }        // ID entiteta kojem je medija vezana
+    internal class ListMediaLinkQuery
+    {
+    }
 }
-

@@ -1,5 +1,8 @@
 using Market.Application.Modules.Civic.WatchList.Commands.Create;
+<<<<<<< HEAD
 using Market.Application.Modules.Civic.WatchList.Commands.Update;
+=======
+>>>>>>> main
 using Market.Application.Modules.Civic.WatchList.Commands.Delete;
 using Market.Application.Modules.Civic.WatchList.Queries.List;
 using Market.Application.Modules.Civic.WatchList.Queries.GetById;
@@ -41,6 +44,7 @@ namespace Market.API.Controllers
             return CreatedAtAction(nameof(GetById), new { id }, new { id });
         }
 
+<<<<<<< HEAD
         // PUT /api/civic/watch-list/{id}
         [HttpPut("{id:int}")]
         public async Task<IActionResult> Update(int id,
@@ -52,6 +56,8 @@ namespace Market.API.Controllers
             return NoContent(); // 204
         }
 
+=======
+>>>>>>> main
         // DELETE /api/civic/watch-list/{id}
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete(int id, CancellationToken ct)

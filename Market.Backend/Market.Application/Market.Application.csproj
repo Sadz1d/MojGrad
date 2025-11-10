@@ -29,15 +29,21 @@
   <ItemGroup>
     <Folder Include="Modules\Civic\WatchLists\Commands\Status\" />
     <Folder Include="Modules\Civic\CitizenProposals\Commands\Status\" />
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+    <Folder Include="Modules\Civic\WatchLists\" />
+=======
+    <Folder Include="Modules\Civic\WatchLists\Commands\Update\" />
+>>>>>>> parent of 623b722 (Commit UpdateWatchList)
+>>>>>>> main
     <Folder Include="Modules\Events\" />
     <Folder Include="Modules\Identity\Commands\" />
     <Folder Include="Modules\Identity\Queries\" />
     <Folder Include="Modules\Media\Commands\" />
-    <Folder Include="Modules\Media\MediaAttachment\Commands\Status\" />
     <Folder Include="Modules\Media\Queries\" />
     <Folder Include="Modules\Reports\Commands\" />
     <Folder Include="Modules\Reports\Queries\" />
-    <Folder Include="Modules\Reports\Task\Commands\Status\" />
     <Folder Include="Modules\Rewards\Commands\" />
     <Folder Include="Modules\Rewards\Queries\" />
     <Folder Include="Modules\Surveys\Commands\" />

@@ -1,0 +1,9 @@
+diff a/Market.Backend/Market.Application/Market.Application.csproj b/Market.Backend/Market.Application/Market.Application.csproj	(rejected hunks)
+@@ -29,6 +29,7 @@
+    <ItemGroup>
+ -    <Folder Include="Modules\Civic\WatchLists\Commands\Status\" />
+      <Folder Include="Modules\Civic\CitizenProposals\Commands\Status\" />
+++<<<<<<< HEAD
+ +    <Folder Include="Modules\Civic\WatchLists\" />
+ +=======
+      <Folder Include="Modules\Civic\WatchLists\Commands\Update\" />
