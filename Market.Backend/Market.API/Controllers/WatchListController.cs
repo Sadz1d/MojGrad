@@ -1,4 +1,5 @@
 using Market.Application.Modules.Civic.WatchList.Commands.Create;
+using Market.Application.Modules.Civic.WatchList.Commands.Delete;
 using Market.Application.Modules.Civic.WatchList.Queries.List;
 using Market.Application.Modules.Civic.WatchList.Queries.GetById;
 using MediatR;
@@ -37,6 +38,14 @@ namespace Market.API.Controllers
         {
             var id = await sender.Send(command, ct);
             return CreatedAtAction(nameof(GetById), new { id }, new { id });
+        }
+
+        // DELETE /api/civic/watch-list/{id}
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> Delete(int id, CancellationToken ct)
+        {
+            await sender.Send(new DeleteWatchListCommand { Id = id }, ct);
+            return NoContent(); // 204
         }
     }
 }

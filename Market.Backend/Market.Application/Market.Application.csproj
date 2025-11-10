@@ -27,7 +27,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Modules\Civic\WatchLists\Commands\Delete\" />
     <Folder Include="Modules\Civic\WatchLists\Commands\Status\" />
     <Folder Include="Modules\Civic\CitizenProposals\Commands\Status\" />
     <Folder Include="Modules\Civic\WatchLists\Commands\Update\" />
