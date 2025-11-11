@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MediatR;
 
-namespace Market.Application.Modules.Surveys.SurveyEntity.Queries.List
+namespace Market.Application.Modules.Surveys.Survey.Queries.List;
+
+public sealed class ListSurveysQuery : BasePagedQuery<ListSurveysQueryDto>
 {
-    internal class ListSurveyEntityQuery
-    {
-    }
+    public string? Search { get; init; }       // pretraga po pitanju (Question)
+    public DateTime? ActiveOn { get; init; }   // prikaz samo aktivnih anketa na određeni datum
 }
