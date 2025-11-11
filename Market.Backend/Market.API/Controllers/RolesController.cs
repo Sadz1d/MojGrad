@@ -1,4 +1,5 @@
 using Market.Application.Modules.Identity.Roles.Commands.Create;
+using Market.Application.Modules.Identity.Roles.Commands.Update;
 using Market.Application.Modules.Identity.Roles.Queries.GetById;
 using Market.Application.Modules.Identity.Roles.Queries.List;
 using MediatR;
@@ -34,6 +35,13 @@ public class RolesController : ControllerBase
     {
         var id = await _mediator.Send(command);
         return CreatedAtAction(nameof(GetById), new { id }, null);
+    }
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> Update(int id, [FromBody] UpdateRoleCommand command)
+    {
+        command.Id = id; // ID dolazi iz rute
+        await _mediator.Send(command);
+        return NoContent();
     }
 
 }
