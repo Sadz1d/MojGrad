@@ -1,8 +1,6 @@
 using Market.Application.Modules.Civic.Events.Commands.Create;
 using Market.Application.Modules.Civic.Events.Queries.GetById;
 using Market.Application.Modules.Events.EventCalendar.Queries.List;
-using MediatR;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Market.API.Controllers.Events;
 
