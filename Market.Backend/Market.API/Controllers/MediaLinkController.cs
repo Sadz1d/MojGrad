@@ -37,5 +37,7 @@ public sealed class MediaLinkController : ControllerBase
         var id = await _sender.Send(command, ct);
         return CreatedAtAction(nameof(GetById), new { id }, new { id });
     }
+
+
 }
 
