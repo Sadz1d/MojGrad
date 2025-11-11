@@ -8,6 +8,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Market.Application.Modules.Reports.ProblemStatus.Queries.List;
 using Market.Application.Modules.Reports.ProblemStatus.Queries.GetById;
+using Market.Application.Modules.Reports.ProblemStatus.Commands.Create;
 
 namespace Market.API.Controllers;
 
@@ -26,4 +27,12 @@ public sealed class ProblemStatusesController : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<GetProblemStatusByIdQueryDto> GetById(int id, CancellationToken ct)
        => await sender.Send(new GetProblemStatusByIdQuery { Id = id }, ct);
+
+    [HttpPost]
+    public async Task<IActionResult> Create(
+        [FromBody] CreateProblemStatusCommand command, CancellationToken ct)
+    {
+        var id = await sender.Send(command, ct);
+        return CreatedAtAction(nameof(GetById), new { id }, new { id });
+    }
 }
