@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Market.Application.Modules.Reports.Rating.Queries.List;
+namespace Market.Application.Modules.Reports.Rating.Queries.GetById;
 
-public sealed class ListRatingQueryDto
+public sealed class GetRatingByIdQueryDto
 {
     public required int Id { get; init; }
     public required int UserId { get; init; }
