@@ -1,5 +1,6 @@
 using Market.Application.Modules.Rewards.Reward.Commands.Create;
 using Market.Application.Modules.Rewards.Reward.Commands.Delete;
+using Market.Application.Modules.Rewards.Reward.Commands.Update;
 using Market.Application.Modules.Rewards.Reward.Queries.GetById;
 using Market.Application.Modules.Rewards.Reward.Queries.List;
 using MediatR;
@@ -33,6 +34,14 @@ public sealed class RewardController : ControllerBase
     public async Task<IActionResult> Delete(int id, CancellationToken ct)
     {
         await _sender.Send(new DeleteRewardCommand { Id = id }, ct);
+        return NoContent();
+    }
+
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> Update(int id, [FromBody] UpdateRewardCommand command, CancellationToken ct)
+    {
+        command.Id = id;
+        await _sender.Send(command, ct);
         return NoContent();
     }
 }
