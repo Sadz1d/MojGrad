@@ -45,7 +45,6 @@
     <Folder Include="Modules\Reports\Rating\Commands\Status\" />
     <Folder Include="Modules\Reports\Task\Commands\Status\" />
     <Folder Include="Modules\Rewards\Commands\Status\" />
-    <Folder Include="Modules\Rewards\RewardEntity\Command\Delete\" />
     <Folder Include="Modules\Rewards\RewardEntity\Command\Status\" />
     <Folder Include="Modules\Rewards\RewardEntity\Command\Update\" />
     <Folder Include="Modules\Surveys\Commands\" />
