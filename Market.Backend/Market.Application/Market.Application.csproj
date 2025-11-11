@@ -53,6 +53,11 @@
     <Folder Include="Modules\Surveys\SurveyEntity\Commands\Status\" />
     <Folder Include="Modules\Surveys\SurveyResponse\Commands\Status\" />
     <Folder Include="Modules\Volonteering\ActionParticipant\Commands\Status\" />
+    <Folder Include="Modules\Volonteering\VolunteerAction\Commands\Create\" />
+    <Folder Include="Modules\Volonteering\VolunteerAction\Commands\Delete\" />
+    <Folder Include="Modules\Volonteering\VolunteerAction\Commands\Status\" />
+    <Folder Include="Modules\Volonteering\VolunteerAction\Commands\Update\" />
+    <Folder Include="Modules\Volonteering\VolunteerAction\Queries\GetById\" />
   </ItemGroup>
 
 </Project>

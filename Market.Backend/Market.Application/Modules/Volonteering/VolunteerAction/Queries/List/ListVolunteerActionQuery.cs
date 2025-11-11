@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MediatR;
 
-namespace Market.Application.Modules.Volonteering.VolunteerAction.Queries.List
+namespace Market.Application.Modules.Volunteering.VolunteerActions.Queries.List;
+
+public sealed class ListVolunteerActionsQuery : BasePagedQuery<ListVolunteerActionsQueryDto>
 {
-    internal class ListVolunteerActionQuery
-    {
-    }
+    public string? Search { get; init; }        // name / description / location
+    public DateTime? DateFrom { get; init; }    // filter: EventDate >=
+    public DateTime? DateTo { get; init; }      // filter: EventDate <=
+    public bool? OnlyUpcoming { get; init; }    // samo budući eventi
+    public bool? OnlyWithFreeSlots { get; init; } // ima li slobodnih mjesta
 }
