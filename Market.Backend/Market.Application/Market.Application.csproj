@@ -54,7 +54,6 @@
     <Folder Include="Modules\Surveys\SurveyResponse\Commands\Status\" />
     <Folder Include="Modules\Volonteering\ActionParticipant\Commands\Status\" />
     <Folder Include="Modules\Volonteering\VolunteerAction\Commands\Status\" />
-    <Folder Include="Modules\Volonteering\VolunteerAction\Commands\Update\" />
   </ItemGroup>
 
 </Project>
