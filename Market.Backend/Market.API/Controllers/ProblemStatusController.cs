@@ -10,6 +10,7 @@ using Market.Application.Modules.Reports.ProblemStatus.Queries.List;
 using Market.Application.Modules.Reports.ProblemStatus.Queries.GetById;
 using Market.Application.Modules.Reports.ProblemStatus.Commands.Create;
 using Market.Application.Modules.Reports.ProblemStatus.Commands.Delete;
+using Market.Application.Modules.Reports.ProblemStatus.Commands.Update;
 
 namespace Market.API.Controllers;
 
@@ -35,6 +36,15 @@ public sealed class ProblemStatusesController : ControllerBase
     {
         var id = await sender.Send(command, ct);
         return CreatedAtAction(nameof(GetById), new { id }, new { id });
+    }
+
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> Update(
+       int id, [FromBody] UpdateProblemStatusCommand command, CancellationToken ct)
+    {
+        command.Id = id;
+        await sender.Send(command, ct);
+        return NoContent();
     }
 
 
