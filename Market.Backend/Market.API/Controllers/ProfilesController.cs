@@ -1,6 +1,7 @@
+using Market.Application.Modules.Identity.Profiles.Queries.GetById;
+using Market.Application.Modules.Identity.Profiles.Queries.List;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Market.Application.Modules.Identity.Profiles.Queries.List;
 
 namespace Market.API.Controllers.Identity;
 
@@ -19,6 +20,12 @@ public class ProfilesController : ControllerBase
     public async Task<IActionResult> List([FromQuery] ListProfilesQuery query)
     {
         var result = await _mediator.Send(query);
+        return Ok(result);
+    }
+    [HttpGet("{id:int}")]
+    public async Task<IActionResult> GetById(int id)
+    {
+        var result = await _mediator.Send(new GetProfileByIdQuery { Id = id });
         return Ok(result);
     }
 }
