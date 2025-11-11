@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MediatR;
 
-namespace Market.Application.Modules.Surveys.SurveyResponse.Queries.List
+namespace Market.Application.Modules.Surveys.SurveyResponses.Queries.List;
+
+public sealed class ListSurveyResponsesQuery : BasePagedQuery<ListSurveyResponsesQueryDto>
 {
-    internal class ListSurveyResponseQuery
-    {
-    }
+    public string? Search { get; init; }      // pretraga po korisniku ili tekstu odgovora
+    public int? SurveyId { get; init; }       // filter po anketi
+    public int? UserId { get; init; }         // filter po korisniku
 }
