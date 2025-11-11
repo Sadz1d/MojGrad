@@ -1,3 +1,4 @@
+using Market.Application.Modules.Identity.RefreshTokens.Commands.Create;
 using Market.Application.Modules.Identity.RefreshTokens.Queries.GetById;
 using Market.Application.Modules.Identity.RefreshTokens.Queries.List;
 using MediatR;
@@ -27,6 +28,12 @@ public class RefreshTokensController : ControllerBase
     {
         var result = await _mediator.Send(new GetRefreshTokenByIdQuery { Id = id });
         return Ok(result);
+    }
+    [HttpPost]
+    public async Task<IActionResult> Create([FromBody] CreateRefreshTokenCommand command)
+    {
+        var id = await _mediator.Send(command);
+        return CreatedAtAction(nameof(GetById), new { id }, null);
     }
 
 }
