@@ -55,7 +55,6 @@
     <Folder Include="Modules\Surveys\SurveyResponse\Commands\Delete\" />
     <Folder Include="Modules\Surveys\SurveyResponse\Commands\Status\" />
     <Folder Include="Modules\Surveys\SurveyResponse\Commands\Update\" />
-    <Folder Include="Modules\Surveys\SurveyResponse\Queries\GetById\" />
     <Folder Include="Modules\Volonteering\Commands\" />
     <Folder Include="Modules\Volonteering\Queries\" />
   </ItemGroup>
