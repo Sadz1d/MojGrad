@@ -13,6 +13,7 @@ using Market.Application.Abstractions;
 using Market.Application.Common.Exceptions;
 using Market.Application.Modules.Reports.ProofOfResolution.Commands.Create;
 using Market.Domain.Entities.Reports;
+using Market.Application.Modules.Reports.ProofOfResolution.Commands.Delete;
 
 namespace Market.API.Controllers;
 
@@ -40,6 +41,12 @@ public sealed class ProofOfResolutionController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id }, new { id });
     }
 
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> Delete(int id, CancellationToken ct)
+    {
+        await sender.Send(new DeleteProofOfResolutionCommand { Id = id }, ct);
+        return NoContent();
+    }
 
 
 }
