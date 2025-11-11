@@ -4,9 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Market.Application.Modules.Reports.ProblemStatus.Queries.List
+
+
+namespace Market.Application.Modules.Reports.ProblemStatus.Queries.List;
+
+public sealed class ListProblemStatusQuery : BasePagedQuery<ListProblemStatusQueryDto>
 {
-    internal class ListProblemStatusQuery
-    {
-    }
+    public string? Search { get; init; }
 }
+
