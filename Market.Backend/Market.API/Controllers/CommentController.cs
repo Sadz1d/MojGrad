@@ -1,6 +1,8 @@
 
 using Market.Application.Modules.Reports.Comment.Queries.GetById;
 using Market.Application.Modules.Reports.Comment.Queries.List;
+using Market.Application.Modules.Reports.Comments.Commands.Create;
+
 //using Market.Application.Modules.Reports.Comments.Queries.GetById;
 //using Market.Application.Modules.Reports.Comments.Commands.Create;
 //using Market.Application.Modules.Reports.Comments.Commands.Update;
@@ -24,5 +26,12 @@ public sealed class CommentController : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<GetCommentByIdQueryDto> GetById(int id, CancellationToken ct)
         => await sender.Send(new GetCommentByIdQuery { Id = id }, ct);
+
+    [HttpPost]
+    public async Task<IActionResult> Create([FromBody] CreateCommentCommand command, CancellationToken ct)
+    {
+        var id = await sender.Send(command, ct);
+        return CreatedAtAction(nameof(GetById), new { id }, new { id });
+    }
 
 }
