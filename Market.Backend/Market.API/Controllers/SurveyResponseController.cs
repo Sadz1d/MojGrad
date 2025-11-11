@@ -1,4 +1,5 @@
 using Market.Application.Modules.Surveys.SurveyResponses.Commands.Create;
+using Market.Application.Modules.Surveys.SurveyResponses.Commands.Delete;
 using Market.Application.Modules.Surveys.SurveyResponses.Queries.GetById;
 using Market.Application.Modules.Surveys.SurveyResponses.Queries.List;
 using MediatR;
@@ -27,4 +28,10 @@ public sealed class SurveyResponsesController : ControllerBase
     [HttpPost]
     public async Task<int> Create([FromBody] CreateSurveyResponseCommand command, CancellationToken ct)
     => await _sender.Send(command, ct);
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> Delete(int id, CancellationToken ct)
+    {
+        await _sender.Send(new DeleteSurveyResponseCommand { Id = id }, ct);
+        return NoContent();
+    }
 }

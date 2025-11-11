@@ -51,7 +51,6 @@
     <Folder Include="Modules\Rewards\Commands\Status\" />
     <Folder Include="Modules\Rewards\RewardEntity\Command\Status\" />
     <Folder Include="Modules\Surveys\SurveyEntity\Commands\Status\" />
-    <Folder Include="Modules\Surveys\SurveyResponse\Commands\Delete\" />
     <Folder Include="Modules\Surveys\SurveyResponse\Commands\Status\" />
     <Folder Include="Modules\Surveys\SurveyResponse\Commands\Update\" />
     <Folder Include="Modules\Volonteering\Commands\" />
