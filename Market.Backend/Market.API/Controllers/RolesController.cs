@@ -1,3 +1,4 @@
+using Market.Application.Modules.Identity.Roles.Commands.Create;
 using Market.Application.Modules.Identity.Roles.Queries.GetById;
 using Market.Application.Modules.Identity.Roles.Queries.List;
 using MediatR;
@@ -27,6 +28,12 @@ public class RolesController : ControllerBase
     {
         var result = await _mediator.Send(new GetRoleByIdQuery { Id = id });
         return Ok(result);
+    }
+    [HttpPost]
+    public async Task<IActionResult> Create([FromBody] CreateRoleCommand command)
+    {
+        var id = await _mediator.Send(command);
+        return CreatedAtAction(nameof(GetById), new { id }, null);
     }
 
 }
