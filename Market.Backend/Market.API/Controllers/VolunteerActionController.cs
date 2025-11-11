@@ -1,3 +1,4 @@
+using Market.Application.Modules.Volunteering.VolunteerActions.Commands.Create;
 using Market.Application.Modules.Volunteering.VolunteerActions.Queries.GetById;
 using Market.Application.Modules.Volunteering.VolunteerActions.Queries.List;
 using MediatR;
@@ -22,4 +23,8 @@ public sealed class VolunteerActionsController : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<GetVolunteerActionByIdQueryDto> GetById(int id, CancellationToken ct)
     => await _sender.Send(new GetVolunteerActionByIdQuery { Id = id }, ct);
+
+    [HttpPost]
+    public async Task<int> Create([FromBody] CreateVolunteerActionCommand command, CancellationToken ct)
+    => await _sender.Send(command, ct);
 }
