@@ -1,4 +1,5 @@
 using Market.Application.Modules.Identity.UserRoles.Commands.Create;
+using Market.Application.Modules.Identity.UserRoles.Commands.Delete;
 using Market.Application.Modules.Identity.UserRoles.Commands.Update;
 using Market.Application.Modules.Identity.UserRoles.Queries.GetById;
 using Market.Application.Modules.Identity.UserRoles.Queries.List;
@@ -38,6 +39,12 @@ public class UserRolesController : ControllerBase
     {
         command = command with { Id = id };
         await _mediator.Send(command);
+        return NoContent();
+    }
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        await _mediator.Send(new DeleteUserRoleCommand(id));
         return NoContent();
     }
 }
