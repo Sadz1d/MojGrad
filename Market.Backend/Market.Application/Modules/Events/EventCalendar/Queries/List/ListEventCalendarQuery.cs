@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Market.Domain.Common;
 
-namespace Market.Application.Modules.Events.EventCalendar.Queries.List
+namespace Market.Application.Modules.Events.EventCalendar.Queries.List;
+
+public sealed class ListEventCalendarQuery : BasePagedQuery<ListEventCalendarQueryDto>
 {
-    internal class ListEventCalendarQuery
-    {
-    }
+    public string? Search { get; init; }
+    public bool? OnlyUpcoming { get; init; }  // filter za buduće događaje, možeš prilagoditi
 }
