@@ -1,3 +1,4 @@
+using Market.Application.Modules.Surveys.Survey.Queries.GetById;
 using Market.Application.Modules.Surveys.Survey.Queries.List;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -17,4 +18,8 @@ public sealed class SurveyController : ControllerBase
         [FromQuery] ListSurveysQuery query,
         CancellationToken ct)
         => await _sender.Send(query, ct);
+
+    [HttpGet("{id:int}")]
+    public async Task<GetSurveyByIdQueryDto> GetById(int id, CancellationToken ct)
+    => await _sender.Send(new GetSurveyByIdQuery { Id = id }, ct);
 }
