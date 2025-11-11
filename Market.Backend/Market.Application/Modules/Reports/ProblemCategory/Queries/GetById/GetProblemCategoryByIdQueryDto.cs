@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Market.Application.Modules.Reports.ProblemCategory.Queries.List;
+namespace Market.Application.Modules.Reports.ProblemCategory.Queries.GetById;
 
-public sealed class ListProblemCategoryQueryDto
+public sealed class GetProblemCategoryByIdQueryDto
 {
     public required int Id { get; init; }
     public required string Name { get; init; }

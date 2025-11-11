@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Market.Application.Modules.Reports.ProblemCategory.Queries.List;
+using MediatR;
 
-public sealed class ListProblemCategoryQueryDto
+namespace Market.Application.Modules.Reports.ProblemCategory.Commands.Create;
+
+public sealed class CreateProblemCategoryCommand : IRequest<int>
 {
-    public required int Id { get; init; }
     public required string Name { get; init; }
     public string? Description { get; init; }
-    public int ReportCount { get; init; }
 }
 
