@@ -1,4 +1,5 @@
 using Market.Application.Modules.Identity.Profiles.Commands.Create;
+using Market.Application.Modules.Identity.Profiles.Commands.Update;
 using Market.Application.Modules.Identity.Profiles.Queries.GetById;
 using Market.Application.Modules.Identity.Profiles.Queries.List;
 using MediatR;
@@ -34,5 +35,12 @@ public class ProfilesController : ControllerBase
     {
         var id = await _mediator.Send(command);
         return CreatedAtAction(nameof(GetById), new { id }, null);
+    }
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> Update(int id, [FromBody] UpdateProfileCommand command)
+    {
+        command.Id = id; // ID dolazi iz rute
+        await _mediator.Send(command);
+        return NoContent();
     }
 }
