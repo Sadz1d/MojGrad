@@ -1,4 +1,5 @@
 using Market.Application.Modules.Volunteering.VolunteerActions.Commands.Create;
+using Market.Application.Modules.Volunteering.VolunteerActions.Commands.Delete;
 using Market.Application.Modules.Volunteering.VolunteerActions.Queries.GetById;
 using Market.Application.Modules.Volunteering.VolunteerActions.Queries.List;
 using MediatR;
@@ -27,4 +28,11 @@ public sealed class VolunteerActionsController : ControllerBase
     [HttpPost]
     public async Task<int> Create([FromBody] CreateVolunteerActionCommand command, CancellationToken ct)
     => await _sender.Send(command, ct);
+
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> Delete(int id, CancellationToken ct)
+    {
+        await _sender.Send(new DeleteVolunteerActionCommand { Id = id }, ct);
+        return NoContent();
+    }
 }
