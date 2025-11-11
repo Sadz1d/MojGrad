@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Market.Application.Modules.Surveys.Survey.Queries.List;
 
-namespace Market.Application.Modules.Surveys.SurveyEntity.Queries.List
+public sealed class ListSurveysQueryDto
 {
-    internal class ListSurveyEntityQueryDto
-    {
-    }
+    public required int Id { get; init; }
+    public required string Question { get; init; }
+    public required DateTime StartDate { get; init; }
+    public required DateTime EndDate { get; init; }
+    public int ResponsesCount { get; init; }   // koliko odgovora ima anketa
+    public bool IsActive { get; init; }        // da li je trenutno aktivna
 }

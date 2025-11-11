@@ -50,8 +50,7 @@
     <Folder Include="Modules\Reports\Task\Commands\Status\" />
     <Folder Include="Modules\Rewards\Commands\Status\" />
     <Folder Include="Modules\Rewards\RewardEntity\Command\Status\" />
-    <Folder Include="Modules\Surveys\Commands\" />
-    <Folder Include="Modules\Surveys\Queries\" />
+    <Folder Include="Modules\Surveys\SurveyEntity\Commands\Status\" />
     <Folder Include="Modules\Volonteering\Commands\" />
     <Folder Include="Modules\Volonteering\Queries\" />
   </ItemGroup>
