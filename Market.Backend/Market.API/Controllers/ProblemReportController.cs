@@ -1,6 +1,7 @@
 
 using Market.Application.Modules.Reports.ProblemReport.Commands.Create;
 using Market.Application.Modules.Reports.ProblemReport.Commands.Delete;
+using Market.Application.Modules.Reports.ProblemReport.Commands.Update;
 using Market.Application.Modules.Reports.ProblemReport.Queries.GetById;
 using Market.Application.Modules.Reports.ProblemReport.Queries.List;
 //using Market.Application.Modules.Reports.ProblemReport.Queries.GetById;
@@ -33,6 +34,14 @@ public sealed class ProblemReportsController : ControllerBase
     {
         var id = await sender.Send(command, ct);
         return CreatedAtAction(nameof(GetById), new { id }, new { id });
+    }
+
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> Update(int id, [FromBody] UpdateProblemReportCommand command, CancellationToken ct)
+    {
+        command.Id = id;
+        await sender.Send(command, ct);
+        return NoContent();
     }
 
 
