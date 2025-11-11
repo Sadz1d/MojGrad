@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MediatR;
 
-namespace Market.Application.Modules.Rewards.RewardEntity.Queries.List
+namespace Market.Application.Modules.Rewards.Reward.Queries.List;
+
+public sealed class ListRewardsQuery : BasePagedQuery<ListRewardsQueryDto>
 {
-    internal class ListRewardEntityQuery
-    {
-    }
+    public string? Search { get; init; }          // name/description
+    public int? MinPoints { get; init; }          // filter: MinimumPoints >=
+    public int? MaxPoints { get; init; }          // filter: MinimumPoints <=
 }
