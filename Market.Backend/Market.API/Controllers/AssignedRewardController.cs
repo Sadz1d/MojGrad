@@ -2,6 +2,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Market.Application.Modules.Rewards.AssignedRewards.Queries.List;
+using Market.Application.Modules.Rewards.AssignedRewards.Queries.GetById;
 
 namespace Market.API.Controllers;
 
@@ -17,4 +18,9 @@ public sealed class AssignedRewardsController : ControllerBase
     public async Task<PageResult<ListAssignedRewardsQueryDto>> List(
         [FromQuery] ListAssignedRewardsQuery query, CancellationToken ct)
         => await _sender.Send(query, ct);
+
+   // GET /api/rewards/assigned/{id}
+    [HttpGet("{id:int}")]
+    public async Task<GetAssignedRewardByIdQueryDto> GetById(int id, CancellationToken ct)
+        => await _sender.Send(new GetAssignedRewardByIdQuery { Id = id }, ct);
 }
