@@ -1,4 +1,5 @@
 
+using Market.Application.Modules.Reports.ProblemReport.Queries.GetById;
 using Market.Application.Modules.Reports.ProblemReport.Queries.List;
 //using Market.Application.Modules.Reports.ProblemReport.Queries.GetById;
 //using Market.Application.Modules.Reports.ProblemReport.Commands.Create;
@@ -20,4 +21,8 @@ public sealed class ProblemReportsController : ControllerBase
     public async Task<PageResult<ListProblemReportQueryDto>> List(
         [FromQuery] ListProblemReportQuery query, CancellationToken ct)
         => await sender.Send(query, ct);
+
+    [HttpGet("{id:int}")]
+    public async Task<GetProblemReportByIdQueryDto> GetById(int id, CancellationToken ct)
+    => await sender.Send(new GetProblemReportByIdQuery { Id = id }, ct);
 }
