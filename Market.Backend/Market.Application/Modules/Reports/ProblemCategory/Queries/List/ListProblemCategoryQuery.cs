@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Market.Application.Modules.Reports.ProblemCategory.Queries.List
+
+namespace Market.Application.Modules.Reports.ProblemCategory.Queries.List;
+
+public sealed class ListProblemCategoryQuery : BasePagedQuery<ListProblemCategoryQueryDto>
 {
-    internal class ListProblemCategoryQuery
-    {
-    }
+    public string? Search { get; init; } // filtriranje po imenu
 }
+
