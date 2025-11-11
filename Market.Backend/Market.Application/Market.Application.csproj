@@ -37,6 +37,9 @@
     <Folder Include="Modules\Media\Queries\" />
     <Folder Include="Modules\Reports\Commands\" />
     <Folder Include="Modules\Reports\Comment\Command\Status\" />
+    <Folder Include="Modules\Reports\ProblemCategory\Commands\Delete\" />
+    <Folder Include="Modules\Reports\ProblemCategory\Commands\Status\" />
+    <Folder Include="Modules\Reports\ProblemCategory\Commands\Update\" />
     <Folder Include="Modules\Reports\Queries\" />
     <Folder Include="Modules\Reports\Task\Commands\Status\" />
     <Folder Include="Modules\Rewards\Commands\" />
