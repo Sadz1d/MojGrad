@@ -1,3 +1,4 @@
+using Market.Application.Modules.Rewards.Reward.Queries.GetById;
 using Market.Application.Modules.Rewards.Reward.Queries.List;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -17,4 +18,8 @@ public sealed class RewardController : ControllerBase
         [FromQuery] ListRewardsQuery query,
         CancellationToken ct)
         => await _sender.Send(query, ct);
+
+    [HttpGet("{id:int}")]
+    public async Task<GetRewardByIdQueryDto> GetById(int id, CancellationToken ct)
+    => await _sender.Send(new GetRewardByIdQuery { Id = id }, ct);
 }

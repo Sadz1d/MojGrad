@@ -49,7 +49,6 @@
     <Folder Include="Modules\Rewards\RewardEntity\Command\Delete\" />
     <Folder Include="Modules\Rewards\RewardEntity\Command\Status\" />
     <Folder Include="Modules\Rewards\RewardEntity\Command\Update\" />
-    <Folder Include="Modules\Rewards\RewardEntity\Queries\GetById\" />
     <Folder Include="Modules\Surveys\Commands\" />
     <Folder Include="Modules\Surveys\Queries\" />
     <Folder Include="Modules\Volonteering\Commands\" />
