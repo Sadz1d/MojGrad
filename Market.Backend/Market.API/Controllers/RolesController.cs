@@ -1,4 +1,5 @@
 using Market.Application.Modules.Identity.Roles.Commands.Create;
+using Market.Application.Modules.Identity.Roles.Commands.Delete;
 using Market.Application.Modules.Identity.Roles.Commands.Update;
 using Market.Application.Modules.Identity.Roles.Queries.GetById;
 using Market.Application.Modules.Identity.Roles.Queries.List;
@@ -41,6 +42,12 @@ public class RolesController : ControllerBase
     {
         command.Id = id; // ID dolazi iz rute
         await _mediator.Send(command);
+        return NoContent();
+    }
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        await _mediator.Send(new DeleteRoleCommand { Id = id });
         return NoContent();
     }
 
