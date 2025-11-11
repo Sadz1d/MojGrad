@@ -1,7 +1,9 @@
 
+using Market.Application.Modules.Media.MediaLink.Queries.GetById;
 using Market.Application.Modules.Media.MediaLink.Queries.List;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using System.Reflection;
 
 namespace Market.API.Controllers;
 
@@ -21,5 +23,10 @@ public sealed class MediaLinkController : ControllerBase
         var result = await _sender.Send(query, ct);
         return result;
     }
+
+    // GET /api/media/links/{id}
+    [HttpGet("{id:int}")]
+    public async Task<GetMediaLinkByIdQueryDto> GetById(int id, CancellationToken ct)
+        => await _sender.Send(new GetMediaLinkByIdQuery { Id = id }, ct);
 }
 
