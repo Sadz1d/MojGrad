@@ -42,7 +42,6 @@
     <Folder Include="Modules\Reports\ProblemStatus\Commands\Status\" />
     <Folder Include="Modules\Reports\ProofOfResolution\Commands\Status\" />
     <Folder Include="Modules\Reports\Queries\" />
-    <Folder Include="Modules\Reports\Rating\Commands\Delete\" />
     <Folder Include="Modules\Reports\Rating\Commands\Update\" />
     <Folder Include="Modules\Reports\Rating\Commands\Status\" />
     <Folder Include="Modules\Reports\Task\Commands\Status\" />

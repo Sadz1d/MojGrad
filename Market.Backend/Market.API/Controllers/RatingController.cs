@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Market.Application.Modules.Reports.Rating.Queries.List;
 using Market.Application.Modules.Reports.Rating.Queries.GetById;
 using Market.Application.Modules.Reports.Rating.Commands.Create;
+using Market.Application.Modules.Reports.Rating.Commands.Delete;
 
 namespace Market.API.Controllers;
 
@@ -33,6 +34,14 @@ public sealed class RatingsController : ControllerBase
     {
         var id = await sender.Send(command, ct);
         return CreatedAtAction(nameof(GetById), new { id }, new { id });
+    }
+
+
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> Delete(int id, CancellationToken ct)
+    {
+        await sender.Send(new DeleteRatingCommand { Id = id }, ct);
+        return NoContent();
     }
 
 }
