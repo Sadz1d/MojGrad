@@ -10,6 +10,7 @@ using Market.Application.Modules.Reports.Rating.Queries.List;
 using Market.Application.Modules.Reports.Rating.Queries.GetById;
 using Market.Application.Modules.Reports.Rating.Commands.Create;
 using Market.Application.Modules.Reports.Rating.Commands.Delete;
+using Market.Application.Modules.Report.Ratings.Commands.Update;
 
 namespace Market.API.Controllers;
 
@@ -36,6 +37,13 @@ public sealed class RatingsController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id }, new { id });
     }
 
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> Update(int id, [FromBody] UpdateRatingCommand command, CancellationToken ct)
+    {
+        command.Id = id;
+        await sender.Send(command, ct);
+        return NoContent();
+    }
 
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id, CancellationToken ct)
