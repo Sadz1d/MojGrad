@@ -5,6 +5,7 @@ using Market.Application.Modules.Rewards.AssignedRewards.Queries.List;
 using Market.Application.Modules.Rewards.AssignedRewards.Queries.GetById;
 using Market.Application.Modules.Rewards.AssignedRewards.Commands.Create;
 using Market.Application.Modules.Rewards.AssignedRewards.Commands.Delete;
+using Market.Application.Modules.Rewards.AssignedRewards.Commands.Update;
 
 namespace Market.API.Controllers;
 
@@ -37,6 +38,13 @@ public sealed class AssignedRewardsController : ControllerBase
     public async Task<IActionResult> Delete(int id, CancellationToken ct)
     {
         await _sender.Send(new DeleteAssignedRewardCommand { Id = id }, ct);
+        return NoContent();
+    }
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> Update(int id, [FromBody] UpdateAssignedRewardCommand command, CancellationToken ct)
+    {
+        command.Id = id;
+        await _sender.Send(command, ct);
         return NoContent();
     }
 }

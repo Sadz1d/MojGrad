@@ -43,7 +43,6 @@
     <Folder Include="Modules\Reports\Queries\" />
     <Folder Include="Modules\Reports\Task\Commands\Status\" />
     <Folder Include="Modules\Rewards\Commands\Status\" />
-    <Folder Include="Modules\Rewards\Commands\Update\" />
     <Folder Include="Modules\Surveys\Commands\" />
     <Folder Include="Modules\Surveys\Queries\" />
     <Folder Include="Modules\Volonteering\Commands\" />
