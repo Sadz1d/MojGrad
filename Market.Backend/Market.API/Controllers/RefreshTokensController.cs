@@ -1,5 +1,6 @@
 using Market.Application.Modules.Identity.RefreshTokens.Commands.Create;
 using Market.Application.Modules.Identity.RefreshTokens.Commands.Delete;
+using Market.Application.Modules.Identity.RefreshTokens.Commands.Update;
 using Market.Application.Modules.Identity.RefreshTokens.Queries.GetById;
 using Market.Application.Modules.Identity.RefreshTokens.Queries.List;
 using MediatR;
@@ -40,6 +41,13 @@ public class RefreshTokensController : ControllerBase
     public async Task<IActionResult> Delete(int id)
     {
         await _mediator.Send(new DeleteRefreshTokenCommand { Id = id });
+        return NoContent();
+    }
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> Update(int id, [FromBody] UpdateRefreshTokenCommand command)
+    {
+        command.Id = id; // ID dolazi iz rute
+        await _mediator.Send(command);
         return NoContent();
     }
 
