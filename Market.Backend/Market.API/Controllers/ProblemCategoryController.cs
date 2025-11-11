@@ -1,5 +1,6 @@
 
 using Market.Application.Modules.Reports.ProblemCategory.Commands.Create;
+using Market.Application.Modules.Reports.ProblemCategory.Commands.Delete;
 using Market.Application.Modules.Reports.ProblemCategory.Queries.GetById;
 using Market.Application.Modules.Reports.ProblemCategory.Queries.List;
 //using Market.Application.Modules.Reports.ProblemCategory.Queries.GetById;
@@ -32,4 +33,12 @@ public sealed class ProblemCategoriesController : ControllerBase
         var id = await sender.Send(command, ct);
         return CreatedAtAction(nameof(GetById), new { id }, new { id });
     }
+
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> Delete(int id, CancellationToken ct)
+    {
+        await sender.Send(new DeleteProblemCategoryCommand { Id = id }, ct);
+        return NoContent();
+    }
+
 }
