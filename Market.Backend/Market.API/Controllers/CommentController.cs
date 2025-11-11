@@ -3,6 +3,8 @@ using Market.Application.Modules.Reports.Comment.Queries.GetById;
 using Market.Application.Modules.Reports.Comment.Queries.List;
 using Market.Application.Modules.Reports.Comments.Commands.Create;
 using Market.Application.Modules.Reports.Comments.Commands.Delete;
+using Market.Application.Modules.Reports.Comments.Commands.Update;
+
 
 
 //using Market.Application.Modules.Reports.Comments.Queries.GetById;
@@ -34,6 +36,14 @@ public sealed class CommentController : ControllerBase
     {
         var id = await sender.Send(command, ct);
         return CreatedAtAction(nameof(GetById), new { id }, new { id });
+    }
+
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> Update(int id, [FromBody] UpdateCommentCommand command, CancellationToken ct)
+    {
+        command.Id = id;
+        await sender.Send(command, ct);
+        return NoContent();
     }
 
     [HttpDelete("{id:int}")]
