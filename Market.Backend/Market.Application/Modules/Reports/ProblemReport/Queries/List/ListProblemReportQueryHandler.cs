@@ -6,15 +6,16 @@ using System.Threading.Tasks;
 
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+
 using Market.Domain.Entities.Reports;
 using Market.Application.Modules.Reports.ProblemReport.Queries.List;
 
 namespace Market.Application.Modules.Reports.ProblemReport.Queries.List;
-public sealed class ListProblemReportQueryHandler
+public sealed class ListProblemReportsQueryHandler
     : IRequestHandler<ListProblemReportQuery, PageResult<ListProblemReportQueryDto>>
 {
     private readonly IAppDbContext _ctx;
-    public ListProblemReportQueryHandler(IAppDbContext ctx) => _ctx = ctx;
+    public ListProblemReportsQueryHandler(IAppDbContext ctx) => _ctx = ctx;
 
     public async Task<PageResult<ListProblemReportQueryDto>> Handle(
         ListProblemReportQuery request, CancellationToken ct)
@@ -68,3 +69,4 @@ public sealed class ListProblemReportQueryHandler
             .FromQueryableAsync(projected, request.Paging, ct);
     }
 }
+
