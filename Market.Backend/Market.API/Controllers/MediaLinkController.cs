@@ -1,4 +1,5 @@
 
+using Market.Application.Modules.Media.MediaLink.Commands.Create;
 using Market.Application.Modules.Media.MediaLink.Queries.GetById;
 using Market.Application.Modules.Media.MediaLink.Queries.List;
 using MediatR;
@@ -28,5 +29,13 @@ public sealed class MediaLinkController : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<GetMediaLinkByIdQueryDto> GetById(int id, CancellationToken ct)
         => await _sender.Send(new GetMediaLinkByIdQuery { Id = id }, ct);
+
+    // POST /api/media/links
+    [HttpPost]
+    public async Task<IActionResult> Create([FromBody] CreateMediaLinkCommand command, CancellationToken ct)
+    {
+        var id = await _sender.Send(command, ct);
+        return CreatedAtAction(nameof(GetById), new { id }, new { id });
+    }
 }
 
