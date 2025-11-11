@@ -4,9 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Market.Application.Modules.Reports.Comment.Queries.List
+using Market.Application.Modules.Reports.Comment.Queries.List;
+
+namespace Market.Application.Modules.Reports.Comment.Queries.List;
+
+public sealed class ListCommentQuery : BasePagedQuery<ListCommentQueryDto>
 {
-    internal class ListCommentQuery
-    {
-    }
+    public int? ReportId { get; init; }   // filtriranje po prijavi
+    public int? UserId { get; init; }     // filtriranje po autoru
+    public string? Search { get; init; }  // pretraga po tekstu
 }
+

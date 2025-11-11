@@ -36,6 +36,7 @@
     <Folder Include="Modules\Media\MediaLink\Commands\Status\" />
     <Folder Include="Modules\Media\Queries\" />
     <Folder Include="Modules\Reports\Commands\" />
+    <Folder Include="Modules\Reports\Comment\Command\Status\" />
     <Folder Include="Modules\Reports\Queries\" />
     <Folder Include="Modules\Reports\Task\Commands\Status\" />
     <Folder Include="Modules\Rewards\Commands\" />
