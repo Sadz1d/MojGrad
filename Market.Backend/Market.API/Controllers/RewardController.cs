@@ -1,3 +1,4 @@
+using Market.Application.Modules.Rewards.Reward.Commands.Create;
 using Market.Application.Modules.Rewards.Reward.Queries.GetById;
 using Market.Application.Modules.Rewards.Reward.Queries.List;
 using MediatR;
@@ -22,4 +23,8 @@ public sealed class RewardController : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<GetRewardByIdQueryDto> GetById(int id, CancellationToken ct)
     => await _sender.Send(new GetRewardByIdQuery { Id = id }, ct);
+
+    [HttpPost]
+    public async Task<int> Create([FromBody] CreateRewardCommand command, CancellationToken ct)
+    => await _sender.Send(command, ct);
 }
