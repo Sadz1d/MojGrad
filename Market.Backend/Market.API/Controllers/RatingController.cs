@@ -8,6 +8,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Market.Application.Modules.Reports.Rating.Queries.List;
 using Market.Application.Modules.Reports.Rating.Queries.GetById;
+using Market.Application.Modules.Reports.Rating.Commands.Create;
 
 namespace Market.API.Controllers;
 
@@ -26,5 +27,12 @@ public sealed class RatingsController : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<GetRatingByIdQueryDto> GetById(int id, CancellationToken ct)
        => await sender.Send(new GetRatingByIdQuery { Id = id }, ct);
+
+    [HttpPost]
+    public async Task<IActionResult> Create([FromBody] CreateRatingCommand command, CancellationToken ct)
+    {
+        var id = await sender.Send(command, ct);
+        return CreatedAtAction(nameof(GetById), new { id }, new { id });
+    }
 
 }
