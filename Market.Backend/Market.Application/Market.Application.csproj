@@ -41,7 +41,6 @@
     <Folder Include="Modules\Reports\ProblemReport\Commands\Status\" />
     <Folder Include="Modules\Reports\ProblemStatus\Commands\Status\" />
     <Folder Include="Modules\Reports\ProofOfResolution\Commands\Status\" />
-    <Folder Include="Modules\Reports\ProofOfResolution\Commands\Update\" />
     <Folder Include="Modules\Reports\Queries\" />
     <Folder Include="Modules\Reports\Task\Commands\Status\" />
     <Folder Include="Modules\Rewards\Commands\" />

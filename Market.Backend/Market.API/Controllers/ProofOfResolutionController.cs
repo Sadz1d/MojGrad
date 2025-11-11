@@ -14,6 +14,7 @@ using Market.Application.Common.Exceptions;
 using Market.Application.Modules.Reports.ProofOfResolution.Commands.Create;
 using Market.Domain.Entities.Reports;
 using Market.Application.Modules.Reports.ProofOfResolution.Commands.Delete;
+using Market.Application.Modules.Reports.ProofOfResolution.Commands.Update;
 
 namespace Market.API.Controllers;
 
@@ -39,6 +40,14 @@ public sealed class ProofOfResolutionController : ControllerBase
     {
         var id = await sender.Send(command, ct);
         return CreatedAtAction(nameof(GetById), new { id }, new { id });
+    }
+
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> Update(int id, [FromBody] UpdateProofOfResolutionCommand command, CancellationToken ct)
+    {
+        command.Id = id;
+        await sender.Send(command, ct);
+        return NoContent();
     }
 
     [HttpDelete("{id:int}")]
