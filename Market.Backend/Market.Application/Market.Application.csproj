@@ -8,8 +8,14 @@
 
   <ItemGroup>
     <Compile Remove="Modules\Catalog\ProductCategories\**" />
+    <Compile Remove="Modules\Identity\Commands\**" />
+    <Compile Remove="Modules\Identity\Queries\**" />
     <EmbeddedResource Remove="Modules\Catalog\ProductCategories\**" />
+    <EmbeddedResource Remove="Modules\Identity\Commands\**" />
+    <EmbeddedResource Remove="Modules\Identity\Queries\**" />
     <None Remove="Modules\Catalog\ProductCategories\**" />
+    <None Remove="Modules\Identity\Commands\**" />
+    <None Remove="Modules\Identity\Queries\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -29,8 +35,6 @@
   <ItemGroup>
     <Folder Include="Modules\Civic\WatchLists\Commands\Status\" />
     <Folder Include="Modules\Civic\CitizenProposals\Commands\Status\" />
-    <Folder Include="Modules\Identity\Commands\" />
-    <Folder Include="Modules\Identity\Queries\" />
     <Folder Include="Modules\Media\Commands\" />
     <Folder Include="Modules\Media\MediaAttachment\Commands\Status\" />
     <Folder Include="Modules\Media\MediaLink\Commands\Status\" />
