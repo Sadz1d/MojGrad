@@ -56,7 +56,6 @@
     <Folder Include="Modules\Volonteering\ActionParticipant\Commands\Delete\" />
     <Folder Include="Modules\Volonteering\ActionParticipant\Commands\Status\" />
     <Folder Include="Modules\Volonteering\ActionParticipant\Commands\Update\" />
-    <Folder Include="Modules\Volonteering\ActionParticipant\Queries\GetById\" />
   </ItemGroup>
 
 </Project>

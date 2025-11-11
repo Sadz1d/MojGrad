@@ -1,3 +1,4 @@
+using Market.Application.Modules.Volunteering.ActionParticipants.Queries.GetById;
 using Market.Application.Modules.Volunteering.ActionParticipants.Queries.List;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -17,7 +18,9 @@ public sealed class ActionParticipantsController : ControllerBase
         CancellationToken ct)
         => await _sender.Send(query, ct);
 
-
+    [HttpGet("{id:int}")]
+    public async Task<GetActionParticipantByIdQueryDto> GetById(int id, CancellationToken ct)
+    => await _sender.Send(new GetActionParticipantByIdQuery { Id = id }, ct);
 
 
 }
