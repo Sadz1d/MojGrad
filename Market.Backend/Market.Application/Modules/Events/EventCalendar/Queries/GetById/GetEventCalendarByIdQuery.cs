@@ -1,8 +1,8 @@
 ﻿using MediatR;
 
-namespace Market.Application.Modules.Civic.CitizenProposals.Queries.GetById;
+namespace Market.Application.Modules.Civic.Events.Queries.GetById;
 
-public sealed class GetCitizenProposalByIdQuery : IRequest<GetCitizenProposalByIdQueryDto>
+public sealed class GetEventCalendarByIdQuery : IRequest<GetEventCalendarByIdQueryDto>
 {
     public int Id { get; init; }
 }
