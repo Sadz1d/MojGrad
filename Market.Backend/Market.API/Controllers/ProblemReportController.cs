@@ -1,17 +1,23 @@
-using System.Runtime.InteropServices;
 
-// In SDK-style projects such as this one, several assembly attributes that were historically
-// defined in this file are now automatically added during build and populated with
-// values defined in project properties. For details of which attributes are included
-// and how to customise this process see: https://aka.ms/assembly-info-properties
+using Market.Application.Modules.Reports.ProblemReport.Queries.List;
+//using Market.Application.Modules.Reports.ProblemReport.Queries.GetById;
+//using Market.Application.Modules.Reports.ProblemReport.Commands.Create;
+//using Market.Application.Modules.Reports.ProblemReport.Commands.Update;
+//using Market.Application.Modules.Reports.ProblemReport.Commands.Delete;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
 
+namespace Market.API.Controllers;
 
-// Setting ComVisible to false makes the types in this assembly not visible to COM
-// components.  If you need to access a type in this assembly from COM, set the ComVisible
-// attribute to true on that type.
+[ApiController]
+[Route("api/reports/problem-reports")]
+public sealed class ProblemReportsController : ControllerBase
+{
+    private readonly ISender sender;
+    public ProblemReportsController(ISender sender) => this.sender = sender;
 
-[assembly: ComVisible(false)]
-
-// The following GUID is for the ID of the typelib if this project is exposed to COM.
-
-[assembly: Guid("42b30866-e8b2-4ee4-a406-c9a7c3a79575")]
+    [HttpGet]
+    public async Task<PageResult<ListProblemReportQueryDto>> List(
+        [FromQuery] ListProblemReportQuery query, CancellationToken ct)
+        => await sender.Send(query, ct);
+}
