@@ -1,4 +1,5 @@
 using Market.Application.Modules.Identity.Profiles.Commands.Create;
+using Market.Application.Modules.Identity.Profiles.Commands.Delete;
 using Market.Application.Modules.Identity.Profiles.Commands.Update;
 using Market.Application.Modules.Identity.Profiles.Queries.GetById;
 using Market.Application.Modules.Identity.Profiles.Queries.List;
@@ -43,4 +44,11 @@ public class ProfilesController : ControllerBase
         await _mediator.Send(command);
         return NoContent();
     }
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        await _mediator.Send(new DeleteProfileCommand { Id = id });
+        return NoContent();
+    }
+
 }
