@@ -1,3 +1,4 @@
+using Market.Application.Modules.Surveys.SurveyResponses.Commands.Create;
 using Market.Application.Modules.Surveys.SurveyResponses.Queries.GetById;
 using Market.Application.Modules.Surveys.SurveyResponses.Queries.List;
 using MediatR;
@@ -22,4 +23,8 @@ public sealed class SurveyResponsesController : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<GetSurveyResponseByIdQueryDto> GetById(int id, CancellationToken ct)
     => await _sender.Send(new GetSurveyResponseByIdQuery { Id = id }, ct);
+
+    [HttpPost]
+    public async Task<int> Create([FromBody] CreateSurveyResponseCommand command, CancellationToken ct)
+    => await _sender.Send(command, ct);
 }
