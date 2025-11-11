@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Market.Application.Modules.Rewards.AssignedRewards.Queries.List;
 using Market.Application.Modules.Rewards.AssignedRewards.Queries.GetById;
 using Market.Application.Modules.Rewards.AssignedRewards.Commands.Create;
+using Market.Application.Modules.Rewards.AssignedRewards.Commands.Delete;
 
 namespace Market.API.Controllers;
 
@@ -30,5 +31,12 @@ public sealed class AssignedRewardsController : ControllerBase
     {
         var id = await _sender.Send(command, ct);
         return id; // ili return CreatedAtAction(...), ako želiš lokaciju
+    }
+
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> Delete(int id, CancellationToken ct)
+    {
+        await _sender.Send(new DeleteAssignedRewardCommand { Id = id }, ct);
+        return NoContent();
     }
 }
