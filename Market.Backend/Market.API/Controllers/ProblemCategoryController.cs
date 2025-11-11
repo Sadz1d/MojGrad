@@ -1,4 +1,5 @@
 
+using Market.Application.Modules.Reports.ProblemCategory.Queries.GetById;
 using Market.Application.Modules.Reports.ProblemCategory.Queries.List;
 //using Market.Application.Modules.Reports.ProblemCategory.Queries.GetById;
 //using Market.Application.Modules.Reports.ProblemCategory.Commands.Create;
@@ -19,4 +20,8 @@ public sealed class ProblemCategoriesController : ControllerBase
     [HttpGet]
     public async Task<PageResult<ListProblemCategoryQueryDto>> List([FromQuery] ListProblemCategoryQuery query, CancellationToken ct)
         => await sender.Send(query, ct);
+
+    [HttpGet("{id:int}")]
+    public async Task<GetProblemCategoryByIdQueryDto> GetById(int id, CancellationToken ct)
+      => await sender.Send(new GetProblemCategoryByIdQuery { Id = id }, ct);
 }
