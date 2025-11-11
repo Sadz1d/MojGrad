@@ -11,10 +11,10 @@ namespace Market.API.Controllers;
 
 [ApiController]
 [Route("api/reports/comments")]
-public sealed class CommentsController : ControllerBase
+public sealed class CommentController : ControllerBase
 {
     private readonly ISender sender;
-    public CommentsController(ISender sender) => this.sender = sender;
+    public CommentController(ISender sender) => this.sender = sender;
 
     [HttpGet]
     public async Task<PageResult<ListCommentQueryDto>> List([FromQuery] ListCommentQuery query, CancellationToken ct)
