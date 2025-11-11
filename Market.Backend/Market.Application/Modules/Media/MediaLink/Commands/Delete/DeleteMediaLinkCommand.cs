@@ -4,9 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Market.Application.Modules.Media.MediaLink.Commands.Delete
+using MediatR;
+
+namespace Market.Application.Modules.Media.MediaLink.Commands.Delete;
+
+public sealed class DeleteMediaLinkCommand : IRequest<Unit>
 {
-    internal class DeleteMediaLinkCommand
-    {
-    }
+    public required int Id { get; init; }
 }
+
