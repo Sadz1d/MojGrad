@@ -1,5 +1,6 @@
 
 using Market.Application.Modules.Media.MediaLink.Commands.Create;
+using Market.Application.Modules.Media.MediaLink.Commands.Delete;
 using Market.Application.Modules.Media.MediaLink.Queries.GetById;
 using Market.Application.Modules.Media.MediaLink.Queries.List;
 using MediatR;
@@ -36,6 +37,14 @@ public sealed class MediaLinkController : ControllerBase
     {
         var id = await _sender.Send(command, ct);
         return CreatedAtAction(nameof(GetById), new { id }, new { id });
+    }
+
+    // DELETE /api/media/links/{id}
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> Delete(int id, CancellationToken ct)
+    {
+        await _sender.Send(new DeleteMediaLinkCommand { Id = id }, ct);
+        return NoContent();
     }
 
 
