@@ -1,3 +1,4 @@
+using Market.Application.Modules.Identity.Profiles.Commands.Create;
 using Market.Application.Modules.Identity.Profiles.Queries.GetById;
 using Market.Application.Modules.Identity.Profiles.Queries.List;
 using MediatR;
@@ -27,5 +28,11 @@ public class ProfilesController : ControllerBase
     {
         var result = await _mediator.Send(new GetProfileByIdQuery { Id = id });
         return Ok(result);
+    }
+    [HttpPost]
+    public async Task<IActionResult> Create([FromBody] CreateProfileCommand command)
+    {
+        var id = await _mediator.Send(command);
+        return CreatedAtAction(nameof(GetById), new { id }, null);
     }
 }
