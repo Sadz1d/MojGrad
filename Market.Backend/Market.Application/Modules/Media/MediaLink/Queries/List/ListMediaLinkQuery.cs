@@ -1,16 +1,18 @@
-﻿using System;
+﻿using Market.Application.Modules.Media.MediaLink.Queries.List;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 
-namespace Market.Application.Modules.Media.MediaLinks.Queries.List;
+namespace Market.Application.Modules.Media.MediaLink.Queries.List;
 
-public sealed class ListMediaLinksQuery
-    : BasePagedQuery<ListMediaLinksQueryDto>
+public sealed class ListMediaLinkQuery
+    : BasePagedQuery<ListMediaLinkQueryDto>
 {
     public string? EntityType { get; init; }   // npr. "ProblemReport", "ProofOfResolution"
-    public int? EntityId { get; init; }        // ID entiteta kojem je medija vezana
+    public int? EntityId { get; init; }
+    public int? MediaId { get; init; } // ID entiteta kojem je medija vezana
 }
 
