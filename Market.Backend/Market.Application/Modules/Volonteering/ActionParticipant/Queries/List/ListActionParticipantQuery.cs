@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MediatR;
 
-namespace Market.Application.Modules.Volonteering.ActionParticipant.Queries.List
+namespace Market.Application.Modules.Volunteering.ActionParticipants.Queries.List;
+
+public sealed class ListActionParticipantsQuery : BasePagedQuery<ListActionParticipantsQueryDto>
 {
-    internal class ListActionParticipantQuery
-    {
-    }
+    public string? Search { get; init; }    // filtriranje po imenu korisnika / nazivu akcije
+    public int? UserId { get; init; }       // filtriranje po korisniku
+    public int? ActionId { get; init; }     // filtriranje po akciji
 }
