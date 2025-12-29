@@ -51,6 +51,12 @@ public partial class DatabaseContext
         ApplyGlobalFielters(modelBuilder);
 
         StaticDataSeeder.Seed(modelBuilder);
+        //--------------------------
+        modelBuilder.Entity<ProblemReportEntity>()
+        .HasOne(pr => pr.User)
+        .WithMany(u => u.Reports)
+        .HasForeignKey(pr => pr.UserId)
+        .OnDelete(DeleteBehavior.Restrict); // ili NoAction
     }
 
     private void ApplyGlobalFielters(ModelBuilder modelBuilder)
