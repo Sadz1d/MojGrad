@@ -1,5 +1,7 @@
 using Market.Application.Modules.Civic.CitizenProposals.Commands.Create;
 using Market.Application.Modules.Civic.CitizenProposals.Commands.Delete;
+using Market.Application.Modules.Civic.CitizenProposals.Commands.Status.Disable;
+using Market.Application.Modules.Civic.CitizenProposals.Commands.Status.Enable;
 using Market.Application.Modules.Civic.CitizenProposals.Commands.Update;
 using Market.Application.Modules.Civic.CitizenProposals.Queries.GetById;
 using Market.Application.Modules.Civic.CitizenProposals.Queries.List;
@@ -58,4 +60,16 @@ public sealed class CitizenProposalsController : ControllerBase
         await sender.Send(command, ct);
         return NoContent(); // 204
     }
+    [HttpPut("{id:int}/disable")]
+    public async Task Disable(int id, CancellationToken ct)
+    {
+        await sender.Send(new DisableCitizenProposalCommand { Id = id }, ct);
+    }
+
+    [HttpPut("{id:int}/enable")]
+    public async Task Enable(int id, CancellationToken ct)
+    {
+        await sender.Send(new EnableCitizenProposalCommand { Id = id }, ct);
+    }
+
 }
