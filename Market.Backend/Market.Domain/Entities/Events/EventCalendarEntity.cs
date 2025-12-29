@@ -8,6 +8,8 @@ public class EventCalendarEntity : BaseEntity
     public string? Description { get; set; }
     public DateTime EventDate { get; set; }
     public string? EventType { get; set; }
+    public bool IsEnabled { get; set; } = true;
+
 
     public static class Constraints
     {

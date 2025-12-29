@@ -1,5 +1,7 @@
 using Market.Application.Modules.Civic.Events.Commands.Create;
 using Market.Application.Modules.Civic.Events.Queries.GetById;
+using Market.Application.Modules.Events.Commands.Status.Disable;
+using Market.Application.Modules.Events.Commands.Status.Enable;
 using Market.Application.Modules.Events.EventCalendar.Commands.Delete;
 using Market.Application.Modules.Events.EventCalendar.Commands.Update;
 using Market.Application.Modules.Events.EventCalendar.Queries.List;
@@ -54,6 +56,21 @@ public class EventCalendarController : ControllerBase
     {
         var command = new DeleteEventCalendarCommand { Id = id };
         await _mediator.Send(command);
+        return NoContent();
+    }
+    // DISABLE
+    [HttpPut("{id:int}/disable")]
+    public async Task<IActionResult> Disable(int id, CancellationToken ct)
+    {
+        await _mediator.Send(new DisableEventCalendarCommand { Id = id }, ct);
+        return NoContent();
+    }
+
+    // ENABLE
+    [HttpPut("{id:int}/enable")]
+    public async Task<IActionResult> Enable(int id, CancellationToken ct)
+    {
+        await _mediator.Send(new EnableEventCalendarCommand { Id = id }, ct);
         return NoContent();
     }
 }
