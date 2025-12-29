@@ -11,16 +11,19 @@
     <Compile Remove="Modules\Identity\Commands\**" />
     <Compile Remove="Modules\Identity\Queries\**" />
     <Compile Remove="Modules\Reports\Comment\Command\Status\**" />
+    <Compile Remove="Modules\Reports\ProblemReport\Commands\Status\**" />
     <Compile Remove="Modules\Reports\Rating\Commands\Status\**" />
     <EmbeddedResource Remove="Modules\Catalog\ProductCategories\**" />
     <EmbeddedResource Remove="Modules\Identity\Commands\**" />
     <EmbeddedResource Remove="Modules\Identity\Queries\**" />
     <EmbeddedResource Remove="Modules\Reports\Comment\Command\Status\**" />
+    <EmbeddedResource Remove="Modules\Reports\ProblemReport\Commands\Status\**" />
     <EmbeddedResource Remove="Modules\Reports\Rating\Commands\Status\**" />
     <None Remove="Modules\Catalog\ProductCategories\**" />
     <None Remove="Modules\Identity\Commands\**" />
     <None Remove="Modules\Identity\Queries\**" />
     <None Remove="Modules\Reports\Comment\Command\Status\**" />
+    <None Remove="Modules\Reports\ProblemReport\Commands\Status\**" />
     <None Remove="Modules\Reports\Rating\Commands\Status\**" />
   </ItemGroup>
 
@@ -46,7 +49,6 @@
     <Folder Include="Modules\Media\Queries\" />
     <Folder Include="Modules\Reports\Commands\" />
     <Folder Include="Modules\Reports\ProblemCategory\Commands\Status\" />
-    <Folder Include="Modules\Reports\ProblemReport\Commands\Status\" />
     <Folder Include="Modules\Reports\ProblemStatus\Commands\Status\" />
     <Folder Include="Modules\Reports\ProofOfResolution\Commands\Status\" />
     <Folder Include="Modules\Reports\Queries\" />
