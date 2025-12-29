@@ -1,3 +1,5 @@
+using Market.Application.Modules.Surveys.Commands.Status.Disable;
+using Market.Application.Modules.Surveys.Commands.Status.Enable;
 using Market.Application.Modules.Surveys.Survey.Commands.Create;
 using Market.Application.Modules.Surveys.Survey.Commands.Delete;
 using Market.Application.Modules.Surveys.Survey.Commands.Update;
@@ -45,6 +47,21 @@ public sealed class SurveyController : ControllerBase
     {
         cmd.Id = id;
         await _sender.Send(cmd, ct);
+        return NoContent();
+    }
+    // DISABLE
+    [HttpPut("{id:int}/disable")]
+    public async Task<IActionResult> Disable(int id, CancellationToken ct)
+    {
+        await _sender.Send(new DisableSurveyCommand { Id = id }, ct);
+        return NoContent();
+    }
+
+    // ENABLE
+    [HttpPut("{id:int}/enable")]
+    public async Task<IActionResult> Enable(int id, CancellationToken ct)
+    {
+        await _sender.Send(new EnableSurveyCommand { Id = id }, ct);
         return NoContent();
     }
 }

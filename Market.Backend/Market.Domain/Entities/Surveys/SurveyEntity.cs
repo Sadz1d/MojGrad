@@ -7,6 +7,8 @@ public class SurveyEntity : BaseEntity
     public string Question { get; set; } = default!;
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
+    public bool IsEnabled { get; set; } = true;
+
 
     public IReadOnlyCollection<SurveyResponseEntity> Responses { get; private set; } = new List<SurveyResponseEntity>();
 
