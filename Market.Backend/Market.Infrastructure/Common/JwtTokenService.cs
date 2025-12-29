@@ -29,19 +29,41 @@ public sealed class JwtTokenService : IJwtTokenService
         var refreshExpires = nowInstant.AddDays(_jwt.RefreshTokenDays).UtcDateTime;
 
         // --- Claims (including jti/aud for standard compliance) ---
+        //var claims = new List<Claim>
+        //{
+        //    new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+        //    new(ClaimTypes.NameIdentifier,   user.Id.ToString()),
+        //    new(ClaimTypes.Email,            user.Email),
+        //    new("is_admin",    user.IsAdmin.ToString().ToLowerInvariant()),
+        //    new("is_manager",  user.IsManager.ToString().ToLowerInvariant()),
+        //    new("is_employee", user.IsEmployee.ToString().ToLowerInvariant()),
+        //    new("ver",         user.TokenVersion.ToString()),
+        //    new(JwtRegisteredClaimNames.Iat, ToUnixTimeSeconds(nowInstant).ToString(), ClaimValueTypes.Integer64),
+        //    new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString("N")),
+        //    new(JwtRegisteredClaimNames.Aud, _jwt.Audience)
+        //};
+        // --- Claims ---
         var claims = new List<Claim>
-        {
-            new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-            new(ClaimTypes.NameIdentifier,   user.Id.ToString()),
-            new(ClaimTypes.Email,            user.Email),
-            new("is_admin",    user.IsAdmin.ToString().ToLowerInvariant()),
-            new("is_manager",  user.IsManager.ToString().ToLowerInvariant()),
-            new("is_employee", user.IsEmployee.ToString().ToLowerInvariant()),
-            new("ver",         user.TokenVersion.ToString()),
-            new(JwtRegisteredClaimNames.Iat, ToUnixTimeSeconds(nowInstant).ToString(), ClaimValueTypes.Integer64),
-            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString("N")),
-            new(JwtRegisteredClaimNames.Aud, _jwt.Audience)
-        };
+{
+    new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+    new(ClaimTypes.NameIdentifier, user.Id.ToString()),
+    new(ClaimTypes.Email, user.Email),
+    new("ver", user.TokenVersion.ToString()),
+    new(JwtRegisteredClaimNames.Iat, ToUnixTimeSeconds(nowInstant).ToString(), ClaimValueTypes.Integer64),
+    new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString("N")),
+    new(JwtRegisteredClaimNames.Aud, _jwt.Audience)
+};
+
+        // --- ROLE CLAIMS (STANDARD ASP.NET CORE) ---
+        if (user.IsAdmin)
+            claims.Add(new Claim(ClaimTypes.Role, "Admin"));
+
+        if (user.IsManager)
+            claims.Add(new Claim(ClaimTypes.Role, "Manager"));
+
+        if (user.IsEmployee)
+            claims.Add(new Claim(ClaimTypes.Role, "Employee"));
+
 
         // --- Signature ---
         var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwt.Key));

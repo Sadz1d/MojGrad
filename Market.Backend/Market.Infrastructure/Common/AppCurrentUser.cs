@@ -5,7 +5,7 @@ using Market.Application.Abstractions;
 namespace Market.Infrastructure.Common;
 
 /// <summary>
-/// Implementation of IAppCurrentUser that reads data from a JWT token.
+/// Reads current user info from JWT claims (standard ASP.NET Core roles)
 /// </summary>
 public sealed class AppCurrentUser(IHttpContextAccessor httpContextAccessor)
     : IAppCurrentUser
@@ -23,12 +23,13 @@ public sealed class AppCurrentUser(IHttpContextAccessor httpContextAccessor)
     public bool IsAuthenticated =>
         _user?.Identity?.IsAuthenticated ?? false;
 
+    // ✅ STANDARD ROLE CHECKS
     public bool IsAdmin =>
-        _user?.FindFirstValue("is_admin")?.Equals("true", StringComparison.OrdinalIgnoreCase) ?? false;
+        _user?.IsInRole("Admin") ?? false;
 
     public bool IsManager =>
-        _user?.FindFirstValue("is_manager")?.Equals("true", StringComparison.OrdinalIgnoreCase) ?? false;
+        _user?.IsInRole("Manager") ?? false;
 
     public bool IsEmployee =>
-        _user?.FindFirstValue("is_employee")?.Equals("true", StringComparison.OrdinalIgnoreCase) ?? false;
+        _user?.IsInRole("Employee") ?? false;
 }
