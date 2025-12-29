@@ -1,4 +1,6 @@
 
+using Market.Application.Modules.Reports.ProblemCategories.Commands.Status.Disable;
+using Market.Application.Modules.Reports.ProblemCategories.Commands.Status.Enable;
 using Market.Application.Modules.Reports.ProblemCategory.Commands.Create;
 using Market.Application.Modules.Reports.ProblemCategory.Commands.Delete;
 using Market.Application.Modules.Reports.ProblemCategory.Commands.Update;
@@ -50,4 +52,19 @@ public sealed class ProblemCategoriesController : ControllerBase
         return NoContent();
     }
 
+    // ENABLE
+    [HttpPut("{id:int}/enable")]
+    public async Task<IActionResult> Enable(int id, CancellationToken ct)
+    {
+        await sender.Send(new EnableProblemCategoryCommand { Id = id }, ct);
+        return NoContent();
+    }
+
+    // DISABLE
+    [HttpPut("{id:int}/disable")]
+    public async Task<IActionResult> Disable(int id, CancellationToken ct)
+    {
+        await sender.Send(new DisableProblemCategoryCommand { Id = id }, ct);
+        return NoContent();
+    }
 }

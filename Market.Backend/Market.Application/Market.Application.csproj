@@ -48,10 +48,8 @@
     <Folder Include="Modules\Media\MediaLink\Commands\Status\" />
     <Folder Include="Modules\Media\Queries\" />
     <Folder Include="Modules\Reports\Commands\" />
-    <Folder Include="Modules\Reports\ProblemCategory\Commands\Status\" />
     <Folder Include="Modules\Reports\ProblemStatus\Commands\Status\" />
     <Folder Include="Modules\Reports\ProofOfResolution\Commands\Status\" />
-    <Folder Include="Modules\Reports\Queries\" />
     <Folder Include="Modules\Reports\Task\Commands\Status\" />
     <Folder Include="Modules\Rewards\Commands\Status\" />
     <Folder Include="Modules\Surveys\SurveyResponse\Commands\Status\" />

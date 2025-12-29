@@ -5,6 +5,7 @@ public class ProblemCategoryEntity : BaseEntity
 {
     public string Name { get; set; } = default!;
     public string? Description { get; set; }
+    public bool IsEnabled { get; set; } = true;
 
     public IReadOnlyCollection<ProblemReportEntity> Reports { get; private set; } = new List<ProblemReportEntity>();
 
