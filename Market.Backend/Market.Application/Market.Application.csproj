@@ -34,7 +34,6 @@
 
   <ItemGroup>
     <Folder Include="Modules\Civic\WatchLists\Commands\Status\" />
-    <Folder Include="Modules\Civic\CitizenProposals\Commands\Status\" />
     <Folder Include="Modules\Media\Commands\" />
     <Folder Include="Modules\Media\MediaAttachment\Commands\Status\" />
     <Folder Include="Modules\Media\MediaLink\Commands\Status\" />
