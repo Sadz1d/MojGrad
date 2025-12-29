@@ -1,3 +1,5 @@
+using Market.Application.Modules.Volunteering.Commands.Status.Disable;
+using Market.Application.Modules.Volunteering.Commands.Status.Enable;
 using Market.Application.Modules.Volunteering.VolunteerActions.Commands.Create;
 using Market.Application.Modules.Volunteering.VolunteerActions.Commands.Delete;
 using Market.Application.Modules.Volunteering.VolunteerActions.Commands.Update;
@@ -42,6 +44,21 @@ public sealed class VolunteerActionsController : ControllerBase
     {
         command.Id = id;
         await _sender.Send(command, ct);
+        return NoContent();
+    }
+    // DISABLE
+    [HttpPut("{id:int}/disable")]
+    public async Task<IActionResult> Disable(int id, CancellationToken ct)
+    {
+        await _sender.Send(new DisableVolunteerActionCommand { Id = id }, ct);
+        return NoContent();
+    }
+
+    // ENABLE
+    [HttpPut("{id:int}/enable")]
+    public async Task<IActionResult> Enable(int id, CancellationToken ct)
+    {
+        await _sender.Send(new EnableVolunteerActionCommand { Id = id }, ct);
         return NoContent();
     }
 }

@@ -11,6 +11,8 @@ public class VolunteerActionEntity : BaseEntity
     public string? Location { get; set; }
     public DateTime EventDate { get; set; }
     public int MaxParticipants { get; set; }
+    public bool IsEnabled { get; set; } = true;
+
 
     public MarketUserEntity? Volunteer { get; set; } = default!;
     public IReadOnlyCollection<ActionParticipantEntity> Participants { get; private set; } = new List<ActionParticipantEntity>();
