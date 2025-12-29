@@ -1,3 +1,5 @@
+using Market.Application.Modules.Rewards.Commands.Status.Disable;
+using Market.Application.Modules.Rewards.Commands.Status.Enable;
 using Market.Application.Modules.Rewards.Reward.Commands.Create;
 using Market.Application.Modules.Rewards.Reward.Commands.Delete;
 using Market.Application.Modules.Rewards.Reward.Commands.Update;
@@ -42,6 +44,21 @@ public sealed class RewardController : ControllerBase
     {
         command.Id = id;
         await _sender.Send(command, ct);
+        return NoContent();
+    }
+    // DISABLE
+    [HttpPut("{id:int}/disable")]
+    public async Task<IActionResult> Disable(int id, CancellationToken ct)
+    {
+        await _sender.Send(new DisableRewardCommand { Id = id }, ct);
+        return NoContent();
+    }
+
+    // ENABLE
+    [HttpPut("{id:int}/enable")]
+    public async Task<IActionResult> Enable(int id, CancellationToken ct)
+    {
+        await _sender.Send(new EnableRewardCommand { Id = id }, ct);
         return NoContent();
     }
 }

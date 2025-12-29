@@ -7,6 +7,8 @@ public class RewardEntity : BaseEntity
     public string Name { get; set; } = default!;
     public string? Description { get; set; }
     public int MinimumPoints { get; set; }
+    public bool IsEnabled { get; set; } = true;
+
 
     public IReadOnlyCollection<AssignedRewardEntity> Assignments { get; private set; } = new List<AssignedRewardEntity>();
 
