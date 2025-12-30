@@ -1,4 +1,5 @@
 ﻿using Market.Application.Abstractions;
+using Market.Domain.Entities.Identity;
 using Market.Shared.Options;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -22,55 +23,42 @@ public sealed class JwtTokenService : IJwtTokenService
 
     public JwtTokenPair IssueTokens(MarketUserEntity user)
     {
-        // Now from TimeProvider (consistent with the rest of the app)
-        var nowInstant = _time.GetUtcNow();
-        var nowUtc = nowInstant.UtcDateTime;
-        var accessExpires = nowInstant.AddMinutes(_jwt.AccessTokenMinutes).UtcDateTime;
-        var refreshExpires = nowInstant.AddDays(_jwt.RefreshTokenDays).UtcDateTime;
+        var now = _time.GetUtcNow();
+        var nowUtc = now.UtcDateTime;
 
-        // --- Claims (including jti/aud for standard compliance) ---
-        //var claims = new List<Claim>
-        //{
-        //    new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-        //    new(ClaimTypes.NameIdentifier,   user.Id.ToString()),
-        //    new(ClaimTypes.Email,            user.Email),
-        //    new("is_admin",    user.IsAdmin.ToString().ToLowerInvariant()),
-        //    new("is_manager",  user.IsManager.ToString().ToLowerInvariant()),
-        //    new("is_employee", user.IsEmployee.ToString().ToLowerInvariant()),
-        //    new("ver",         user.TokenVersion.ToString()),
-        //    new(JwtRegisteredClaimNames.Iat, ToUnixTimeSeconds(nowInstant).ToString(), ClaimValueTypes.Integer64),
-        //    new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString("N")),
-        //    new(JwtRegisteredClaimNames.Aud, _jwt.Audience)
-        //};
-        // --- Claims ---
+        var accessExpires = now.AddMinutes(_jwt.AccessTokenMinutes).UtcDateTime;
+        var refreshExpires = now.AddDays(_jwt.RefreshTokenDays).UtcDateTime;
+
+        // 🔐 CLAIMS – prilagođeni MOJGRAD useru
         var claims = new List<Claim>
-{
-    new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-    new(ClaimTypes.NameIdentifier, user.Id.ToString()),
-    new(ClaimTypes.Email, user.Email),
-    new("ver", user.TokenVersion.ToString()),
-    new(JwtRegisteredClaimNames.Iat, ToUnixTimeSeconds(nowInstant).ToString(), ClaimValueTypes.Integer64),
-    new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString("N")),
-    new(JwtRegisteredClaimNames.Aud, _jwt.Audience)
-};
+        {
+            new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+            new(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new(ClaimTypes.Email, user.Email),
 
-        // --- ROLE CLAIMS (STANDARD ASP.NET CORE) ---
-        if (user.IsAdmin)
-            claims.Add(new Claim(ClaimTypes.Role, "Admin"));
+            // 👇 ROLE FLAGS (kao kod profesora)
+            new("is_admin",    user.IsAdmin.ToString().ToLowerInvariant()),
+            new("is_manager",  user.IsManager.ToString().ToLowerInvariant()),
+            new("is_employee", user.IsEmployee.ToString().ToLowerInvariant()),
 
-        if (user.IsManager)
-            claims.Add(new Claim(ClaimTypes.Role, "Manager"));
+            // 🔄 verzija tokena (za revoke)
+            new("ver", user.TokenVersion.ToString()),
 
-        if (user.IsEmployee)
-            claims.Add(new Claim(ClaimTypes.Role, "Employee"));
+            // ⏱ standardni JWT claimovi
+            new(JwtRegisteredClaimNames.Iat,
+                ToUnixTimeSeconds(now).ToString(),
+                ClaimValueTypes.Integer64),
 
+            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString("N")),
+            new(JwtRegisteredClaimNames.Aud, _jwt.Audience)
+        };
 
-        // --- Signature ---
-        var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwt.Key));
-        var creds = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256);
+        // 🔑 SIGNING
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwt.Key));
+        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-        // --- access token (JWT) ---
-        var jwt = new JwtSecurityToken(
+        // 🎟 ACCESS TOKEN
+        var token = new JwtSecurityToken(
             issuer: _jwt.Issuer,
             audience: _jwt.Audience,
             claims: claims,
@@ -79,16 +67,17 @@ public sealed class JwtTokenService : IJwtTokenService
             signingCredentials: creds
         );
 
-        var accessToken = new JwtSecurityTokenHandler().WriteToken(jwt);
+        var accessToken = new JwtSecurityTokenHandler().WriteToken(token);
 
-        // --- refresh token (raw + hash) ---
-        var refreshRaw = GenerateRefreshTokenRaw(64); // base64url
-        var refreshHash = HashRefreshToken(refreshRaw); // base64url hash
+        // 🔄 REFRESH TOKEN
+        var refreshRaw = GenerateRefreshTokenRaw(64);
+        var refreshHash = HashRefreshToken(refreshRaw);
 
         return new JwtTokenPair
         {
             AccessToken = accessToken,
             AccessTokenExpiresAtUtc = accessExpires,
+
             RefreshTokenRaw = refreshRaw,
             RefreshTokenHash = refreshHash,
             RefreshTokenExpiresAtUtc = refreshExpires
@@ -99,16 +88,15 @@ public sealed class JwtTokenService : IJwtTokenService
     {
         using var sha = SHA256.Create();
         var bytes = sha.ComputeHash(Encoding.UTF8.GetBytes(rawToken));
-        // Use Base64Url to avoid problematic characters
         return Base64UrlEncoder.Encode(bytes);
     }
 
-    private static string GenerateRefreshTokenRaw(int numBytes)
+    private static string GenerateRefreshTokenRaw(int bytes)
     {
-        // Base64UrlEncoder from Microsoft.IdentityModel.Tokens (without + / =)
-        var bytes = RandomNumberGenerator.GetBytes(numBytes);
-        return Base64UrlEncoder.Encode(bytes);
+        var randomBytes = RandomNumberGenerator.GetBytes(bytes);
+        return Base64UrlEncoder.Encode(randomBytes);
     }
 
-    private static long ToUnixTimeSeconds(DateTimeOffset dto) => dto.ToUnixTimeSeconds();
+    private static long ToUnixTimeSeconds(DateTimeOffset dto)
+        => dto.ToUnixTimeSeconds();
 }

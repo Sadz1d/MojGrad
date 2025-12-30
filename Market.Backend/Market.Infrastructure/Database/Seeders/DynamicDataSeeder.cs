@@ -87,16 +87,19 @@
 //    }
 //}namespace Market.Infrastructure.Database.Seeders;
 
-using Market.Infrastructure.Database;
+namespace Market.Infrastructure.Database.Seeders;
 
 public static class DynamicDataSeeder
 {
     public static async Task SeedAsync(DatabaseContext context)
     {
         await SeedUsersAsync(context);
+        // kasnije:
+        // await SeedReportsAsync(context);
+        // await SeedRewardsAsync(context);
     }
 
-    private static async Task SeedUsersAsync(DatabaseContext context)
+    public static async Task SeedUsersAsync(DatabaseContext context)
     {
         if (await context.Users.AnyAsync())
             return;
@@ -112,26 +115,25 @@ public static class DynamicDataSeeder
             RegistrationDate = DateTime.UtcNow
         };
 
+        var manager = new MarketUserEntity
+        {
+            Email = "manager@mojgrad.local",
+            PasswordHash = hasher.HashPassword(null!, "Manager123!"),
+            IsManager = true,
+            IsEnabled = true,
+            RegistrationDate = DateTime.UtcNow
+        };
+
         var employee = new MarketUserEntity
         {
-            Email = "radnik@mojgrad.local",
-            PasswordHash = hasher.HashPassword(null!, "Radnik123!"),
+            Email = "employee@mojgrad.local",
+            PasswordHash = hasher.HashPassword(null!, "Employee123!"),
             IsEmployee = true,
             IsEnabled = true,
             RegistrationDate = DateTime.UtcNow
         };
 
-        var citizen = new MarketUserEntity
-        {
-            Email = "gradjanin@mojgrad.local",
-            PasswordHash = hasher.HashPassword(null!, "User123!"),
-            IsEnabled = true,
-            RegistrationDate = DateTime.UtcNow
-        };
-
-        context.Users.AddRange(admin, employee, citizen);
+        context.Users.AddRange(admin, manager, employee);
         await context.SaveChangesAsync();
-
-        Console.WriteLine("✅ Dynamic seed: users added.");
     }
 }
