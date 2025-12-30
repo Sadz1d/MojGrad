@@ -4,7 +4,6 @@ import { Router } from '@angular/router';
 import { BaseComponent } from '../../../core/components/base-classes/base-component';
 import { AuthFacadeService } from '../../../core/services/auth/auth-facade.service';
 import { LoginCommand } from '../../../api-services/auth/auth-api.model';
-import { CurrentUserService } from '../../../core/services/auth/current-user.service';
 
 @Component({
   selector: 'app-login',
@@ -16,7 +15,7 @@ export class LoginComponent extends BaseComponent {
   private fb = inject(FormBuilder);
   private auth = inject(AuthFacadeService);
   private router = inject(Router);
-  private currentUser = inject(CurrentUserService);
+
   hidePassword = true;
 
   form = this.fb.group({
@@ -39,11 +38,13 @@ export class LoginComponent extends BaseComponent {
     this.auth.login(payload).subscribe({
       next: () => {
         this.stopLoading();
-        const target = this.currentUser.getDefaultRoute();
-        this.router.navigate([target]);
+
+        // 🔁 Redirect nakon uspješnog login-a
+        // za sada ideš na početnu (public)
+        this.router.navigate(['/']);
       },
       error: (err) => {
-        this.stopLoading('Invalid credentials. Please try again.');
+        this.stopLoading('Neispravni kredencijali.');
         console.error('Login error:', err);
       },
     });

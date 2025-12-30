@@ -1,55 +1,51 @@
-// src/app/core/guards/auth.guard.ts
 import { inject } from '@angular/core';
 import { CanActivateFn, ActivatedRouteSnapshot, Router } from '@angular/router';
-import { CurrentUserService } from '../services/auth/current-user.service';
+import { AuthFacadeService } from '../services/auth/auth-facade.service';
 
 export const myAuthGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
-  const currentUser = inject(CurrentUserService);
+  const authFacade = inject(AuthFacadeService);
   const router = inject(Router);
 
-  const requireAuth = route.data['requireAuth'] === true;
-  const requireAdmin = route.data['requireAdmin'] === true;
-  const requireManager = route.data['requireManager'] === true;
-  const requireEmployee = route.data['requireEmployee'] === true;
+  // 👇 čitamo iz route.data.auth (profesor-style)
+  const authData = route.data['auth'] ?? {};
 
-  const isAuth = currentUser.isAuthenticated();
+  const requireAuth = authData.requireAuth === true;
+  const requireAdmin = authData.requireAdmin === true;
+  const requireManager = authData.requireManager === true;
+  const requireEmployee = authData.requireEmployee === true;
 
-  // 1) ako ruta traži auth, a user nije logiran → login
+  const isAuth = authFacade.isAuthenticated();
+
+  // 1️⃣ ruta traži auth, a user NIJE logiran
   if (requireAuth && !isAuth) {
-    router.navigate(['/auth/login']);
-    return false;
+    return router.createUrlTree(['/auth/login']);
   }
 
-  // Ako ne traži auth → pusti (javne rute)
+  // 2️⃣ javna ruta
   if (!requireAuth) {
     return true;
   }
 
-  // 2) role check – admin > manager > employee
-  const user = currentUser.snapshot;
+  const user = authFacade.currentUser();
   if (!user) {
-    router.navigate(['/auth/login']);
-    return false;
+    return router.createUrlTree(['/auth/login']);
   }
 
+  // 3️⃣ role check
   if (requireAdmin && !user.isAdmin) {
-    router.navigate([currentUser.getDefaultRoute()]);
-    return false;
+    return router.createUrlTree(['/']);
   }
 
   if (requireManager && !user.isManager) {
-    router.navigate([currentUser.getDefaultRoute()]);
-    return false;
+    return router.createUrlTree(['/']);
   }
 
   if (requireEmployee && !user.isEmployee) {
-    router.navigate([currentUser.getDefaultRoute()]);
-    return false;
+    return router.createUrlTree(['/']);
   }
 
   return true;
 };
-
 export interface MyAuthRouteData {
   requireAuth?: boolean;
   requireAdmin?: boolean;
