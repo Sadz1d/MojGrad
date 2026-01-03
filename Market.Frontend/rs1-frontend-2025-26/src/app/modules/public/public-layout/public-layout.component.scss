@@ -13,12 +13,8 @@
   align-items: center;
   padding: 150px 20px;
   width: 100%;
-<<<<<<< HEAD
   position: relative;
   height: 220px;
-=======
-
->>>>>>> main
   background-image:
     linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)),
     url("/assets/images/pocetna_slika.png");
@@ -28,7 +24,6 @@
   background-repeat: no-repeat;
 
   .hero-content {
-<<<<<<< HEAD
   display: flex;
   position: absolute;
   inset: 0;
@@ -48,19 +43,6 @@
     grid-template-columns: 1fr;
     text-align: center;
     padding-left: 0;
-=======
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 40px;
-    align-items: center;
-    max-width: 1200px;
-    width: 100%;
-
-    @media (max-width: 960px) {
-      grid-template-columns: 1fr;
-      text-align: center;
-    }
->>>>>>> main
   }
 }
 
@@ -71,12 +53,8 @@
       display: flex;
       align-items: center;
       gap: 12px;
-<<<<<<< HEAD
       margin-bottom: 20px;
       justify-content: flex-start;
-=======
-      margin-bottom: 24px;
->>>>>>> main
 
       @media (max-width: 960px) {
         justify-content: center;
@@ -123,7 +101,6 @@
         min-width: 0;
       }
 
-<<<<<<< HEAD
       button {
         white-space: nowrap;
         height: 70px;
@@ -150,8 +127,6 @@ button.cta-button{
   width: 280px;
 }
 
-=======
->>>>>>> main
       .button-icon {
         width: 28px;
         height: 28px;
@@ -352,7 +327,6 @@ button.cta-button{
       grid-template-columns: repeat(2, 1fr);
     }
 
-<<<<<<< HEAD
     .stat-card {
       background: rgba(255, 255, 255, 0.75); // blago prozirna pozadina
       border-radius: 12px;
@@ -386,23 +360,13 @@ button.cta-button{
         color: #2e5c8a;
         text-align: center;
       }
-=======
-    @media (max-width: 640px) {
-      grid-template-columns: 1fr;
->>>>>>> main
     }
   }
 }
 
-<<<<<<< HEAD
 
 
 /* CTA Section */
-=======
-/* ========================================= */
-/*                CTA SECTION                */
-/* ========================================= */
->>>>>>> main
 .cta-section {
   padding: 60px 20px;
   background: #e8f4fd;
