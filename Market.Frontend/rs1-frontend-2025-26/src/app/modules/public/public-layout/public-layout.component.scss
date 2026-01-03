@@ -182,7 +182,17 @@ button.cta-button{
 /* Stats Section */
 .stats-section {
   padding: 60px 20px;
-  background: #e8f4fd;
+
+  /* Pozadinska slika sa overlay-em */
+  background: 
+    linear-gradient(
+      rgba(0, 0, 0, 0.25),  // blagi overlay za bolju vidljivost
+      rgba(0, 0, 0, 0.25)
+    ),
+    url("/assets/images/park.jpg");
+  background-size: cover;
+  background-position: center 60%;
+  background-repeat: no-repeat;
 
   .stats-grid {
     display: grid;
@@ -194,20 +204,43 @@ button.cta-button{
     @media (max-width: 640px) { grid-template-columns: 1fr; }
 
     .stat-card {
-      background: #ffffff;
+      background: rgba(255, 255, 255, 0.75); // blago prozirna pozadina
       border-radius: 12px;
-      padding: 20px;
+      padding: 25px 20px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 8px;
+      gap: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1); // lagana sjena za ljepši izgled
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
 
-      img { width: 48px; height: 48px; object-fit: contain; }
-      .stat-number { font-size: 24px; font-weight: 700; color: #2e5c8a; }
-      .stat-label { font-size: 14px; color: #666; }
+      &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+      }
+
+      img {
+        width: 100px;
+        height: 100px;
+        object-fit: contain;
+      }
+
+      .stat-number {
+        font-size: 26px;
+        font-weight: 700;
+        color: #2e5c8a;
+      }
+
+      .stat-label {
+        font-size: 16px;
+        color: #2e5c8a;
+        text-align: center;
+      }
     }
   }
 }
+
+
 
 /* CTA Section */
 .cta-section {
