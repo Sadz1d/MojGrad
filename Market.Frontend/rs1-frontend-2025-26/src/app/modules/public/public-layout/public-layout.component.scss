@@ -19,6 +19,8 @@ $white: #ffffff;
   }
 }
 
+
+
 @mixin container {
   max-width: 1200px;
   margin: 0 auto;
@@ -58,9 +60,13 @@ $white: #ffffff;
 
 // === MAIN STYLES ===
 .landing-page {
-  min-height: 100vh;
+  min-height: 100%;
+  height: auto;
   background: linear-gradient(135deg, $lighter-blue 0%, $white 50%, $light-blue 100%);
+  overflow-y: auto;
+  overflow-x: hidden;
 }
+
 
 // === HERO SECTION ===
 .hero-section {
@@ -69,7 +75,7 @@ $white: #ffffff;
   padding-bottom: 120px;
   background: linear-gradient(135deg, $lighter-blue 0%, $light-blue 100%);
   position: relative;
-  overflow: hidden;
+  overflow: visible;
 
   &::before {
     content: '';
