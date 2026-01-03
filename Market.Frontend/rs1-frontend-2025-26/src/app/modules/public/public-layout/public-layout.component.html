@@ -30,36 +30,109 @@
 
   <!-- Prijavljeni Problemi Section -->
   <section class="features-section">
+
     <div class="section-header">
+      <div class="title-badge">PROBLEMI U VAŠEM OKRUŽENJU</div>
+
       <h2 class="section-title">Prijavljeni problemi</h2>
-      <p class="section-subtitle">Odaberite tip problema koji želite prijaviti.</p>
+
+      <p class="section-subtitle">
+        Pregled najnovijih problema prijavljenih u gradu.
+      </p>
     </div>
+
+
     <div class="features-grid">
-      <div class="feature-card">
-        <img src="assets/images/grass.jpg" alt="Nepokošena trava" />
-        <h3>Nepokošena trava u parku</h3>
-        <p>Kategorija: Parkovi. Trava u gradskom parku nije pokošena nekoliko sedmica.</p>
+
+      <!-- KARTICA 1 -->
+      <div class="problem-card">
+        <div class="image-wrapper">
+          <img src="assets/images/grass.jpg">
+          <span class="status-badge status-new">NOVO</span>
+        </div>
+
+        <div class="problem-content">
+          <h3>Nepokošena trava u parku</h3>
+
+          <div class="meta">
+            <span class="category">🌳 Parkovi</span>
+            <span class="date">📅 Danas</span>
+          </div>
+
+          <p>Trava u gradskom parku nije pokošena nekoliko sedmica.</p>
+          <div class="location">📍 Park Zrinjevac</div>
+        </div>
       </div>
-      <div class="feature-card">
-        <img src="assets/images/flood.jpg" alt="Pothodnik poplavljen" />
-        <h3>Pothodnik poplavljen</h3>
-        <p>Kategorija: Infrastruktura. Pothodnik ispod glavne saobraćajnice je potpuno poplavljen.</p>
+
+      <!-- KARTICA 2 -->
+      <div class="problem-card">
+        <div class="image-wrapper">
+          <img src="assets/images/light.jpg">
+          <span class="status-badge status-progress">U TOKU</span>
+        </div>
+
+        <div class="problem-content">
+          <h3>Polomljena rasvjeta</h3>
+
+          <div class="meta">
+            <span class="category">🚧 Infrastruktura</span>
+            <span class="date">📅 Jučer</span>
+          </div>
+
+          <p>Oštećena rasvjeta na ulazu u centar grada.</p>
+          <div class="location">📍 Splitska ulica</div>
+        </div>
       </div>
-      <div class="feature-card">
-        <img src="assets/images/traffic_light.jpg" alt="Neispravan semafor" />
-        <h3>Neispravan semafor</h3>
-        <p>Kategorija: Saobraćaj. Semafor na glavnoj raskrsnici se pokvario i ne radi.</p>
+
+      <!-- KARTICA 3 -->
+      <div class="problem-card">
+        <div class="image-wrapper">
+          <img src="assets/images/semafor.jpg">
+          <span class="status-badge status-done">RIJEŠENO</span>
+        </div>
+
+        <div class="problem-content">
+          <h3>Neispravan semafor</h3>
+
+          <div class="meta">
+            <span class="category">🚦 Saobraćaj</span>
+            <span class="date">📅 Prije 2 dana</span>
+          </div>
+
+          <p>Semafor na glavnoj raskrsnici ne radi i stvara gužve.</p>
+          <div class="location">📍 Raskrsnica Avenija</div>
+        </div>
       </div>
-      <div class="feature-card">
-        <img src="assets/images/playground.jpg" alt="Oštećenje na igralištu" />
-        <h3>Oštećenje na igralištu</h3>
-        <p>Kategorija: Infrastruktura. Ograde na dječjem igralištu su oštećene.</p>
+
+      <!-- KARTICA 4 -->
+      <div class="problem-card">
+        <div class="image-wrapper">
+          <img src="assets/images/park.jpg">
+          <span class="status-badge status-new">NOVO</span>
+        </div>
+
+        <div class="problem-content">
+          <h3>Oštećeno dječje igralište</h3>
+
+          <div class="meta">
+            <span class="category">🛝 Infrastruktura</span>
+            <span class="date">📅 Danas</span>
+          </div>
+
+          <p>Slomljena ograda i oštećene sprave na igralištu.</p>
+          <div class="location">📍 Igralište Centar</div>
+        </div>
       </div>
+
     </div>
+
     <div class="section-footer">
-      <button mat-raised-button color="primary">Pogledajte sve probleme</button>
+      <button mat-raised-button class="view-all-button">
+        Pogledajte sve probleme
+      </button>
     </div>
   </section>
+
 
   <!-- Stats / Floating Cards Section -->
   <section class="stats-section">
