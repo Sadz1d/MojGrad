@@ -5,7 +5,7 @@
     <div class="hero-content">
       <div class="hero-text">
         <div class="logo-container">
-          <img src="assets/images/logo.png" alt="Logo" class="logo-icon" />
+          <img src="assets/images/logo1.png" alt="Logo" class="logo-icon" />
           <h1 class="brand-name">Moj Grad</h1>
         </div>
         <h2 class="hero-title">Dobrodošli u Moj Grad</h2>
@@ -15,9 +15,9 @@
         <div class="hero-actions">
           <input type="text" placeholder="Prijavite problem i pomozite svom gradu" class="search-input" />
           <button mat-raised-button color="primary" class="cta-button">
-            <img src="assets/images/search.jpg" alt="Search" class="button-icon" />
+            <img src="assets/images/search.png" alt="Search" class="button-icon" />
           </button>
-          <button mat-raised-button color="accent" routerLink="/report" class="cta-button">
+          <button mat-raised-button color="accent" routerLink="/report" class="cta-button report-button">
             Prijavite problem
           </button>
         </div>
@@ -92,10 +92,16 @@
     <div class="cta-content">
       <h2>Prijavite problem i unaprijedite svoj grad</h2>
       <p>Pomozite svojim sugrađanima i učestvujte u izgradnji boljeg okruženja.</p>
-      <button mat-raised-button color="primary" routerLink="/report">
-        <img src="assets/images/add_circle.jpg" alt="Add" class="button-icon" />
-        Prijavite se sada
-      </button>
+      <button
+  mat-raised-button
+  color="primary"
+  routerLink="/auth/login"
+  type="button"
+>
+  <img src="assets/images/add_circle.jpg" alt="Add" class="button-icon" />
+  Prijavite se sada
+</button>
+
     </div>
   </section>
 
