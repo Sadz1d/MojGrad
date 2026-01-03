@@ -41,7 +41,7 @@ export class LoginComponent extends BaseComponent {
 
         // 🔁 Redirect nakon uspješnog login-a
         // za sada ideš na početnu (public)
-        this.router.navigate(['/']);
+        this.router.navigate(['/admin/products']);
       },
       error: (err) => {
         this.stopLoading('Neispravni kredencijali.');
