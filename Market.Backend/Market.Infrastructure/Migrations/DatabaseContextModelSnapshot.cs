@@ -503,7 +503,9 @@ namespace Market.Infrastructure.Migrations
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsEnabled")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
 
                     b.Property<DateTime?>("ModifiedAtUtc")
                         .HasColumnType("datetime2");
@@ -516,35 +518,6 @@ namespace Market.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ProblemCategories", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CreatedAtUtc = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Problemi na cestama",
-                            IsDeleted = false,
-                            IsEnabled = true,
-                            Name = "Saobraćaj"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            CreatedAtUtc = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Smeće i kontejneri",
-                            IsDeleted = false,
-                            IsEnabled = true,
-                            Name = "Otpad"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            CreatedAtUtc = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Description = "Ulična rasvjeta",
-                            IsDeleted = false,
-                            IsEnabled = true,
-                            Name = "Rasvjeta"
-                        });
                 });
 
             modelBuilder.Entity("Market.Domain.Entities.Reports.ProblemReportEntity", b =>
@@ -625,29 +598,6 @@ namespace Market.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ProblemStatuses", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CreatedAtUtc = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            IsDeleted = false,
-                            Name = "Prijavljeno"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            CreatedAtUtc = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            IsDeleted = false,
-                            Name = "U toku"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            CreatedAtUtc = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            IsDeleted = false,
-                            Name = "Riješeno"
-                        });
                 });
 
             modelBuilder.Entity("Market.Domain.Entities.Reports.ProofOfResolutionEntity", b =>
