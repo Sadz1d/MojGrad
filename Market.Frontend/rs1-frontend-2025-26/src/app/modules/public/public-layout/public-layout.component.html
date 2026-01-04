@@ -132,6 +132,91 @@
       </button>
     </div>
   </section>
+  <!-- Testimonials Section -->
+  <section class="testimonials-section">
+    <div class="section-header">
+      <span class="title-badge">ISKUSTVA GRAĐANA</span>
+      <h2 class="section-title">Šta kažu korisnici?</h2>
+      <p class="section-subtitle">Pogledajte utiske građana koji koriste aplikaciju Moj Grad.</p>
+    </div>
+
+    <div class="testimonials-grid">
+
+      <!-- TESTIMONIAL 1 -->
+      <div class="testimonial-card">
+        <div class="stars">★★★★★</div>
+        <p class="comment">“Aplikacija mi je spasila dan kad se pokvario semafor.”</p>
+        <div class="user-info">
+          <img src="assets/images/lejla.jpg" alt="User" />
+          <div>
+            <h4>Lejla</h4>
+            <span>Mostar</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- TESTIMONIAL 2 -->
+      <div class="testimonial-card">
+        <div class="stars">★★★★★</div>
+        <p class="comment">“Prijavila sam problem sa rasvjetom i riješeno je u roku 24h!”</p>
+        <div class="user-info">
+          <img src="assets/images/amar.jpg" alt="User" />
+          <div>
+            <h4>Amar</h4>
+            <span>Stolac</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- TESTIMONIAL 3 -->
+      <div class="testimonial-card">
+        <div class="stars">★★★★★</div>
+        <p class="comment">“Svaka čast! Konačno aplikacija koja olakšava život građanima.”</p>
+        <div class="user-info">
+          <img src="assets/images/ana.jpg" alt="User" />
+          <div>
+            <h4>Ana</h4>
+            <span>Čapljina</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- How It Works Section -->
+  <section class="how-it-works">
+    <div class="section-header">
+      <span class="title-badge">KAKO FUNKCIONIŠE</span>
+      <h2 class="section-title">Kako funkcioniše aplikacija Moj Grad?</h2>
+      <p class="section-subtitle">Samo tri jednostavna koraka do rješenja problema u vašem gradu.</p>
+    </div>
+
+    <div class="steps-grid">
+
+      <!-- STEP 1 -->
+      <div class="step-card">
+        <div class="step-icon">📍</div>
+        <h3>1. Prijavite problem</h3>
+        <p>Fotografišite i prijavite problem u par klikova. Lokacija se automatski prepoznaje.</p>
+      </div>
+
+      <!-- STEP 2 -->
+      <div class="step-card">
+        <div class="step-icon">⚙️</div>
+        <h3>2. Nadležni pregledaju i reagiraju</h3>
+        <p>Vaša prijava se prosljeđuje odgovornim službama koje započinju proces rješavanja.</p>
+      </div>
+
+      <!-- STEP 3 -->
+      <div class="step-card">
+        <div class="step-icon">✅</div>
+        <h3>3. Pratite status</h3>
+        <p>Budite obaviješteni o svakom koraku – od zaprimanja prijave do potpunog rješavanja.</p>
+      </div>
+
+    </div>
+  </section>
 
 
   <!-- Stats / Floating Cards Section -->
@@ -160,22 +245,17 @@
     </div>
   </section>
 
-  <!-- CTA Section -->
   <section class="cta-section">
-    <div class="cta-content">
+    <div class="cta-box">
+
       <h2>Prijavite problem i unaprijedite svoj grad</h2>
       <p>Pomozite svojim sugrađanima i učestvujte u izgradnji boljeg okruženja.</p>
-      <button
-  mat-raised-button
-  color="primary"
-  routerLink="/auth/login"
-  type="button"
->
-  <img src="assets/images/add_circle.jpg" alt="Add" class="button-icon" />
-  Prijavite se sada
-</button>
+
+      <button mat-raised-button color="primary" routerLink="/auth/login" class="cta-main-button">
+        <img src="assets/images/add_circle.jpg" alt="Add" class="button-icon" />
+        Prijavite se sada
+      </button>
 
     </div>
   </section>
-
 </div>
