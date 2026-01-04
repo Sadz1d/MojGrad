@@ -14,7 +14,7 @@
   padding: 150px 20px;
   width: 100%;
   position: relative;
-  height: 220px;
+  height: 120px;
   background-image:
     linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)),
     url("/assets/images/pocetna_slika.png");
@@ -31,11 +31,11 @@
   gap: 60px;
   align-items: center;
 
-  max-width: 1800px; // was 1200px
+  max-width: 1200px; // was 1200px
   width: 100%;
 
   margin-left: 0;     // shift left
-  padding-left: 400px; // subtle left offset
+  padding-left: 300px; // subtle left offset
 
   z-index: 2;
 
@@ -48,12 +48,12 @@
 
 
   .hero-text {
-    width: 20000px;
+    width: 2000px;
     .logo-container {
       display: flex;
       align-items: center;
       gap: 12px;
-      margin-bottom: 20px;
+      margin-bottom: 10px;
       justify-content: flex-start;
 
       @media (max-width: 960px) {
@@ -73,11 +73,12 @@
     }
 
     .hero-title {
-      font-size: 64px;
+      font-size: 55px;
       font-weight: 700;
       color: #ffffff;
       margin: 40px 0;
-      line-height: 1.2;
+      margin-top: 20px;
+      line-height: 0.8;
     }
 
     .hero-description {
@@ -99,37 +100,38 @@
         border-radius: 100px;
         border: 1px solid #ccc;
         min-width: 0;
+        height: 13px;
       }
 
       button {
         white-space: nowrap;
-        height: 70px;
+        height: 57px;
         width: 160px;
         padding: 0 24px;
       }
 
       button.cta-button .button-icon {
-  width: 60px;   // povećaj širinu slike
-  height: 60px;  // povećaj visinu slike
+  width: 45px;   // povećaj širinu slike
+  height: 45px;  // povećaj visinu slike
   object-fit: contain; // da slika ne bude iskrivljena
 }
 button.cta-button{
-  width: 150px;
+  width: 120px;
 
 }
 
       button.report-button {
   background-color: #fbc02d; // žuta boja (Material Yellow 700)
   color: #000;               // crni tekst
-  font-size: 23px;
+  font-size: 20px;
   padding: 14px 28px;        // veći button
   border-radius: 100px;
-  width: 280px;
+  width: 250px;
 }
 
       .button-icon {
-        width: 28px;
-        height: 28px;
+        width: 20px;
+        height: 20px;
       }
 
       @media (max-width: 960px) {
@@ -322,7 +324,7 @@ button.cta-button{
     grid-template-columns: repeat(4, 1fr);
     gap: 20px;
     text-align: center;
-
+    height: 120px;
     @media (max-width: 960px) {
       grid-template-columns: repeat(2, 1fr);
     }
@@ -330,22 +332,23 @@ button.cta-button{
     .stat-card {
       background: rgba(255, 255, 255, 0.75); // blago prozirna pozadina
       border-radius: 12px;
-      padding: 25px 20px;
+      padding: 18px 20px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 12px;
+      gap: 8px;
       box-shadow: 0 4px 15px rgba(0,0,0,0.1); // lagana sjena za ljepši izgled
       transition: transform 0.3s ease, box-shadow 0.3s ease;
-
+      height: 100px;
+      width: 390px;
       &:hover {
         transform: translateY(-5px);
         box-shadow: 0 8px 25px rgba(0,0,0,0.2);
       }
 
       img {
-        width: 100px;
-        height: 100px;
+        width: 50px;
+        height: 50px;
         object-fit: contain;
       }
 
