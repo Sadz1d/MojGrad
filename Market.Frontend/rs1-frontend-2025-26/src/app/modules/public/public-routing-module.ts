@@ -12,12 +12,12 @@ const routes: Routes = [
       {
         path: '',
         component: SearchProductsComponent
-      },
+      }
       // kasnije može i ovako:
       // { path: 'about', component: AboutComponent },
       // { path: 'contact', component: ContactComponent },
 
-      { path: '**', redirectTo: '' }
+      
     ]
   }
 ];

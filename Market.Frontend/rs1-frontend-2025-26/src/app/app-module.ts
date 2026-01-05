@@ -16,15 +16,28 @@ import {materialModules} from './modules/shared/material-modules';
 import {SharedModule} from './modules/shared/shared-module';
 import { TestAuthComponent } from './pages/test-auth/test-auth.component';
 
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ProblemReportService } from './core/services/problem-report.service';
+import { ProblemReportListComponent } from './core/components/problem-report-list/problem-report-list.component';
+import { ProblemReportFormComponent } from './core/components/problem-report-form/problem-report-form.component';
+import { RouterModule } from '@angular/router';
+
+
+
 @NgModule({
   declarations: [
     AppComponent,
+    
   ],
   imports: [
     HttpClientModule,
     TestAuthComponent,
     BrowserModule,
     AppRoutingModule,
+    ReactiveFormsModule,
+    FormsModule,
+    HttpClientModule,
+    RouterModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -34,9 +47,12 @@ import { TestAuthComponent } from './pages/test-auth/test-auth.component';
     }),
     SharedModule,
     materialModules,
+    ProblemReportListComponent,
+    ProblemReportFormComponent
   ],
   providers: [
     provideAnimations(),
+    ProblemReportService,
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection(),
     provideHttpClient(

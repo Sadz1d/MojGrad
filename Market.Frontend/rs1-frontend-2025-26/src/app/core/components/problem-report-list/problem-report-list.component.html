@@ -1,0 +1,169 @@
+<!-- components/problem-report-list/problem-report-list.component.html -->
+<div class="crud-section">
+  <!-- Header -->
+  <div class="crud-header">
+    <div class="crud-title-badge">UPRAVLJANJE PRIJAVAMA</div>
+    <h2 class="crud-title">Prijavljeni problemi u gradu</h2>
+    <p class="crud-subtitle">
+      Pregledajte, filtrirjte i upravljajte svim prijavljenim problemima
+    </p>
+  </div>
+
+  <!-- Filter Card -->
+  <div class="filter-card">
+    <h5>Filter prijava</h5>
+    <form [formGroup]="filterForm" (ngSubmit)="applyFilter()" class="filter-form">
+      <div class="row g-3">
+        <!-- Search -->
+        <div class="col-md-6">
+          <label>Pretraga (naslov/opis)</label>
+          <input type="text" class="form-control" formControlName="search" 
+                 placeholder="Unesite tekst za pretragu...">
+        </div>
+        
+        <!-- User ID -->
+        <div class="col-md-3">
+          <label>ID korisnika</label>
+          <input type="number" class="form-control" formControlName="userId" 
+                 placeholder="ID autora" min="1">
+        </div>
+        
+        <!-- Category ID -->
+        <div class="col-md-3">
+          <label>ID kategorije</label>
+          <input type="number" class="form-control" formControlName="categoryId" 
+                 placeholder="ID kategorije" min="1">
+        </div>
+        
+        <!-- Status ID -->
+        <div class="col-md-3">
+          <label>ID statusa</label>
+          <input type="number" class="form-control" formControlName="statusId" 
+                 placeholder="ID statusa" min="1">
+        </div>
+        
+        <!-- Action Buttons -->
+        <div class="col-md-9 d-flex align-items-end gap-2">
+          <button type="submit" class="crud-button crud-button-primary" [disabled]="loading">
+            <span *ngIf="loading" class="loading-spinner spinner-border-sm"></span>
+            Primeri filtere
+          </button>
+          <button type="button" class="crud-button crud-button-secondary" (click)="resetFilter()">
+            Resetuj filtere
+          </button>
+          <button type="button" class="crud-button crud-button-success" 
+                  [routerLink]="['/problem-reports/new']">
+            + Nova prijava
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-container">
+    <div class="loading-spinner"></div>
+    <p>Učitavanje podataka...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !loading" class="alert alert-danger">
+    {{ error }}
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!loading && reports.length === 0 && !error" class="empty-state">
+    <div class="empty-state-icon">📋</div>
+    <h3>Nema pronađenih prijava</h3>
+    <p>Pokušajte da promenite filtere ili kreirajte novu prijavu.</p>
+    <button class="crud-button crud-button-success" 
+            [routerLink]="['/problem-reports/new']">
+      + Kreiraj prvu prijavu
+    </button>
+  </div>
+
+  <!-- Data Table -->
+  <div *ngIf="!loading && reports.length > 0" class="data-table-card">
+    <div class="table-responsive">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Naslov</th>
+            <th>Autor</th>
+            <th>Kategorija</th>
+            <th>Status</th>
+            <th>Lokacija</th>
+            <th>Datum</th>
+            <th>Komentari</th>
+            <th>Akcije</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let report of reports">
+            <td><strong>#{{ report.id }}</strong></td>
+            <td>
+              <div class="fw-bold">{{ report.title }}</div>
+              <small class="text-muted">{{ report.shortDescription }}</small>
+            </td>
+            <td>{{ report.authorName }}</td>
+            <td>
+              <span class="badge bg-light text-dark">{{ report.categoryName }}</span>
+            </td>
+            <td>
+              <span class="status-badge status-new">{{ report.statusName }}</span>
+            </td>
+            <td>{{ report.location || 'N/A' }}</td>
+            <td>{{ report.creationDate | date:'dd.MM.yyyy.' }}</td>
+            <td>
+              <span class="count-badge">{{ report.commentsCount }}</span>
+            </td>
+            <td>
+              <div class="d-flex gap-2">
+                <button class="crud-button crud-button-primary btn-sm" 
+                        (click)="viewReport(report.id)">
+                  👁️ Pregled
+                </button>
+                <button class="crud-button crud-button-warning btn-sm" 
+                        (click)="editReport(report.id)">
+                  ✏️ Izmeni
+                </button>
+                <button class="crud-button crud-button-danger btn-sm" 
+                        (click)="deleteReport(report.id)">
+                  🗑️ Obriši
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-container">
+      <div class="pagination-info">
+        Prikazano {{ reports.length }} od {{ totalItems }} prijava
+      </div>
+      <div class="pagination-nav" *ngIf="totalPages > 1">
+        <button class="pagination-button" 
+                (click)="onPageChange(currentPage - 1)"
+                [disabled]="currentPage === 1">
+          ← Prethodna
+        </button>
+        
+        <button *ngFor="let page of getPageNumbers()" 
+                class="pagination-button"
+                [class.active]="currentPage === page"
+                (click)="onPageChange(page)">
+          {{ page }}
+        </button>
+        
+        <button class="pagination-button" 
+                (click)="onPageChange(currentPage + 1)"
+                [disabled]="currentPage === totalPages">
+          Sledeća →
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
