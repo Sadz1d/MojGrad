@@ -27,12 +27,15 @@
 //        await mediator.Send(command, ct);
 //    }
 //}
+using Market.Application.Modules.Auth.Commands.ForgotPassword;
 using Market.Application.Modules.Auth.Commands.Login;
-using Market.Application.Modules.Auth.Commands.Refresh;
 using Market.Application.Modules.Auth.Commands.Logout;
+using Market.Application.Modules.Auth.Commands.Refresh;
+using Market.Application.Modules.Auth.Commands.Register;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Market.Api.Controllers;
 
@@ -48,6 +51,30 @@ public sealed class AuthController(IMediator mediator) : ControllerBase
     [AllowAnonymous]
     public async Task<ActionResult<LoginCommandDto>> Login(
         [FromBody] LoginCommand command,
+        CancellationToken ct)
+    {
+        return Ok(await mediator.Send(command, ct));
+    }
+
+    /// <summary>
+    /// Registracija novog korisnika
+    /// </summary>
+    [HttpPost("register")]
+    [AllowAnonymous]
+    public async Task<ActionResult<RegisterCommandDto>> Register(
+        [FromBody] RegisterCommand command,
+        CancellationToken ct)
+    {
+        return Ok(await mediator.Send(command, ct));
+    }
+
+    /// <summary>
+    /// Zaboravljena lozinka
+    /// </summary>
+    [HttpPost("forgot-password")]
+    [AllowAnonymous]
+    public async Task<ActionResult<ForgotPasswordCommandDto>> ForgotPassword(
+        [FromBody] ForgotPasswordCommand command,
         CancellationToken ct)
     {
         return Ok(await mediator.Send(command, ct));
@@ -76,5 +103,28 @@ public sealed class AuthController(IMediator mediator) : ControllerBase
     {
         await mediator.Send(command, ct);
         return NoContent();
+    }
+    /// <summary>
+    /// Get current user info
+    /// </summary>
+    [Authorize]
+    [HttpGet("me")]
+    public async Task<IActionResult> GetCurrentUser(CancellationToken ct)
+    {
+        // This would require a new query handler
+        // For now, return basic info from claims
+        var userId = User.FindFirst("sub")?.Value;
+        var email = User.FindFirst(ClaimTypes.Email)?.Value;
+        var fullName = $"{User.FindFirst("firstName")?.Value} {User.FindFirst("lastName")?.Value}".Trim();
+
+        return Ok(new
+        {
+            Id = userId,
+            Email = email,
+            FullName = string.IsNullOrEmpty(fullName) ? null : fullName,
+            IsAdmin = bool.TryParse(User.FindFirst("is_admin")?.Value, out var isAdmin) && isAdmin,
+            IsManager = bool.TryParse(User.FindFirst("is_manager")?.Value, out var isManager) && isManager,
+            IsEmployee = bool.TryParse(User.FindFirst("is_employee")?.Value, out var isEmployee) && isEmployee
+        });
     }
 }

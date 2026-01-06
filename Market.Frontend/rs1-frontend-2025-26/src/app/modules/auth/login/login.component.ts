@@ -1,9 +1,9 @@
+// src/app/modules/auth/login/login.component.ts
 import { Component, inject } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { BaseComponent } from '../../../core/components/base-classes/base-component';
 import { AuthFacadeService } from '../../../core/services/auth/auth-facade.service';
-import { LoginCommand } from '../../../api-services/auth/auth-api.model';
 
 @Component({
   selector: 'app-login',
@@ -15,6 +15,7 @@ export class LoginComponent extends BaseComponent {
   private fb = inject(FormBuilder);
   private auth = inject(AuthFacadeService);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
 
   hidePassword = true;
 
@@ -24,27 +25,31 @@ export class LoginComponent extends BaseComponent {
     rememberMe: [false],
   });
 
+  ngOnInit(): void {
+    if (this.auth.isLoggedIn()) {
+      this.router.navigate(['/admin/products']);
+    }
+  }
+
   onSubmit(): void {
     if (this.form.invalid || this.isLoading) return;
 
     this.startLoading();
 
-    const payload: LoginCommand = {
+    const payload = {
       email: this.form.value.email ?? '',
-      password: this.form.value.password ?? '',
-      fingerprint: null,
+      password: this.form.value.password ?? ''
+      // ❌ fingerprint ne šaljemo ovdje, AuthFacadeService će ga dodati automatski
     };
 
     this.auth.login(payload).subscribe({
       next: () => {
         this.stopLoading();
-
-        // 🔁 Redirect nakon uspješnog login-a
-        // za sada ideš na početnu (public)
-        this.router.navigate(['/admin/products']);
+        const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/admin/products';
+        this.router.navigate([returnUrl]);
       },
       error: (err) => {
-        this.stopLoading('Neispravni kredencijali.');
+        this.stopLoading(err.error?.message || 'Neispravni kredencijali.');
         console.error('Login error:', err);
       },
     });

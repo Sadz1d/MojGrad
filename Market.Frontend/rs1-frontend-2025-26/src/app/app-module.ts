@@ -1,13 +1,13 @@
 import { NgModule, provideBrowserGlobalErrorListeners, provideZoneChangeDetection } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { provideAnimations} from '@angular/platform-browser/animations';
-import {HttpClient, provideHttpClient, withInterceptors} from '@angular/common/http';
-
+import {HTTP_INTERCEPTORS, HttpClient, provideHttpClient, withInterceptors} from '@angular/common/http';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing-module';
 import { AppComponent } from './app.component';
-import {authInterceptor} from './core/interceptors/auth-interceptor.service';
+import { AuthInterceptor } from './core/interceptors/auth.interceptor';
 import {loadingBarInterceptor} from './core/interceptors/loading-bar-interceptor.service';
 import {errorLoggingInterceptor} from './core/interceptors/error-logging-interceptor.service';
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
@@ -30,6 +30,7 @@ import { RouterModule } from '@angular/router';
     
   ],
   imports: [
+    BrowserAnimationsModule,
     HttpClientModule,
     TestAuthComponent,
     BrowserModule,
@@ -50,7 +51,9 @@ import { RouterModule } from '@angular/router';
     ProblemReportListComponent,
     ProblemReportFormComponent
   ],
-  providers: [
+  providers: [{provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true},
     provideAnimations(),
     ProblemReportService,
     provideBrowserGlobalErrorListeners(),
@@ -58,7 +61,7 @@ import { RouterModule } from '@angular/router';
     provideHttpClient(
       withInterceptors([
         loadingBarInterceptor,
-        authInterceptor,
+        
         errorLoggingInterceptor
       ])
     )

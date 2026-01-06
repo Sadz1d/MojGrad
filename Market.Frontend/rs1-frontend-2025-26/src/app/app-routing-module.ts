@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { myAuthGuard, myAuthData } from './core/guards/my-auth-guard';
+import { AuthGuard, AuthData } from './core/guards/my-auth-guard';
 import { TestAuthComponent } from './pages/test-auth/test-auth.component';
 import { ProblemReportListComponent } from './core/components/problem-report-list/problem-report-list.component';
 import { ProblemReportFormComponent } from './core/components/problem-report-form/problem-report-form.component';
@@ -9,8 +9,8 @@ import { ProblemReportImportComponent } from './core/components/problem-report-i
 const routes: Routes = [
   {
     path: 'admin',
-    canActivate: [myAuthGuard],
-    data: myAuthData({ requireAuth: true, requireAdmin: true }),
+    canActivate: [AuthGuard],
+    data: AuthData({ requireAuth: true, requireAdmin: true }),
     loadChildren: () =>
       import('./modules/admin/admin-module').then(m => m.AdminModule)
   },
@@ -36,8 +36,8 @@ const routes: Routes = [
 
   {
     path: 'client',
-    canActivate: [myAuthGuard],
-    data: myAuthData({ requireAuth: true }), // bilo ko logiran
+    canActivate: [AuthGuard],
+    data: AuthData({ requireAuth: true }), // bilo ko logiran
     loadChildren: () =>
       import('./modules/client/client-module').then(m => m.ClientModule)
   },

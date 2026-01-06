@@ -1,178 +1,278 @@
 // src/app/core/services/auth/auth-facade.service.ts
-import { Injectable, inject, signal, computed } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable, of, tap, catchError, map } from 'rxjs';
-import { jwtDecode } from 'jwt-decode';
+import { BehaviorSubject, Observable, throwError, of } from 'rxjs';
+import { catchError, map, switchMap, tap } from 'rxjs/operators';
+import { 
+  AuthApiService, 
+  LoginRequest, 
+  LoginResponse,
+  RegisterRequest,
+  RegisterResponse,
+  ForgotPasswordRequest,
+  ForgotPasswordResponse,
+  RefreshTokenRequest,
+  CurrentUserResponse
+} from '../../../api-services/auth/auth-api.service';
 
-import { AuthApiService } from '../../../api-services/auth/auth-api.service';
-import {
-  LoginCommand,
-  LoginCommandDto,
-  LogoutCommand,
-  RefreshTokenCommand,
-  RefreshTokenCommandDto,
-} from '../../../api-services/auth/auth-api.model';
+export interface User {
+  id: string;
+  email: string;
+  fullName: string;
+  isAdmin: boolean;
+  isManager: boolean;
+  isEmployee: boolean;
+  token: string;
+  refreshToken: string;
+  expiresAt: Date;
+}
 
-import { AuthStorageService } from './auth-storage.service';
-import { CurrentUserDto } from './current-user.dto';
-import { JwtPayloadDto } from './jwt-payload.dto';
-
-/**
- * Glavni auth servis (façade).
- * - priča sa AuthApiService (HTTP)
- * - priča sa AuthStorageService (localStorage)
- * - dekodira JWT i drži CurrentUser kao signal
- *
- * Koristi se u:
- * - interceptoru (getAccessToken, refresh)
- * - guardovima (isAuthenticated, isAdmin)
- * - komponentama (login, logout, navbar)
- */
-@Injectable({ providedIn: 'root' })
+@Injectable({
+  providedIn: 'root'
+})
 export class AuthFacadeService {
   private api = inject(AuthApiService);
-  private storage = inject(AuthStorageService);
   private router = inject(Router);
 
-  // === REACTIVE STATE: current user ===
-
-  private _currentUser = signal<CurrentUserDto | null>(null);
-
-  /** readonly signal za UI – čita se kao auth.currentUser() */
-  currentUser = this._currentUser.asReadonly();
-
-  /** computed signali nad current userom */
-  isAuthenticated = computed(() => !!this._currentUser());
-  isAdmin = computed(() => this._currentUser()?.isAdmin ?? false);
-  isManager = computed(() => this._currentUser()?.isManager ?? false);
-  isEmployee = computed(() => this._currentUser()?.isEmployee ?? false);
+  private currentUserSubject = new BehaviorSubject<User | null>(null);
+  
+  currentUser$ = this.currentUserSubject.asObservable();
+  isAuthenticated$ = this.currentUser$.pipe(map(user => !!user));
 
   constructor() {
-    // pokušaj inicijalizacije iz postojećeg access tokena
-    this.initializeFromToken();
+    this.loadUserFromStorage();
   }
 
-  // =========================================================
-  // PUBLIC API
-  // =========================================================
+  // ==================== PUBLIC METHODS ====================
 
-  /**
-   * Login korisnika (email + password).
-   * Snima tokene u storage, dekodira JWT i popunjava current user state.
-   */
-  login(payload: LoginCommand): Observable<void> {
-    return this.api.login(payload).pipe(
-      tap((response: LoginCommandDto) => {
-        this.storage.saveLogin(response);           // access + refresh + expiries
-        this.decodeAndSetUser(response.accessToken); // popuni _currentUser
+  // 🔐 LOGIN
+  login(data: LoginRequest): Observable<LoginResponse> {
+    const fingerprint = this.generateFingerprint();
+    const loginData = { ...data, fingerprint };
+
+    return this.api.login(loginData).pipe(
+      tap(response => {
+        this.handleLoginSuccess(response, fingerprint);
       }),
-      map(() => void 0)
-    );
-  }
-
-  /**
-   * Logout korisnika:
-   * - lokalno očisti state i tokene
-   * - pokuša invalidirati refresh token na serveru (bez drame na error)
-   */
-  logout(): Observable<void> {
-    const refreshToken = this.storage.getRefreshToken();
-
-    // 1) lokalno očisti (optimistic logout)
-    this.clearUserState();
-
-    // 2) nema refresh tokena → nema ni API poziva
-    if (!refreshToken) {
-      return of(void 0);
-    }
-
-    const payload: LogoutCommand = { refreshToken };
-
-    // 3) pokušaj server-side logout, ignoriši greške
-    return this.api.logout(payload).pipe(catchError(() => of(void 0)));
-  }
-
-  /**
-   * Refresh access tokena – koristi refresh token.
-   * Poziva interceptor kada dobije 401.
-   */
-  refresh(payload: RefreshTokenCommand): Observable<RefreshTokenCommandDto> {
-    return this.api.refresh(payload).pipe(
-      tap((response: RefreshTokenCommandDto) => {
-        this.storage.saveRefresh(response);           // snimi nove tokene
-        this.decodeAndSetUser(response.accessToken);  // update current usera
+      catchError((error: any) => {
+        this.clearAuthData();
+        return throwError(() => error);
       })
     );
   }
 
-  /**
-   * Utility za guardove/interceptore – očisti auth state i prebaci na /login.
-   */
-  redirectToLogin(): void {
-    this.clearUserState();
-    this.router.navigate(['/login']);
+  // 📝 REGISTER
+  register(data: RegisterRequest): Observable<RegisterResponse> {
+    return this.api.register(data).pipe(
+      catchError((error: any) => {
+        return throwError(() => error);
+      })
+    );
   }
 
-  // =========================================================
-  // GETTERI ZA INTERCEPTOR
-  // =========================================================
+  // 🔄 REFRESH TOKEN
+  refreshToken(): Observable<LoginResponse> {
+    const user = this.getCurrentUserValue();
+    
+    if (!user?.refreshToken) {
+      return throwError(() => new Error('No refresh token available'));
+    }
 
-  /**
-   * Access token za Authorization header.
-   */
-  getAccessToken(): string | null {
-    return this.storage.getAccessToken();
+    const request: RefreshTokenRequest = {
+      refreshToken: user.refreshToken,
+      fingerprint: this.getFingerprint()
+    };
+
+    return this.api.refreshToken(request).pipe(
+      tap(response => {
+        this.updateTokens(response);
+      }),
+      catchError((error: any) => {
+        this.logout();
+        return throwError(() => error);
+      })
+    );
   }
 
-  /**
-   * Refresh token za refresh poziv.
-   */
-  getRefreshToken(): string | null {
-    return this.storage.getRefreshToken();
-  }
-
-  // =========================================================
-  // PRIVATE HELPERS
-  // =========================================================
-
-  /**
-   * Na startu aplikacije (konstruktor) – pokušaj obnoviti stanje iz postojećeg tokena.
-   */
-  private initializeFromToken(): void {
-    const token = this.storage.getAccessToken();
-    if (token) {
-      this.decodeAndSetUser(token);
+  // 🚪 LOGOUT
+  logout(): Observable<void> {
+    const user = this.getCurrentUserValue();
+    
+    if (user?.refreshToken) {
+      return this.api.logout({ refreshToken: user.refreshToken }).pipe(
+        tap(() => {
+          this.clearAuthData();
+          this.router.navigate(['/auth/login']);
+        }),
+        catchError((error: any) => {
+          this.clearAuthData();
+          this.router.navigate(['/auth/login']);
+          return throwError(() => error);
+        })
+      );
+    } else {
+      this.clearAuthData();
+      this.router.navigate(['/auth/login']);
+      return of(undefined);
     }
   }
 
-  /**
-   * Dekodiraj JWT i postavi current user state.
-   */
-  private decodeAndSetUser(token: string): void {
+  // 📧 FORGOT PASSWORD
+  forgotPassword(email: string): Observable<ForgotPasswordResponse> {
+    const request: ForgotPasswordRequest = { email };
+    return this.api.forgotPassword(request).pipe(
+      catchError((error: any) => {
+        return throwError(() => error);
+      })
+    );
+  }
+
+  // 👤 GET CURRENT USER INFO
+  getCurrentUserInfo(): Observable<CurrentUserResponse> {
+    return this.api.getCurrentUser().pipe(
+      tap(user => {
+        const current = this.getCurrentUserValue();
+        if (current) {
+          const updatedUser: User = {
+            ...current,
+            ...user
+          };
+          this.currentUserSubject.next(updatedUser);
+          this.saveUserToStorage(updatedUser);
+        }
+      }),
+      catchError((error: any) => {
+        return throwError(() => error);
+      })
+    );
+  }
+
+  // ==================== HELPER METHODS ====================
+
+  private handleLoginSuccess(response: LoginResponse, fingerprint: string): void {
+    const tokenPayload = this.decodeToken(response.accessToken);
+    
+    const user: User = {
+      id: tokenPayload.sub || '',
+      email: tokenPayload.email || '',
+      fullName: this.getFullNameFromToken(tokenPayload),
+      isAdmin: tokenPayload.is_admin === 'true',
+      isManager: tokenPayload.is_manager === 'true',
+      isEmployee: tokenPayload.is_employee === 'true',
+      token: response.accessToken,
+      refreshToken: response.refreshToken,
+      expiresAt: new Date(response.expiresAtUtc)
+    };
+
+    this.currentUserSubject.next(user);
+    this.saveUserToStorage(user);
+    localStorage.setItem('auth_fingerprint', fingerprint);
+  }
+
+  private updateTokens(response: LoginResponse): void {
+    const currentUser = this.getCurrentUserValue();
+    if (!currentUser) return;
+
+    const updatedUser: User = {
+      ...currentUser,
+      token: response.accessToken,
+      refreshToken: response.refreshToken,
+      expiresAt: new Date(response.expiresAtUtc)
+    };
+
+    this.currentUserSubject.next(updatedUser);
+    this.saveUserToStorage(updatedUser);
+  }
+
+  private decodeToken(token: string): any {
     try {
-      const payload = jwtDecode<JwtPayloadDto>(token);
-
-      const user: CurrentUserDto = {
-        userId: Number(payload.sub),
-        email: payload.email,
-        isAdmin: payload.is_admin === 'true',
-        isManager: payload.is_manager === 'true',
-        isEmployee: payload.is_employee === 'true',
-        tokenVersion: Number(payload.ver),
-      };
-
-      this._currentUser.set(user);
-    } catch (error) {
-      console.error('Failed to decode JWT token:', error);
-      this._currentUser.set(null);
+      const payload = token.split('.')[1];
+      return JSON.parse(atob(payload));
+    } catch {
+      return {};
     }
   }
 
-  /**
-   * Očisti user state + sve tokene iz storage-a.
-   */
-  private clearUserState(): void {
-    this._currentUser.set(null);
-    this.storage.clear();
+  private getFullNameFromToken(payload: any): string {
+    if (payload.fullName) return payload.fullName;
+    if (payload.given_name && payload.family_name) {
+      return `${payload.given_name} ${payload.family_name}`;
+    }
+    if (payload.name) return payload.name;
+    return '';
+  }
+
+  private generateFingerprint(): string {
+    const fingerprint = localStorage.getItem('auth_fingerprint');
+    if (fingerprint) return fingerprint;
+
+    const newFingerprint = `fp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    localStorage.setItem('auth_fingerprint', newFingerprint);
+    return newFingerprint;
+  }
+
+  private getFingerprint(): string {
+    return localStorage.getItem('auth_fingerprint') || '';
+  }
+
+  private saveUserToStorage(user: User): void {
+    localStorage.setItem('auth_user', JSON.stringify(user));
+  }
+
+  private loadUserFromStorage(): void {
+    const userJson = localStorage.getItem('auth_user');
+    if (userJson) {
+      try {
+        const user = JSON.parse(userJson);
+        if (user.expiresAt && new Date(user.expiresAt) > new Date()) {
+          this.currentUserSubject.next(user);
+        } else {
+          this.clearAuthData();
+        }
+      } catch {
+        this.clearAuthData();
+      }
+    }
+  }
+
+  private clearAuthData(): void {
+    localStorage.removeItem('auth_user');
+    localStorage.removeItem('auth_fingerprint');
+    this.currentUserSubject.next(null);
+  }
+
+  // ==================== GETTERS ====================
+
+  getCurrentUserValue(): User | null {
+    return this.currentUserSubject.value;
+  }
+
+  getToken(): string | null {
+    return this.getCurrentUserValue()?.token || null;
+  }
+
+  isLoggedIn(): boolean {
+    return !!this.getCurrentUserValue();
+  }
+
+  // For template use
+  currentUser(): User | null {
+    return this.getCurrentUserValue();
+  }
+
+  isAuthenticated(): boolean {
+    return this.isLoggedIn();
+  }
+
+  isAdmin(): boolean {
+    return this.getCurrentUserValue()?.isAdmin || false;
+  }
+
+  isManager(): boolean {
+    return this.getCurrentUserValue()?.isManager || false;
+  }
+
+  isEmployee(): boolean {
+    return this.getCurrentUserValue()?.isEmployee || false;
   }
 }

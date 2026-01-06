@@ -1,114 +1,76 @@
+// src/app/core/interceptors/auth.interceptor.ts
+import { Injectable } from '@angular/core';
 import {
-    HttpInterceptorFn,
-    HttpErrorResponse,
-    HttpRequest,
-    HttpHandlerFn
+  HttpRequest,
+  HttpHandler,
+  HttpEvent,
+  HttpInterceptor,
+  HttpErrorResponse
 } from '@angular/common/http';
-import { inject } from '@angular/core';
-import { Observable, BehaviorSubject, throwError } from 'rxjs';
+import { Observable, throwError, BehaviorSubject } from 'rxjs';
 import { catchError, filter, switchMap, take } from 'rxjs/operators';
 import { AuthFacadeService } from '../services/auth/auth-facade.service';
 
-// Global state for refresh (shared between requests)
-let refreshInProgress = false;
-const refreshTokenSubject = new BehaviorSubject<string | null>(null);
+@Injectable()
+export class AuthInterceptor implements HttpInterceptor {
+  private isRefreshing = false;
+  private refreshTokenSubject = new BehaviorSubject<string | null>(null);
 
-/**
- * HTTP interceptor that:
- * 1. Adds Authorization header with access token
- * 2. Handles 401 errors by refreshing token
- * 3. Retries failed request with new token
- */
-export const authInterceptor: HttpInterceptorFn = (req, next) => {
-    const auth = inject(AuthFacadeService);
+  constructor(private auth: AuthFacadeService) {}
 
-    // 1) Skip auth endpoints (login/refresh/logout)
-    if (isAuthEndpoint(req.url)) {
-        return next(req);
+  intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
+    // Add token to request if available
+    const token = this.auth.getToken();
+    if (token && !request.url.includes('/auth/')) {
+      request = this.addToken(request, token);
     }
 
-    // 2) Add Authorization header if token exists
-    const accessToken = auth.getAccessToken();
-    let authReq = req;
-
-    if (accessToken) {
-        authReq = req.clone({
-            setHeaders: {
-                Authorization: `Bearer ${accessToken}`
-            }
-        });
-    }
-
-    // 3) Handle 401 → refresh → retry
-    return next(authReq).pipe(
-        catchError((err) => {
-            if (err instanceof HttpErrorResponse && err.status === 401) {
-                return handle401Error(authReq, next, auth);
-            }
-            return throwError(() => err);
-        })
+    return next.handle(request).pipe(
+      catchError(error => {
+        if (error instanceof HttpErrorResponse && error.status === 401) {
+          return this.handle401Error(request, next);
+        }
+        return throwError(() => error);
+      })
     );
-};
+  }
 
-/**
- * Check if URL is an auth endpoint that should not be intercepted.
- */
-function isAuthEndpoint(url: string): boolean {
-    return url.includes('/Auth/');
-}
+  private addToken(request: HttpRequest<unknown>, token: string): HttpRequest<unknown> {
+    return request.clone({
+      setHeaders: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+  }
 
-/**
- * Handle 401 error by refreshing token and retrying request.
- */
-function handle401Error(
-    req: HttpRequest<unknown>,
-    next: HttpHandlerFn,
-    auth: AuthFacadeService
-): Observable<any> {
-    const refreshToken = auth.getRefreshToken();
+  private handle401Error(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
+    if (!this.isRefreshing) {
+      this.isRefreshing = true;
+      this.refreshTokenSubject.next(null);
 
-    // No refresh token → redirect to login
-    if (!refreshToken) {
-        auth.redirectToLogin();
-        return throwError(() => new Error('No refresh token'));
-    }
-
-    // If refresh already in progress → wait for result
-    if (refreshInProgress) {
-        return refreshTokenSubject.pipe(
-            filter((token) => token !== null),
-            take(1),
-            switchMap((token) => {
-                const cloned = token
-                    ? req.clone({ setHeaders: { Authorization: `Bearer ${token}` } })
-                    : req;
-                return next(cloned);
-            })
-        );
-    }
-
-    // Start refresh process
-    refreshInProgress = true;
-    refreshTokenSubject.next(null);
-
-    return auth.refresh({ refreshToken, fingerprint: null }).pipe(
-        switchMap((res) => {
-            refreshInProgress = false;
-            const newAccessToken = res.accessToken;
-            refreshTokenSubject.next(newAccessToken);
-
-            // Retry original request with new token
-            const clonedReq = req.clone({
-                setHeaders: { Authorization: `Bearer ${newAccessToken}` }
-            });
-
-            return next(clonedReq);
+      return this.auth.refreshToken().pipe(
+        switchMap((response: any) => {
+          this.isRefreshing = false;
+          this.refreshTokenSubject.next(response.accessToken);
+          
+          // Retry the original request with new token
+          return next.handle(this.addToken(request, response.accessToken));
         }),
-        catchError((error) => {
-            refreshInProgress = false;
-            refreshTokenSubject.next(null);
-            auth.redirectToLogin();
-            return throwError(() => error);
+        catchError(error => {
+          this.isRefreshing = false;
+          this.auth.logout();
+          return throwError(() => error);
         })
-    );
+      );
+    } else {
+      // Wait while token is being refreshed
+      return this.refreshTokenSubject.pipe(
+        filter(token => token !== null),
+        take(1),
+        switchMap(token => {
+          return next.handle(this.addToken(request, token!));
+        })
+      );
+    }
+  }
 }
