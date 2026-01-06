@@ -1,169 +1,259 @@
 <!-- components/problem-report-list/problem-report-list.component.html -->
-<div class="crud-section">
-  <!-- Header -->
-  <div class="crud-header">
-    <div class="crud-title-badge">UPRAVLJANJE PRIJAVAMA</div>
-    <h2 class="crud-title">Prijavljeni problemi u gradu</h2>
-    <p class="crud-subtitle">
-      Pregledajte, filtrirjte i upravljajte svim prijavljenim problemima
-    </p>
-  </div>
-
-  <!-- Filter Card -->
-  <div class="filter-card">
-    <h5>Filter prijava</h5>
-    <form [formGroup]="filterForm" (ngSubmit)="applyFilter()" class="filter-form">
-      <div class="row g-3">
-        <!-- Search -->
-        <div class="col-md-6">
-          <label>Pretraga (naslov/opis)</label>
-          <input type="text" class="form-control" formControlName="search" 
-                 placeholder="Unesite tekst za pretragu...">
-        </div>
-        
-        <!-- User ID -->
-        <div class="col-md-3">
-          <label>ID korisnika</label>
-          <input type="number" class="form-control" formControlName="userId" 
-                 placeholder="ID autora" min="1">
-        </div>
-        
-        <!-- Category ID -->
-        <div class="col-md-3">
-          <label>ID kategorije</label>
-          <input type="number" class="form-control" formControlName="categoryId" 
-                 placeholder="ID kategorije" min="1">
-        </div>
-        
-        <!-- Status ID -->
-        <div class="col-md-3">
-          <label>ID statusa</label>
-          <input type="number" class="form-control" formControlName="statusId" 
-                 placeholder="ID statusa" min="1">
-        </div>
-        
-        <!-- Action Buttons -->
-        <div class="col-md-9 d-flex align-items-end gap-2">
-          <button type="submit" class="crud-button crud-button-primary" [disabled]="loading">
-            <span *ngIf="loading" class="loading-spinner spinner-border-sm"></span>
-            Primeri filtere
-          </button>
-          <button type="button" class="crud-button crud-button-secondary" (click)="resetFilter()">
-            Resetuj filtere
-          </button>
-          <button type="button" class="crud-button crud-button-success" 
-                  [routerLink]="['/problem-reports/new']">
-            + Nova prijava
-          </button>
-        </div>
+<div class="list-container">
+  <!-- Pozadinska slika sa overlay-em -->
+  <div class="list-overlay"></div>
+  
+  <div class="list-content">
+    <!-- Logo & Brand -->
+    <div class="list-brand">
+      <div class="brand-logo-container">
+        <img src="/assets/images/logo1.png" alt="Moj Grad Logo" class="brand-logo">
       </div>
-    </form>
-  </div>
-
-  <!-- Loading State -->
-  <div *ngIf="loading" class="loading-container">
-    <div class="loading-spinner"></div>
-    <p>Učitavanje podataka...</p>
-  </div>
-
-  <!-- Error State -->
-  <div *ngIf="error && !loading" class="alert alert-danger">
-    {{ error }}
-  </div>
-
-  <!-- Empty State -->
-  <div *ngIf="!loading && reports.length === 0 && !error" class="empty-state">
-    <div class="empty-state-icon">📋</div>
-    <h3>Nema pronađenih prijava</h3>
-    <p>Pokušajte da promenite filtere ili kreirajte novu prijavu.</p>
-    <button class="crud-button crud-button-success" 
-            [routerLink]="['/problem-reports/new']">
-      + Kreiraj prvu prijavu
-    </button>
-  </div>
-
-  <!-- Data Table -->
-  <div *ngIf="!loading && reports.length > 0" class="data-table-card">
-    <div class="table-responsive">
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Naslov</th>
-            <th>Autor</th>
-            <th>Kategorija</th>
-            <th>Status</th>
-            <th>Lokacija</th>
-            <th>Datum</th>
-            <th>Komentari</th>
-            <th>Akcije</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let report of reports">
-            <td><strong>#{{ report.id }}</strong></td>
-            <td>
-              <div class="fw-bold">{{ report.title }}</div>
-              <small class="text-muted">{{ report.shortDescription }}</small>
-            </td>
-            <td>{{ report.authorName }}</td>
-            <td>
-              <span class="badge bg-light text-dark">{{ report.categoryName }}</span>
-            </td>
-            <td>
-              <span class="status-badge status-new">{{ report.statusName }}</span>
-            </td>
-            <td>{{ report.location || 'N/A' }}</td>
-            <td>{{ report.creationDate | date:'dd.MM.yyyy.' }}</td>
-            <td>
-              <span class="count-badge">{{ report.commentsCount }}</span>
-            </td>
-            <td>
-              <div class="d-flex gap-2">
-                <button class="crud-button crud-button-primary btn-sm" 
-                        (click)="viewReport(report.id)">
-                  👁️ Pregled
-                </button>
-                <button class="crud-button crud-button-warning btn-sm" 
-                        (click)="editReport(report.id)">
-                  ✏️ Izmeni
-                </button>
-                <button class="crud-button crud-button-danger btn-sm" 
-                        (click)="deleteReport(report.id)">
-                  🗑️ Obriši
-                </button>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <h1 class="brand-name">Moj Grad</h1>
+      <p class="brand-tagline">Upravljajte prijavama problema u vašem gradu</p>
     </div>
 
-    <!-- Pagination -->
-    <div class="pagination-container">
-      <div class="pagination-info">
-        Prikazano {{ reports.length }} od {{ totalItems }} prijava
-      </div>
-      <div class="pagination-nav" *ngIf="totalPages > 1">
-        <button class="pagination-button" 
-                (click)="onPageChange(currentPage - 1)"
-                [disabled]="currentPage === 1">
-          ← Prethodna
-        </button>
+    <!-- Header Section -->
+    <div class="list-header">
+      <div class="title-badge">UPRAVLJANJE PRIJAVAMA</div>
+      <h2 class="section-title">Prijavljeni problemi u gradu</h2>
+      <p class="section-subtitle">
+        Pregledajte, filtrirajte i upravljajte svim prijavljenim problemima
+      </p>
+    </div>
+
+    <!-- Filter Card -->
+    <div class="filter-section">
+      <div class="filter-card">
+        <div class="filter-header">
+          <mat-icon>filter_list</mat-icon>
+          <h3>Filter prijava</h3>
+        </div>
         
-        <button *ngFor="let page of getPageNumbers()" 
-                class="pagination-button"
-                [class.active]="currentPage === page"
-                (click)="onPageChange(page)">
-          {{ page }}
-        </button>
-        
-        <button class="pagination-button" 
-                (click)="onPageChange(currentPage + 1)"
-                [disabled]="currentPage === totalPages">
-          Sledeća →
-        </button>
+        <form [formGroup]="filterForm" (ngSubmit)="applyFilter()" class="filter-form">
+          <div class="filter-grid">
+            <!-- Search -->
+            <div class="filter-group">
+              <label for="search" class="filter-label">
+                <mat-icon>search</mat-icon>
+                Pretraga (naslov/opis)
+              </label>
+              <input type="text" id="search" class="filter-input" formControlName="search" 
+                     placeholder="Unesite tekst za pretragu...">
+            </div>
+            
+            <!-- User ID -->
+            <div class="filter-group">
+              <label for="userId" class="filter-label">
+                <mat-icon>person</mat-icon>
+                ID korisnika
+              </label>
+              <input type="number" id="userId" class="filter-input" formControlName="userId" 
+                     placeholder="ID autora" min="1">
+            </div>
+            
+            <!-- Category ID -->
+            <div class="filter-group">
+              <label for="categoryId" class="filter-label">
+                <mat-icon>category</mat-icon>
+                ID kategorije
+              </label>
+              <input type="number" id="categoryId" class="filter-input" formControlName="categoryId" 
+                     placeholder="ID kategorije" min="1">
+            </div>
+            
+            <!-- Status ID -->
+            <div class="filter-group">
+              <label for="statusId" class="filter-label">
+                <mat-icon>flag</mat-icon>
+                ID statusa
+              </label>
+              <input type="number" id="statusId" class="filter-input" formControlName="statusId" 
+                     placeholder="ID statusa" min="1">
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="filter-actions">
+            <button type="submit" class="action-button action-primary" [disabled]="loading">
+              <mat-icon *ngIf="!loading">filter_alt</mat-icon>
+              <mat-spinner *ngIf="loading" diameter="20"></mat-spinner>
+              {{ loading ? 'Primjenjujem...' : 'Primjeni filtere' }}
+            </button>
+            
+            <button type="button" class="action-button action-secondary" (click)="resetFilter()">
+              <mat-icon>restart_alt</mat-icon>
+              Resetuj filtere
+            </button>
+            
+            <button type="button" class="action-button action-success" 
+                    [routerLink]="['/problem-reports/new']">
+              <mat-icon>add_circle</mat-icon>
+              + Nova prijava
+            </button>
+          </div>
+        </form>
       </div>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="loading" class="loading-section">
+      <div class="loading-spinner"></div>
+      <p>Učitavanje podataka...</p>
+    </div>
+
+    <!-- Error State -->
+    <div *ngIf="error && !loading" class="error-section">
+      <mat-icon>error_outline</mat-icon>
+      <h4>Greška pri učitavanju</h4>
+      <p>{{ error }}</p>
+      <button class="action-button action-secondary" (click)="loadReports()">
+        <mat-icon>refresh</mat-icon>
+        Pokušaj ponovo
+      </button>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!loading && reports.length === 0 && !error" class="empty-section">
+      <div class="empty-icon">📋</div>
+      <h3>Nema pronađenih prijava</h3>
+      <p>Pokušajte da promjenite filtere ili kreirajte novu prijavu.</p>
+      <button class="action-button action-success" 
+              [routerLink]="['/problem-reports/new']">
+        <mat-icon>add_circle</mat-icon>
+        + Kreiraj prvu prijavu
+      </button>
+    </div>
+
+    <!-- Data Table -->
+    <div *ngIf="!loading && reports.length > 0" class="data-section">
+      <div class="table-card">
+        <div class="table-header">
+          <div class="table-info">
+            <mat-icon>table_chart</mat-icon>
+            <span>Prikazano {{ reports.length }} prijava</span>
+          </div>
+          <div class="table-actions">
+            <button class="action-button action-secondary btn-sm" (click)="exportData()">
+              <mat-icon>download</mat-icon>
+              Izvezi
+            </button>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Naslov</th>
+                <th>Autor</th>
+                <th>Kategorija</th>
+                <th>Status</th>
+                <th>Lokacija</th>
+                <th>Datum</th>
+                <th>Komentari</th>
+                <th>Akcije</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let report of reports" class="table-row">
+                <td class="report-id">
+                  <span class="id-badge">#{{ report.id }}</span>
+                </td>
+                <td class="report-title">
+                  <h4>{{ report.title }}</h4>
+                  <p class="report-desc">{{ report.shortDescription }}</p>
+                </td>
+                <td class="report-author">
+                  <div class="author-info">
+                    <mat-icon class="author-icon">person</mat-icon>
+                    <span>{{ report.authorName }}</span>
+                  </div>
+                </td>
+                <td class="report-category">
+                  <span class="category-badge">{{ report.categoryName }}</span>
+                </td>
+                <td class="report-status">
+                  <span class="status-badge" [ngClass]="getStatusClass(report.statusName)">
+                    {{ report.statusName }}
+                  </span>
+                </td>
+                <td class="report-location">
+                  <div class="location-info">
+                    <mat-icon class="location-icon">location_on</mat-icon>
+                    <span>{{ report.location || 'N/A' }}</span>
+                  </div>
+                </td>
+                <td class="report-date">
+                  <div class="date-info">
+                    <mat-icon class="date-icon">calendar_today</mat-icon>
+                    <span>{{ report.creationDate | date:'dd.MM.yyyy.' }}</span>
+                  </div>
+                </td>
+                <td class="report-comments">
+                  <div class="comments-info">
+                    <mat-icon class="comments-icon">comment</mat-icon>
+                    <span class="comments-count">{{ report.commentsCount }}</span>
+                  </div>
+                </td>
+                <td class="report-actions">
+                  <div class="action-buttons">
+                    <button class="action-btn view-btn" (click)="viewReport(report.id)" matTooltip="Pregled">
+                      <mat-icon>visibility</mat-icon>
+                    </button>
+                    <button class="action-btn edit-btn" (click)="editReport(report.id)" matTooltip="Izmjeni">
+                      <mat-icon>edit</mat-icon>
+                    </button>
+                    <button class="action-btn delete-btn" (click)="deleteReport(report.id)" matTooltip="Obriši">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination-section" *ngIf="totalPages > 1">
+          <div class="pagination-info">
+            <span>Stranica {{ currentPage }} od {{ totalPages }} • Ukupno {{ totalItems }} prijava</span>
+          </div>
+          <div class="pagination-controls">
+            <button class="pagination-btn" 
+                    (click)="onPageChange(currentPage - 1)"
+                    [disabled]="currentPage === 1">
+              <mat-icon>chevron_left</mat-icon>
+              Prethodna
+            </button>
+            
+            <div class="page-numbers">
+              <button *ngFor="let page of getPageNumbers()" 
+                      class="page-number"
+                      [class.active]="currentPage === page"
+                      (click)="onPageChange(page)">
+                {{ page }}
+              </button>
+            </div>
+            
+            <button class="pagination-btn" 
+                    (click)="onPageChange(currentPage + 1)"
+                    [disabled]="currentPage === totalPages">
+              Sljedeća
+              <mat-icon>chevron_right</mat-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="list-footer">
+      <p class="platform-description">
+        Prijavite problem, pomozite svojim sugrađanima<br>
+        unaprijedite naš grad.
+      </p>
     </div>
   </div>
 </div>

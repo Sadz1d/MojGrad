@@ -6,6 +6,8 @@ import { ProblemReportService } from '../../services/problem-report.service';
 import { ProblemReportListItem, ProblemReportFilter } from '../../models/problem-report.model';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
+import { MatIcon } from "@angular/material/icon";
+import { MatProgressSpinner } from "@angular/material/progress-spinner";
 
 @Component({
   selector: 'app-problem-report-list',
@@ -16,8 +18,9 @@ import { ReactiveFormsModule } from '@angular/forms';
     CommonModule,
     ReactiveFormsModule,
     RouterModule,
-    // ...other imports...
-  ],
+    MatIcon,
+    MatProgressSpinner
+],
 })
 export class ProblemReportListComponent implements OnInit {
   reports: ProblemReportListItem[] = [];
@@ -129,5 +132,16 @@ export class ProblemReportListComponent implements OnInit {
   }
   
   return pages;
+  }
+  getStatusClass(statusName: string): string {
+    const status = statusName.toLowerCase();
+    if (status.includes('nov')) return 'status-new';
+    if (status.includes('toku') || status.includes('u toku')) return 'status-progress';
+    if (status.includes('rešen') || status.includes('riješen')) return 'status-done';
+    return 'status-new';
+  }
+  exportData(): void {
+    console.log('Export functionality would go here');
+    // Implementacija exporta u CSV/Excel
   }
 }

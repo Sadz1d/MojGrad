@@ -10,7 +10,7 @@
         <img src="/assets/images/logo1.png" alt="Moj Grad Logo" class="brand-logo">
       </div>
       <h1 class="brand-name">Moj Grad</h1>
-      <p class="brand-tagline">{{ isEditMode ? 'Izmenite prijavu problema' : 'Prijavite problem i pomozite svom gradu' }}</p>
+      <p class="brand-tagline">{{ isEditMode ? 'Izmijenite prijavu problema' : 'Prijavite problem i pomozite svom gradu' }}</p>
     </div>
 
     <!-- Form Card -->
@@ -34,8 +34,8 @@
       <!-- Form -->
       <form [formGroup]="form" (ngSubmit)="onSubmit()" *ngIf="!loading" class="form-card">
         <div class="form-header">
-          <div class="form-title-badge">{{ isEditMode ? 'IZMENA PRIJAVE' : 'NOVA PRIJAVA' }}</div>
-          <h2 class="form-title">{{ isEditMode ? 'Izmenite prijavu problema' : 'Kreirajte novu prijavu' }}</h2>
+          <div class="form-title-badge">{{ isEditMode ? 'IZMJENA PRIJAVE' : 'NOVA PRIJAVA' }}</div>
+          <h2 class="form-title">{{ isEditMode ? 'Izmijenite prijavu problema' : 'Kreirajte novu prijavu' }}</h2>
           <p class="form-subtitle">
             {{ isEditMode ? 
               'Ažurirajte podatke o postojećoj prijavi.' : 
@@ -66,7 +66,7 @@
             Detaljan opis *
           </label>
           <textarea id="description" class="form-control" rows="4" formControlName="description"
-                    placeholder="Opisite problem što detaljnije..."
+                    placeholder="Opišite problem što detaljnije..."
                     [class.is-invalid]="getFieldError('description')"></textarea>
           <div class="error-message" *ngIf="getFieldError('description')">
             <mat-icon>error_outline</mat-icon>
@@ -85,7 +85,7 @@
             Lokacija
           </label>
           <input type="text" id="location" class="form-control" formControlName="location"
-                 placeholder="Npr. 'Park Zrinjevac, ulaz sa severne strane'"
+                 placeholder="Npr. 'Park Zrinjevac, ulaz sa sjeverne strane'"
                  [class.is-invalid]="getFieldError('location')">
           <div class="error-message" *ngIf="getFieldError('location')">
             <mat-icon>error_outline</mat-icon>
@@ -131,7 +131,7 @@
           </div>
           <div class="form-hint">
             <mat-icon>search</mat-icon>
-            Pregled statusa: 1 - Nov, 2 - U toku, 3 - Rešen, 4 - Odložen
+            Pregled statusa: 1 - Nov, 2 - U toku, 3 - Riješen, 4 - Odložen
           </div>
         </div>
 
@@ -147,7 +147,7 @@
                   [disabled]="submitting || form.invalid">
             <mat-icon *ngIf="!submitting">{{ isEditMode ? 'save' : 'send' }}</mat-icon>
             <mat-spinner *ngIf="submitting" diameter="20"></mat-spinner>
-            {{ isEditMode ? 'Sačuvaj izmene' : 'Pošalji prijavu' }}
+            {{ isEditMode ? 'Sačuvaj izmjene' : 'Pošalji prijavu' }}
           </button>
         </div>
       </form>
