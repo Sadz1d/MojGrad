@@ -5,6 +5,8 @@ using Market.Domain.Entities.Reports;
 using Market.Domain.Entities.Rewards;
 using Market.Domain.Entities.Surveys;
 using Market.Domain.Entities.Volunteering;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Market.Application.Abstractions;
 
@@ -51,6 +53,7 @@ public interface IAppDbContext
     DbSet<VolunteerActionEntity> VolunteerActions { get; }
     DbSet<ActionParticipantEntity> ActionParticipants { get; }
 
-
+    Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken);
+    DatabaseFacade Database { get; }
     Task<int> SaveChangesAsync(CancellationToken ct);
 }

@@ -7,6 +7,8 @@ using Market.Domain.Entities.Rewards;
 using Market.Domain.Entities.Surveys;
 using Market.Domain.Entities.Volunteering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Market.Infrastructure.Database;
 
@@ -55,6 +57,12 @@ public partial class DatabaseContext : DbContext, IAppDbContext
     public DbSet<ActionParticipantEntity> ActionParticipants => Set<ActionParticipantEntity>();
 
 
+    public new DatabaseFacade Database => base.Database;
+
+    public async Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken)
+    {
+        return await base.Database.BeginTransactionAsync(cancellationToken);
+    }
 
 
 

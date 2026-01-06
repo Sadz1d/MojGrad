@@ -1,0 +1,286 @@
+<!-- src/app/core/components/problem-report-import/problem-report-import.component.html -->
+<div class="import-container">
+  <!-- Pozadinska slika -->
+  <div class="import-overlay"></div>
+  
+  <div class="import-content">
+    <!-- Logo & Brand -->
+    <div class="import-brand">
+      <div class="brand-logo-container">
+        <img src="/assets/images/logo1.png" alt="Moj Grad Logo" class="brand-logo">
+      </div>
+      <h1 class="brand-name">Moj Grad</h1>
+      
+    </div>
+
+    <!-- Header -->
+    <div class="import-header">
+      <div class="title-badge">IMPORT PODATAKA</div>
+      <h2 class="section-title">Uvezite prijave iz Excel/CSV fajla</h2>
+      
+    </div>
+
+    <!-- Main Import Card -->
+    <div class="import-card">
+      <!-- Progress Bar -->
+      <div class="progress-container" *ngIf="importing">
+        <div class="progress-bar">
+          <div class="progress-fill" [style.width.%]="progress"></div>
+        </div>
+        <div class="progress-text">
+          <mat-icon>sync</mat-icon>
+          <span>Import u toku... {{ progress }}%</span>
+        </div>
+      </div>
+
+      <!-- Step 1: File Selection -->
+      <div *ngIf="!importComplete" class="import-step">
+        <div class="step-header">
+          <span class="step-number">1</span>
+          <h3>Odaberite fajl za import</h3>
+        </div>
+
+        <!-- File Upload Area -->
+        <div class="upload-area" 
+             [class.dragging]="isDragging"
+             (dragover)="onDragOver($event)"
+             (dragleave)="onDragLeave($event)"
+             (drop)="onDrop($event)">
+          
+          <div class="upload-content" *ngIf="!selectedFile; else fileSelected">
+            <mat-icon class="upload-icon">cloud_upload</mat-icon>
+            <p class="upload-title">Prevucite fajl ovdje ili</p>
+            
+            <label for="fileInput" class="upload-button">
+              <input type="file" id="fileInput" 
+                     (change)="onFileSelected($event)"
+                     accept=".xlsx,.xls,.csv"
+                     hidden>
+              <mat-icon>folder_open</mat-icon>
+              <span>Odaberite fajl</span>
+            </label>
+            
+            <p class="upload-hint">
+              Podržani formati: Excel (.xlsx, .xls) ili CSV (.csv)<br>
+              Maksimalna veličina: 10MB
+            </p>
+            
+            <button class="template-button" (click)="downloadTemplate()">
+              <mat-icon>download</mat-icon>
+              <span>Preuzmite template</span>
+            </button>
+          </div>
+
+          <ng-template #fileSelected>
+            <div class="file-info">
+              <div class="file-icon">
+                <mat-icon>{{ getFileIcon() }}</mat-icon>
+              </div>
+              <div class="file-details">
+                <h4>{{ selectedFile?.name }}</h4>
+                <p>{{ getFileSize() }} • {{ selectedFile?.type }}</p>
+                
+                <!-- Validation Status -->
+                <div *ngIf="validationResult" class="validation-status">
+                  <mat-icon [class.valid]="validationResult.isValid" 
+                           [class.invalid]="!validationResult.isValid">
+                    {{ validationResult.isValid ? 'check_circle' : 'error' }}
+                  </mat-icon>
+                  <span [class.valid]="validationResult.isValid">
+                    {{ validationResult.totalRows }} zapisa • 
+                    {{ validationResult.isValid ? 'Validan fajl' : 'Nevalidan fajl' }}
+                  </span>
+                </div>
+              </div>
+              <button class="remove-file" (click)="resetState()">
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
+            
+            <!-- File Errors -->
+            <div *ngIf="fileError" class="file-error">
+              <mat-icon>error_outline</mat-icon>
+              <span>{{ fileError }}</span>
+            </div>
+            
+            <!-- Preview Toggle -->
+            <button *ngIf="validationResult?.isValid" 
+                    class="preview-toggle"
+                    (click)="showPreview = !showPreview">
+              <mat-icon>{{ showPreview ? 'visibility_off' : 'visibility' }}</mat-icon>
+              <span>{{ showPreview ? 'Sakrij' : 'Prikaži' }} pregled</span>
+            </button>
+          </ng-template>
+        </div>
+
+        <!-- File Preview -->
+        <div *ngIf="showPreview && validationResult" class="file-preview">
+          <h4>Pregled podataka (prvih 5 redova)</h4>
+          
+          <div class="preview-table">
+            <table>
+              <thead>
+                <tr>
+                  <th *ngFor="let header of validationResult.headers || []">{{ header }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of validationResult.sampleData || []">
+                  <td *ngFor="let header of validationResult.headers || []">
+                    {{ row[header] || '-' }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Import Options -->
+        <div *ngIf="validationResult?.isValid" class="import-options">
+          <div class="options-grid">
+            <mat-checkbox formControlName="skipFirstRow" color="primary">
+              Preskoči prvi red (zaglavlje)
+            </mat-checkbox>
+            
+            <mat-checkbox formControlName="dryRun" color="primary">
+              Probni uvoz (samo validacija, bez snimanja)
+            </mat-checkbox>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2: Import Results -->
+      <div *ngIf="importComplete && importResult" class="results-step">
+        <div class="step-header">
+          <span class="step-number">2</span>
+          <h3>Rezultati uvoza</h3>
+        </div>
+
+        <!-- Results Summary -->
+        <div class="results-summary" 
+             [class.success]="importResult.failed === 0"
+             [class.warning]="importResult.failed > 0">
+          
+          <div class="summary-icon">
+            <mat-icon *ngIf="importResult.failed === 0">check_circle</mat-icon>
+            <mat-icon *ngIf="importResult.failed > 0">warning</mat-icon>
+          </div>
+          
+          <div class="summary-content">
+            <h4>Uvoz {{ importResult.failed === 0 ? 'uspješan' : 'djelomično uspješan' }}</h4>
+            
+            <div class="summary-stats">
+              <div class="stat-item">
+                <span class="stat-label">Ukupno zapisa:</span>
+                <span class="stat-value">{{ importResult.totalRecords }}</span>
+              </div>
+              <div class="stat-item success">
+                <span class="stat-label">Uspješno:</span>
+                <span class="stat-value">{{ importResult.successful }}</span>
+              </div>
+              <div class="stat-item failed" *ngIf="importResult.failed > 0">
+                <span class="stat-label">Neuspješno:</span>
+                <span class="stat-value">{{ importResult.failed }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Import Errors -->
+        <div *ngIf="importResult.errors.length > 0" class="import-errors">
+          <h5>Detalji grešaka:</h5>
+          <ul>
+            <li *ngFor="let error of importResult.errors">
+              <mat-icon>error</mat-icon>
+              {{ error }}
+            </li>
+          </ul>
+        </div>
+
+        <!-- Import Error Message -->
+        <div *ngIf="importError" class="import-error-message">
+          <mat-icon>error_outline</mat-icon>
+          <span>{{ importError }}</span>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="import-actions">
+        <button *ngIf="!importComplete" 
+                class="action-button action-secondary"
+                (click)="goToList()">
+          <mat-icon>arrow_back</mat-icon>
+          Nazad na listu
+        </button>
+        
+        <div class="primary-actions">
+          <button *ngIf="!importComplete && validationResult?.isValid" 
+                  class="action-button action-primary"
+                  [disabled]="importing || !validationResult?.isValid"
+                  (click)="startImport()">
+            <mat-icon *ngIf="!importing">upload</mat-icon>
+            <mat-spinner *ngIf="importing" diameter="20"></mat-spinner>
+            {{ importing ? 'Uvoz u toku...' : 'Pokreni uvoz' }}
+          </button>
+          
+          <button *ngIf="importComplete" 
+                  class="action-button action-success"
+                  (click)="goToList()">
+            <mat-icon>list</mat-icon>
+            Pogledaj prijave
+          </button>
+          
+          <button *ngIf="importComplete" 
+                  class="action-button action-secondary"
+                  (click)="importAnother()">
+            <mat-icon>add_circle</mat-icon>
+            Novi uvoz
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Instructions -->
+    <div class="instructions-card">
+      <h3><mat-icon>info</mat-icon> Uputstvo za uvoz podataka</h3>
+      
+      <div class="instructions-grid">
+        <div class="instruction-item">
+          <div class="instruction-icon">1</div>
+          <div class="instruction-content">
+            <h4>Preuzmite template</h4>
+            <p>Koristite naš template fajl za pravilno formatiranje podataka</p>
+          </div>
+        </div>
+        
+        <div class="instruction-item">
+          <div class="instruction-icon">2</div>
+          <div class="instruction-content">
+            <h4>Popunite podatke</h4>
+            <p>Obavezna polja: Title, Description, CategoryId, StatusId</p>
+          </div>
+        </div>
+        
+        <div class="instruction-item">
+          <div class="instruction-icon">3</div>
+          <div class="instruction-content">
+            <h4>Uvezite fajl</h4>
+            <p>Odaberite popunjeni fajl i pokrenite Uvoz</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="instruction-note">
+        <mat-icon>lightbulb</mat-icon>
+        <p><strong>Savjet:</strong> Koristite "Probni uvoz" opciju prvi put da provjerite podatke prije snimanja.</p>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="import-footer">
+      <p class="platform-description">
+        Masovni uvoz prijava za brže rješavanje problema u gradu
+      </p>
+    </div>
+  </div>
+</div>
