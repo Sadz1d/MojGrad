@@ -20,7 +20,7 @@ export class RegisterComponent extends BaseComponent {
   hideConfirmPassword = true;
   successMessage = '';
 
-  // Custom validator for password confirmation
+  // Custom validator za potvrdu lozinke
   passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
     const password = control.get('password')?.value;
     const confirmPassword = control.get('confirmPassword')?.value;
@@ -39,14 +39,22 @@ export class RegisterComponent extends BaseComponent {
     password: ['', [
       Validators.required,
       Validators.minLength(6),
-      Validators.pattern(/[A-Z]/),
-      Validators.pattern(/[a-z]/),
-      Validators.pattern(/[0-9]/)
+      Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$/)
     ]],
     confirmPassword: ['', [Validators.required]],
     phoneNumber: [''],
     acceptTerms: [false, [Validators.requiredTrue]]
   }, { validators: this.passwordMatchValidator });
+
+  get passwordErrors() {
+    const password = this.form.get('password');
+    if (!password || !password.errors) return '';
+    
+    if (password.errors['required']) return 'Lozinka je obavezna';
+    if (password.errors['minlength']) return 'Lozinka mora imati najmanje 6 karaktera';
+    if (password.errors['pattern']) return 'Lozinka mora sadržati veliko slovo, malo slovo i cifru';
+    return '';
+  }
 
   onSubmit(): void {
     if (this.form.invalid || this.isLoading) return;
@@ -61,21 +69,29 @@ export class RegisterComponent extends BaseComponent {
       email: this.form.value.email ?? '',
       password: this.form.value.password ?? '',
       confirmPassword: this.form.value.confirmPassword ?? '',
-      phoneNumber: this.form.value.phoneNumber ?? ''
+      phoneNumber: this.form.value.phoneNumber || undefined
     };
+
+    console.log('Register payload:', payload);
 
     this.auth.register(payload).subscribe({
       next: (response: any) => {
         this.stopLoading();
-        this.successMessage = response.message;
+        this.successMessage = response.message || 'Uspešno ste registrovani! Sada se možete prijaviti.';
         
-        // Auto login after registration (optional)
+        // Preusmjeri na login nakon 3 sekunde
         setTimeout(() => {
           this.router.navigate(['/auth/login']);
         }, 3000);
       },
       error: (err: any) => {
-        this.stopLoading(err.error?.message || 'Greška pri registraciji. Molimo pokušajte ponovo.');
+        this.stopLoading(
+          err.error?.message || 
+          err.error?.errors?.Email?.[0] || 
+          err.error?.errors?.Password?.[0] || 
+          'Greška pri registraciji. Molimo pokušajte ponovo.'
+        );
+        console.error('Register error:', err);
       }
     });
   }

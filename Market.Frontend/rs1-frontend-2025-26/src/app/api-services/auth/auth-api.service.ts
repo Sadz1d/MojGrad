@@ -59,7 +59,21 @@ export interface CurrentUserResponse {
   isManager: boolean;
   isEmployee: boolean;
 }
+export interface RegisterRequest {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+  phoneNumber?: string | undefined
+}
 
+export interface RegisterResponse {
+  userId: number;
+  email: string;
+  fullName: string;
+  message: string;
+}
 @Injectable({
   providedIn: 'root'
 })

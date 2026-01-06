@@ -1,0 +1,83 @@
+// src/app/modules/auth/register/register.component.scss
+// Koristi ISTE varijable kao login komponenta
+@import '../login/login.component.scss';
+
+// Dodatni stilovi za register formu
+.auth-card {
+  max-width: 500px; // Malo šire za register formu
+}
+
+.full-width {
+  margin-bottom: 10px;
+}
+
+.terms-row {
+  margin: 15px 0 5px 0;
+}
+
+.terms-checkbox {
+  ::ng-deep {
+    .mdc-checkbox__background {
+      border-color: $primary-teal !important;
+      border-width: 2px !important;
+    }
+
+    &.mat-mdc-checkbox-checked .mdc-checkbox__background {
+      background-color: $primary-teal !important;
+    }
+
+    .mdc-label {
+      font-size: 14px !important;
+      color: $text-dark !important;
+      font-weight: 500 !important;
+      margin-left: 8px !important;
+      line-height: 1.5 !important;
+    }
+  }
+}
+
+.terms-link {
+  color: $primary-blue;
+  text-decoration: none;
+  font-weight: 600;
+  
+  &:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+}
+
+.terms-error {
+  margin-left: 32px !important;
+  margin-top: 5px !important;
+  display: block !important;
+}
+
+.success-message {
+  background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+  border: 2px solid #10b981;
+  color: $success-green;
+  padding: 18px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 28px;
+  font-size: 15px;
+  font-weight: 600;
+  animation: fadeIn 0.3s ease-out;
+  box-shadow: 0 6px 20px rgba(5, 150, 105, 0.15);
+
+  mat-icon {
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+  }
+}
+
+// Responsive
+@media (max-width: 480px) {
+  .auth-card {
+    max-width: 100%;
+  }
+}

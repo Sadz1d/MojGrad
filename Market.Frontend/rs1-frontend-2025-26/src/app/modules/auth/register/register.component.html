@@ -1,1 +1,227 @@
-<p>register works!</p>
+<!-- src/app/modules/auth/register/register.component.html -->
+<div class="auth-container">
+  <div class="auth-overlay"></div>
+  
+  <div class="auth-content">
+    <!-- Logo & Brand -->
+    <div class="auth-brand">
+      <div class="brand-logo-container">
+        <img src="/assets/images/logo1.png" alt="Moj Grad Logo" class="brand-logo">
+      </div>
+      <h1 class="brand-name">Moj Grad</h1>
+      <p class="brand-tagline">Pridružite se našoj zajednici</p>
+    </div>
+
+    <!-- Register Card -->
+    <mat-card class="auth-card mat-elevation-z8">
+      <mat-card-header>
+        <mat-card-title class="card-title">Registracija</mat-card-title>
+        <mat-card-subtitle class="card-subtitle">Kreirajte vaš nalog za pristup platformi</mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <!-- Error message -->
+        <div *ngIf="errorMessage" class="error-message" @fadeIn>
+          <mat-icon>error_outline</mat-icon>
+          <span>{{ errorMessage }}</span>
+        </div>
+
+        <!-- Success message -->
+        <div *ngIf="successMessage" class="success-message" @fadeIn>
+          <mat-icon>check_circle</mat-icon>
+          <span>{{ successMessage }}</span>
+        </div>
+
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+          <!-- First Name -->
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label class="field-label">Ime</mat-label>
+            <input
+              matInput
+              formControlName="firstName"
+              type="text"
+              placeholder="Unesite vaše ime"
+              autocomplete="given-name"
+              class="input-field"
+            />
+            <mat-icon matPrefix class="field-icon">person</mat-icon>
+            <mat-error *ngIf="form.get('firstName')?.hasError('required')" class="field-error">
+              Ime je obavezno
+            </mat-error>
+          </mat-form-field>
+
+          <!-- Last Name -->
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label class="field-label">Prezime</mat-label>
+            <input
+              matInput
+              formControlName="lastName"
+              type="text"
+              placeholder="Unesite vaše prezime"
+              autocomplete="family-name"
+              class="input-field"
+            />
+            <mat-icon matPrefix class="field-icon">person</mat-icon>
+            <mat-error *ngIf="form.get('lastName')?.hasError('required')" class="field-error">
+              Prezime je obavezno
+            </mat-error>
+          </mat-form-field>
+
+          <!-- Email -->
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label class="field-label">Email adresa</mat-label>
+            <input
+              matInput
+              formControlName="email"
+              type="email"
+              placeholder="ime.prezime@primjer.com"
+              autocomplete="email"
+              class="input-field"
+            />
+            <mat-icon matPrefix class="field-icon">alternate_email</mat-icon>
+            <mat-error *ngIf="form.get('email')?.hasError('required')" class="field-error">
+              Email adresa je obavezna
+            </mat-error>
+            <mat-error *ngIf="form.get('email')?.hasError('email')" class="field-error">
+              Unesite validnu email adresu
+            </mat-error>
+          </mat-form-field>
+
+          <!-- Password -->
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label class="field-label">Lozinka</mat-label>
+            <input
+              matInput
+              formControlName="password"
+              [type]="hidePassword ? 'password' : 'text'"
+              placeholder="Unesite lozinku (min. 6 karaktera)"
+              autocomplete="new-password"
+              class="input-field"
+            />
+            <mat-icon matPrefix class="field-icon">key</mat-icon>
+            <button
+              mat-icon-button
+              matSuffix
+              type="button"
+              (click)="hidePassword = !hidePassword"
+              [attr.aria-label]="'Hide password'"
+              class="password-toggle"
+            >
+              <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+            <mat-error *ngIf="form.get('password')?.hasError('required')" class="field-error">
+              Lozinka je obavezna
+            </mat-error>
+            <mat-error *ngIf="form.get('password')?.hasError('minlength')" class="field-error">
+              Lozinka mora imati najmanje 6 karaktera
+            </mat-error>
+          </mat-form-field>
+
+          <!-- Confirm Password -->
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label class="field-label">Potvrdite lozinku</mat-label>
+            <input
+              matInput
+              formControlName="confirmPassword"
+              [type]="hideConfirmPassword ? 'password' : 'text'"
+              placeholder="Ponovite lozinku"
+              autocomplete="new-password"
+              class="input-field"
+            />
+            <mat-icon matPrefix class="field-icon">key</mat-icon>
+            <button
+              mat-icon-button
+              matSuffix
+              type="button"
+              (click)="hideConfirmPassword = !hideConfirmPassword"
+              [attr.aria-label]="'Hide password'"
+              class="password-toggle"
+            >
+              <mat-icon>{{ hideConfirmPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+            <mat-error *ngIf="form.get('confirmPassword')?.hasError('required')" class="field-error">
+              Potvrda lozinke je obavezna
+            </mat-error>
+            <mat-error *ngIf="form.hasError('passwordMismatch')" class="field-error">
+              Lozinke se ne podudaraju
+            </mat-error>
+          </mat-form-field>
+
+          <!-- Phone Number -->
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label class="field-label">Broj telefona (opciono)</mat-label>
+            <input
+              matInput
+              formControlName="phoneNumber"
+              type="tel"
+              placeholder="+387 XX XXX XXX"
+              autocomplete="tel"
+              class="input-field"
+            />
+            <mat-icon matPrefix class="field-icon">phone</mat-icon>
+          </mat-form-field>
+
+          <!-- Terms & Conditions -->
+          <div class="terms-row">
+            <mat-checkbox formControlName="acceptTerms" color="primary" class="terms-checkbox">
+              <span class="checkbox-label">Prihvatam 
+                <a href="#" class="terms-link">uslove korištenja</a> i 
+                <a href="#" class="terms-link">politiku privatnosti</a>
+              </span>
+            </mat-checkbox>
+            <mat-error *ngIf="form.get('acceptTerms')?.hasError('requiredTrue')" class="field-error terms-error">
+              Morate prihvatiti uslove korištenja
+            </mat-error>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="actions">
+            <button
+              mat-raised-button
+              color="primary"
+              type="submit"
+              class="submit-button"
+              [disabled]="form.invalid || isLoading"
+            >
+              <ng-container *ngIf="!isLoading; else loadingTpl">
+                <mat-icon class="button-icon">person_add</mat-icon>
+                <span class="button-text">Registrujte se</span>
+              </ng-container>
+              <ng-template #loadingTpl>
+                <mat-progress-spinner
+                  mode="indeterminate"
+                  diameter="20"
+                  strokeWidth="3"
+                ></mat-progress-spinner>
+                <span class="button-text">Registracija u toku...</span>
+              </ng-template>
+            </button>
+          </div>
+
+          <!-- Divider -->
+          <div class="divider">
+            <span>ili</span>
+          </div>
+
+          <!-- Login Link -->
+          <div class="login-prompt">
+            <span class="prompt-text">Već imate nalog?</span>
+            <a routerLink="/auth/login" class="login-link">Prijavite se</a>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Footer -->
+    <div class="auth-footer">
+      <a routerLink="/" class="back-link">
+        <mat-icon class="back-icon">arrow_back</mat-icon>
+        <span class="back-text">Nazad na početnu</span>
+      </a>
+      <p class="platform-description">
+        Pridružite se zajednici, prijavite probleme<br>
+        zajedno gradimo bolji grad.
+      </p>
+    </div>
+  </div>
+</div>
