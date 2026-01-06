@@ -8,6 +8,10 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatIcon } from "@angular/material/icon";
 import { MatProgressSpinner } from "@angular/material/progress-spinner";
+import { ExportService } from '../../services/export.service';
+import { MatDivider } from "@angular/material/divider";
+import { MatMenuModule } from '@angular/material/menu';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-problem-report-list',
@@ -15,17 +19,21 @@ import { MatProgressSpinner } from "@angular/material/progress-spinner";
   styleUrls: ['./problem-report-list.component.scss'],
   standalone: true,
   imports: [
+    MatMenuModule,
+    MatProgressSpinnerModule,
     CommonModule,
     ReactiveFormsModule,
     RouterModule,
     MatIcon,
-    MatProgressSpinner
+    MatProgressSpinner,
+    MatDivider
 ],
 })
 export class ProblemReportListComponent implements OnInit {
   reports: ProblemReportListItem[] = [];
   loading = false;
   error = '';
+  exporting = false;
   
   filterForm: FormGroup;
   
@@ -36,6 +44,7 @@ export class ProblemReportListComponent implements OnInit {
 
   constructor(
     private problemReportService: ProblemReportService,
+    private exportService: ExportService,
     private fb: FormBuilder,
     public router: Router
   ) {
@@ -140,8 +149,261 @@ export class ProblemReportListComponent implements OnInit {
     if (status.includes('rešen') || status.includes('riješen')) return 'status-done';
     return 'status-new';
   }
+  /**
+   * Exportuje trenutno prikazane podatke u Excel
+   */
   exportData(): void {
-    console.log('Export functionality would go here');
-    // Implementacija exporta u CSV/Excel
+    if (this.reports.length === 0) {
+      alert('Nema podataka za export!');
+      return;
+    }
+
+    this.exporting = true;
+
+    try {
+      // Pripremi podatke za export
+      const exportData = this.prepareExportData();
+      
+      // Exportuj u Excel
+      this.exportService.exportToExcel(exportData, {
+        fileName: `problem-reports-${this.getCurrentDate()}.xlsx`,
+        sheetName: 'Problem Reports',
+        dateFormat: 'DD.MM.YYYY'
+      });
+      
+      console.log('Export uspješan!');
+      
+    } catch (error) {
+      console.error('Greška pri exportu:', error);
+      alert('Došlo je do greške pri exportu podataka.');
+      
+    } finally {
+      this.exporting = false;
+    }
   }
+
+  /**
+   * Exportuje sve podatke (sa svim filterima) u Excel
+   */
+  exportAllData(): void {
+    if (!confirm('Da li želite da exportujete SVE podatke (može potrajati)?')) {
+      return;
+    }
+
+    this.exporting = true;
+
+    // Uzmi sve podatke bez paginacije
+    const filter: ProblemReportFilter = {
+      ...this.filterForm.value,
+      page: 1,
+      pageSize: 10000 // Veliki broj da dobijemo sve
+    };
+
+    this.problemReportService.getReports(filter).subscribe({
+      next: (response) => {
+        try {
+          const exportData = this.prepareExportData(response.items);
+          
+          this.exportService.exportToExcel(exportData, {
+            fileName: `problem-reports-all-${this.getCurrentDate()}.xlsx`,
+            sheetName: 'Svi Problem Reports',
+            dateFormat: 'DD.MM.YYYY'
+          });
+          
+          console.log('Export svih podataka uspješan!');
+          
+        } catch (error) {
+          console.error('Greška pri exportu:', error);
+          alert('Došlo je do greške pri exportu podataka.');
+          
+        } finally {
+          this.exporting = false;
+        }
+      },
+      error: (err) => {
+        this.exporting = false;
+        alert('Greška pri dobijanju podataka za export: ' + err.message);
+      }
+    });
+  }
+
+  /**
+   * Exportuje podatke u CSV format
+   */
+  exportToCSV(): void {
+    if (this.reports.length === 0) {
+      alert('Nema podataka za export!');
+      return;
+    }
+
+    this.exporting = true;
+
+    try {
+      const exportData = this.prepareExportData();
+      
+      this.exportService.exportToCSV(
+        exportData,
+        `problem-reports-${this.getCurrentDate()}.csv`,
+        ';' // Koristi ; kao delimiter za Excel u našem regionu
+      );
+      
+      console.log('CSV export uspješan!');
+      
+    } catch (error) {
+      console.error('Greška pri CSV exportu:', error);
+      alert('Došlo je do greške pri CSV exportu.');
+      
+    } finally {
+      this.exporting = false;
+    }
+  }
+
+  /**
+   * Exportuje advanced report sa više sheetova
+   */
+  exportAdvancedReport(): void {
+    if (this.reports.length === 0) {
+      alert('Nema podataka za export!');
+      return;
+    }
+
+    this.exporting = true;
+
+    try {
+      const exportData = [
+        {
+          sheetName: 'Prijave',
+          data: this.prepareExportData(),
+          columns: ['ID', 'Naslov', 'Autor', 'Kategorija', 'Status', 'Lokacija', 'Datum', 'Komentari', 'Opis'],
+          columnWidths: [10, 40, 20, 15, 15, 25, 15, 12, 50]
+        },
+        {
+          sheetName: 'Statistika',
+          data: this.generateStatistics(),
+          columns: ['Kategorija', 'Broj Prijava', 'Prosječan Status'],
+          columnWidths: [30, 15, 20]
+        },
+        {
+          sheetName: 'Filteri',
+          data: [this.getCurrentFilters()],
+          columns: ['Pretraga', 'User ID', 'Category ID', 'Status ID', 'Stranica'],
+          columnWidths: [30, 15, 15, 15, 15]
+        }
+      ];
+
+      this.exportService.exportAdvanced(
+        exportData,
+        `problem-reports-advanced-${this.getCurrentDate()}.xlsx`
+      );
+      
+      console.log('Advanced export uspješan!');
+      
+    } catch (error) {
+      console.error('Greška pri advanced exportu:', error);
+      alert('Došlo je do greške pri advanced exportu.');
+      
+    } finally {
+      this.exporting = false;
+    }
+  }
+
+  // === PRIVATE HELPER METODE ===
+
+  /**
+   * Priprema podatke za export
+   */
+  private prepareExportData(items: ProblemReportListItem[] = this.reports): any[] {
+    return items.map(report => ({
+      'ID': report.id,
+      'Naslov': report.title,
+      'Autor': report.authorName,
+      'Kategorija': report.categoryName,
+      'Status': report.statusName,
+      'Lokacija': report.location || 'N/A',
+      'Datum': new Date(report.creationDate),
+      'Komentari': report.commentsCount,
+      'Zadaci': report.tasksCount,
+      'Ocjene': report.ratingsCount,
+      'Opis': report.shortDescription || '',
+      'URL Detalja': `${window.location.origin}/problem-reports/${report.id}`
+    }));
+  }
+
+  /**
+   * Generiše statistiku za advanced report
+   */
+  private generateStatistics(): any[] {
+    const categoryStats = new Map<string, { count: number, statuses: string[] }>();
+    
+    this.reports.forEach(report => {
+      const key = report.categoryName;
+      if (!categoryStats.has(key)) {
+        categoryStats.set(key, { count: 0, statuses: [] });
+      }
+      
+      const stat = categoryStats.get(key)!;
+      stat.count++;
+      stat.statuses.push(report.statusName);
+    });
+
+    return Array.from(categoryStats.entries()).map(([category, stat]) => ({
+      'Kategorija': category,
+      'Broj Prijava': stat.count,
+      'Prosječan Status': this.calculateAverageStatus(stat.statuses)
+    }));
+  }
+
+  /**
+   * Vraća trenutne filtere
+   */
+  private getCurrentFilters(): any {
+    const formValue = this.filterForm.value;
+    return {
+      'Pretraga': formValue.search || 'Sve',
+      'User ID': formValue.userId || 'Svi',
+      'Category ID': formValue.categoryId || 'Sve',
+      'Status ID': formValue.statusId || 'Svi',
+      'Stranica': this.currentPage,
+      'Veličina Stranice': this.pageSize
+    };
+  }
+
+  /**
+   * Računa prosječan status
+   */
+  private calculateAverageStatus(statuses: string[]): string {
+    const statusValues: { [key: string]: number } = {
+      'novo': 1,
+      'u toku': 2,
+      'rešen': 3,
+      'riješeno': 3,
+      'odložen': 4
+    };
+
+    const total = statuses.reduce((sum, status) => {
+      const lowerStatus = status.toLowerCase();
+      return sum + (statusValues[lowerStatus] || 1);
+    }, 0);
+
+    const avg = total / statuses.length;
+
+    if (avg <= 1.5) return 'Novo';
+    if (avg <= 2.5) return 'U toku';
+    return 'Rešeno/Riješeno';
+  }
+
+  /**
+   * Vraća trenutni datum za ime fajla
+   */
+  public getCurrentDate(): string {
+    const now = new Date();
+    const day = now.getDate().toString().padStart(2, '0');
+    const month = (now.getMonth() + 1).toString().padStart(2, '0');
+    const year = now.getFullYear();
+    const hours = now.getHours().toString().padStart(2, '0');
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+    
+    return `${year}-${month}-${day}_${hours}-${minutes}`;
+  }
+
 }

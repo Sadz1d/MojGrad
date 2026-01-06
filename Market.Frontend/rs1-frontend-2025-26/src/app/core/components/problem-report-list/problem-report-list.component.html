@@ -133,12 +133,43 @@
             <mat-icon>table_chart</mat-icon>
             <span>Prikazano {{ reports.length }} prijava</span>
           </div>
-          <div class="table-actions">
-            <button class="action-button action-secondary btn-sm" (click)="exportData()">
-              <mat-icon>download</mat-icon>
-              Izvezi
-            </button>
-          </div>
+          <!-- Pastuj ovo umjesto njega: -->
+<div class="table-actions">
+  <!-- Export dropdown menu -->
+  <div class="export-dropdown" *ngIf="reports.length > 0">
+    <button class="action-button action-secondary btn-sm" 
+            [matMenuTriggerFor]="exportMenu"
+            [disabled]="exporting">
+      <mat-icon *ngIf="!exporting">download</mat-icon>
+      <mat-spinner *ngIf="exporting" diameter="16"></mat-spinner>
+      {{ exporting ? 'Exportuje se...' : 'Izvezi' }}
+    </button>
+    
+    <mat-menu #exportMenu="matMenu">
+      <button mat-menu-item (click)="exportData()">
+        <mat-icon>get_app</mat-icon>
+        <span>Trenutni prikaz ({{ reports.length }})</span>
+      </button>
+      <button mat-menu-item (click)="exportAllData()">
+        <mat-icon>archive</mat-icon>
+        <span>Svi podaci (sa filterima)</span>
+      </button>
+      <button mat-menu-item (click)="exportToCSV()">
+        <mat-icon>insert_drive_file</mat-icon>
+        <span>CSV format</span>
+      </button>
+      <button mat-menu-item (click)="exportAdvancedReport()">
+        <mat-icon>assessment</mat-icon>
+        <span>Advanced report</span>
+      </button>
+      <mat-divider></mat-divider>
+      <button mat-menu-item disabled>
+        <mat-icon>info</mat-icon>
+        <span>Posljednji export: {{ getCurrentDate() }}</span>
+      </button>
+    </mat-menu>
+  </div>
+</div>
         </div>
 
         <div class="table-responsive">
