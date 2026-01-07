@@ -1,5 +1,4 @@
-﻿
-using Market.API.Models.Requests;
+﻿using Market.API.Models.Requests;
 using Market.Application.Modules.Reports.ProblemReport.Commands.Create;
 using Market.Application.Modules.Reports.ProblemReport.Commands.Delete;
 using Market.Application.Modules.Reports.ProblemReport.Commands.Import;
@@ -30,7 +29,13 @@ public sealed class ProblemReportsController : ControllerBase
     private readonly ISender sender;
     private readonly ILogger<ProblemReportsController> _logger;
     public ProblemReportsController(ISender sender,
-        ILogger<ProblemReportsController> logger) { this.sender = sender; _logger = logger; }
+        ILogger<ProblemReportsController> logger)
+    {
+        this.sender = sender;
+        _logger = logger;
+        // EPPlus 8+ license setting (replaces obsolete LicenseContext)
+        OfficeOpenXml.ExcelPackage.License.SetNonCommercialPersonal("Your Name or Organization");
+    }
 
     [HttpGet]
     public async Task<PageResult<ListProblemReportQueryDto>> List(
@@ -184,6 +189,7 @@ public sealed class ProblemReportsController : ControllerBase
         bool skipFirstRow,
         CancellationToken cancellationToken)
     {
+       
         var items = new List<ImportProblemReportDto>();
 
         using var stream = new MemoryStream();

@@ -5,7 +5,7 @@ import { Observable, Subject } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import * as XLSX from 'xlsx';
 import { environment } from '../../../environments/environment';
-
+import { filter } from 'rxjs/operators';
 export interface ImportResult {
   totalRecords: number;
   successful: number;
@@ -26,12 +26,41 @@ export interface FileValidationResult {
   providedIn: 'root'
 })
 export class ImportService {
-  private baseUrl = `${environment.apiUrl}/api/reports/problem-reports`;
+  private baseUrl = `${environment.apiUrl}/reports/problem-reports`;
   
   private progressSubject = new Subject<number>();
   public progress$ = this.progressSubject.asObservable();
 
   constructor(private http: HttpClient) {}
+
+importFile(file: File, skipFirstRow: boolean = true, dryRun: boolean = false): Observable<ImportResult> {
+    const formData = new FormData();
+    formData.append('File', file, file.name);
+    formData.append('SkipFirstRow', skipFirstRow.toString());
+    formData.append('DryRun', dryRun.toString());
+
+    return this.http.post<ImportResult>(`${this.baseUrl}/import`, formData, {
+      reportProgress: true,
+      observe: 'events'
+    }).pipe(
+      map((event: HttpEvent<any>) => {
+        if (event.type === HttpEventType.UploadProgress && event.total) {
+          const progress = Math.round(100 * event.loaded / event.total);
+          this.progressSubject.next(progress);
+          return null;
+        } else if (event.type === HttpEventType.Response) {
+          this.progressSubject.next(100);
+          return event.body;
+        }
+        return null;
+      }),
+      filter((result): result is ImportResult => result !== null),
+      catchError(error => {
+        this.progressSubject.next(0);
+        throw this.handleImportError(error);
+      })
+    );
+  }
 
   validateFile(file: File): Promise<FileValidationResult> {
     return new Promise((resolve, reject) => {
@@ -169,7 +198,82 @@ export class ImportService {
       });
     });
   }
+// Dodajte ovu metodu u servis
+downloadTemplateWithInstructions(): void {
+  // Prvo, možda dohvatite postojeće kategorije i statuse iz baze
+  // Ovo je primer - možete adaptirati za vaš API
+  this.http.get<any[]>('https://localhost:7260/api/categories').subscribe({
+    next: (categories) => {
+      this.http.get<any[]>('https://localhost:7260/api/statuses').subscribe({
+        next: (statuses) => {
+          this.generateTemplateWithData(categories, statuses);
+        },
+        error: () => {
+          // Fallback ako ne može da dobije podatke
+          this.generateTemplateWithData([], []);
+        }
+      });
+    },
+    error: () => {
+      this.generateTemplateWithData([], []);
+    }
+  });
+}
 
+private generateTemplateWithData(categories: any[], statuses: any[]): void {
+  // Kreiraj sheet sa primjerima
+  const exampleData = [
+    {
+      Title: 'Nepokošena trava u parku',
+      Description: 'Trava u centralnom parku nije pokošena nekoliko sedmica',
+      Location: 'Park Zrinjevac',
+      CategoryId: categories.length > 0 ? categories[0].id : 1,
+      StatusId: statuses.length > 0 ? statuses[0].id : 1,
+      UserId: 1
+    }
+  ];
+
+  const headers = ['Title', 'Description', 'Location', 'CategoryId', 'StatusId', 'UserId'];
+  
+  const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(exampleData, { header: headers });
+  
+  // Kreiraj sheet sa listama validnih ID-jeva
+  const validIdsData = [
+    ['VALIDNI ID-JEVI IZ BAZE'],
+    [''],
+    ['KATEGORIJE:'],
+    ['ID', 'Naziv', 'Opis']
+  ];
+  
+  categories.forEach(cat => {
+    validIdsData.push([cat.id, cat.name, cat.description || '']);
+  });
+  
+  validIdsData.push([''], ['STATUSI:'], ['ID', 'Naziv', 'Opis']);
+  
+  statuses.forEach(status => {
+    validIdsData.push([status.id, status.name, status.description || '']);
+  });
+  
+  const wsValidIds = XLSX.utils.aoa_to_sheet(validIdsData);
+  
+  const wb: XLSX.WorkBook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Template');
+  XLSX.utils.book_append_sheet(wb, wsValidIds, 'Validni ID-jev');
+  
+  const excelBuffer: any = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+  
+  const data: Blob = new Blob([excelBuffer], {
+    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+  });
+  
+  const url = window.URL.createObjectURL(data);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `problem-reports-template-with-valid-ids.xlsx`;
+  link.click();
+  window.URL.revokeObjectURL(url);
+}
   downloadTemplate(): void {
     const templateData = [
       {

@@ -114,27 +114,66 @@
         </div>
 
         <!-- File Preview -->
-        <div *ngIf="showPreview && validationResult" class="file-preview">
-          <h4>Pregled podataka (prvih 5 redova)</h4>
-          
-          <div class="preview-table">
-            <table>
-              <thead>
-                <tr>
-                  <th *ngFor="let header of validationResult.headers || []">{{ header }}</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let row of validationResult.sampleData || []">
-                  <td *ngFor="let header of validationResult.headers || []">
-                    {{ row[header] || '-' }}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
+<div *ngIf="showPreview && validationResult" class="file-preview">
+  <h4>
+    <mat-icon>preview</mat-icon>
+    Pregled podataka ({{ validationResult.sampleData.length }} od {{ validationResult.totalRows }} redova)
+  </h4>
+  
+  <div class="preview-table-container">
+    <table class="preview-table">
+      <thead>
+        <tr>
+          <th *ngFor="let header of validationResult.headers" class="preview-header">
+            {{ header }}
+            <span *ngIf="isRequiredColumn(header)" class="required-badge">*</span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of validationResult.sampleData; let i = index" 
+            [class.empty-row]="isEmptyRow(row)">
+          <td *ngFor="let header of validationResult.headers" class="preview-cell">
+            <span [class.empty-value]="!row[header] && row[header] !== 0">
+              {{ formatCellValue(row[header]) }}
+            </span>
+            <span *ngIf="!row[header] && row[header] !== 0" class="cell-warning">
+              <mat-icon>warning</mat-icon>
+            </span>
+          </td>
+        </tr>
+        
+        <!-- Dodatni red ako ima više podataka -->
+        <tr *ngIf="validationResult.totalRows > validationResult.sampleData.length" class="more-rows-info">
+          <td [attr.colspan]="validationResult.headers.length" class="more-data-cell">
+            <mat-icon>more_horiz</mat-icon>
+            <span>Ima još {{ validationResult.totalRows - validationResult.sampleData.length }} redova...</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  
+  <!-- Statistik -->
+  <div class="preview-stats">
+    <div class="stat-item">
+      <mat-icon>format_list_numbered</mat-icon>
+      <span>Ukupno redova: <strong>{{ validationResult.totalRows }}</strong></span>
+    </div>
+    <div class="stat-item" *ngIf="validationResult.errors.length === 0">
+      <mat-icon>check_circle</mat-icon>
+      <span>Format fajla: <strong class="valid">Validan</strong></span>
+    </div>
+    <div class="stat-item" *ngIf="validationResult.errors.length > 0">
+      <mat-icon>error</mat-icon>
+      <span>Format fajla: <strong class="invalid">Nevalidan</strong></span>
+    </div>
+    <div class="stat-item">
+      <mat-icon>view_column</mat-icon>
+      <span>Broj kolona: <strong>{{ validationResult.headers.length }}</strong></span>
+    </div>
+  </div>
+</div>
         <!-- Import Options -->
         <div *ngIf="validationResult?.isValid" class="import-options">
           <div class="options-grid">
@@ -142,9 +181,7 @@
               Preskoči prvi red (zaglavlje)
             </mat-checkbox>
             
-            <mat-checkbox formControlName="dryRun" color="primary">
-              Probni uvoz (samo validacija, bez snimanja)
-            </mat-checkbox>
+            
           </div>
         </div>
       </div>
@@ -270,10 +307,7 @@
         </div>
       </div>
       
-      <div class="instruction-note">
-        <mat-icon>lightbulb</mat-icon>
-        <p><strong>Savjet:</strong> Koristite "Probni uvoz" opciju prvi put da provjerite podatke prije snimanja.</p>
-      </div>
+      
     </div>
 
     <!-- Footer -->
