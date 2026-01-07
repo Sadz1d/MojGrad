@@ -11,6 +11,7 @@ import { HttpClient, HttpEvent, HttpEventType } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { finalize } from 'rxjs/operators';
 import * as XLSX from 'xlsx';
+import { ChangeDetectorRef } from '@angular/core';
 @Component({
   selector: 'app-problem-report-import',
   templateUrl: './problem-report-import.component.html',
@@ -39,6 +40,7 @@ export class ProblemReportImportComponent implements OnInit {
     private fb: FormBuilder,
     private importService: ImportService,
     private router: Router,
+    private cdr: ChangeDetectorRef,
     private http: HttpClient
   ) {
     this.importForm = this.fb.group({
@@ -151,14 +153,12 @@ export class ProblemReportImportComponent implements OnInit {
     this.simpleFileValidation(file);
   }
 
-  private async simpleFileValidation(file: File): Promise<void> {
+  private simpleFileValidation(file: File): void {
   this.loading = true;
   this.fileError = null;
   
-  try {
-    // Koristite XLSX biblioteku za čitanje Excel fajla
-    const data = await this.readExcelFile(file);
-    
+  // ✅ KORISTITE ASYNC/AWAIT UMESTO setTimeout
+  this.readExcelFile(file).then(data => {
     if (data.length === 0) {
       this.validationResult = {
         isValid: false,
@@ -167,53 +167,42 @@ export class ProblemReportImportComponent implements OnInit {
         headers: [],
         sampleData: []
       };
-      return;
+    } else {
+      // Prvi red su headers
+      const headers = data[0] || [];
+      
+      // Uzmi prvih 5 redova podataka (preskačući header)
+      const sampleData = data.slice(1, 6).map((row: any[]) => {
+        const obj: any = {};
+        headers.forEach((header: string, index: number) => {
+          obj[header] = row[index] || '';
+        });
+        return obj;
+      });
+      
+      this.validationResult = {
+        isValid: true,
+        errors: [],
+        totalRows: data.length - 1,
+        headers: headers,
+        sampleData: sampleData
+      };
     }
     
-    // Prvi red su headers
-    const headers = data[0];
-    
-    // Proverite da li ima obavezne kolone
-    const expectedColumns = ['Title', 'Description', 'CategoryId', 'StatusId'];
-    const missingColumns = expectedColumns.filter(col => 
-      !headers.some((header: string) => 
-        header?.toString().toLowerCase().includes(col.toLowerCase())
-      )
-    );
-    
-    // Uzmi prvih 5 redova podataka (preskačući header)
-    const sampleData = data.slice(1, 6).map((row: any[]) => {
-      const obj: any = {};
-      headers.forEach((header: string, index: number) => {
-        obj[header] = row[index] || '';
-      });
-      return obj;
-    });
-    
-    this.validationResult = {
-      isValid: missingColumns.length === 0,
-      errors: missingColumns.length > 0 ? 
-        [`Nedostaju obavezne kolone: ${missingColumns.join(', ')}`] : [],
-      totalRows: data.length - 1,
-      headers: headers,
-      sampleData: sampleData
-    };
-    
-    console.log('File validation result:', this.validationResult);
-    
-  } catch (error) {
-    console.error('Error reading Excel file:', error);
-    this.fileError = 'Greška pri čitanju fajla: ' + (error as Error).message;
-    this.validationResult = {
-      isValid: false,
-      errors: ['Ne mogu da pročitam fajl'],
-      totalRows: 0,
-      headers: [],
-      sampleData: []
-    };
-  } finally {
     this.loading = false;
-  }
+    
+    // ✅ OVO JE KLJUČNO: Obavestite Angular da su se podaci promenili
+    this.cdr.detectChanges();
+    
+    console.log('File validated:', this.validationResult);
+    
+  }).catch(error => {
+    console.error('Error reading file:', error);
+    this.fileError = 'Greška pri čitanju fajla';
+    this.validationResult = null;
+    this.loading = false;
+    this.cdr.detectChanges(); // ✅ OVO JE TAKOĐE VAŽNO
+  });
 }
 
 // Nova metoda za čitanje Excel fajla
