@@ -1101,3 +1101,102 @@ $card-shadow: 0 6px 28px rgba(0, 0, 0, 0.08);
   font-weight: 700;
   letter-spacing: 0.3px;
 }
+// Dodajte ove stilove u problem-report-list.component.scss
+
+// === SORTABLE HEADERS ===
+.sortable-header {
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.3s ease;
+  position: relative;
+  
+  &:hover {
+    background: rgba($accent-blue, 0.2);
+    
+    .header-content {
+      color: $primary-blue;
+    }
+    
+    .sort-icon {
+      opacity: 1;
+      transform: translateY(-2px);
+    }
+  }
+  
+  .header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 0 4px;
+  }
+  
+  .sort-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    color: $primary-blue;
+    opacity: 0.6;
+    transition: all 0.3s ease;
+  }
+}
+
+// Sort indicator
+.sort-indicator {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  margin-left: 5px;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  
+  &.asc {
+    border-bottom: 4px solid $primary-blue;
+  }
+  
+  &.desc {
+    border-top: 4px solid $primary-blue;
+  }
+}
+
+// Sort info u filter sekciji
+.sort-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 15px;
+  padding: 10px 15px;
+  background: rgba($accent-blue, 0.2);
+  border-radius: 10px;
+  font-size: 14px;
+  
+  .sort-label {
+    font-weight: 600;
+    color: $primary-blue;
+  }
+  
+  .sort-value {
+    color: $text-dark;
+  }
+  
+  button {
+    margin-left: auto;
+    padding: 4px 12px;
+    font-size: 12px;
+  }
+}
+
+// Responsive za sortiranje
+@media (max-width: 768px) {
+  .sortable-header {
+    .header-content {
+      flex-direction: column;
+      gap: 4px;
+      text-align: center;
+    }
+    
+    .sort-icon {
+      margin-top: 2px;
+    }
+  }
+}

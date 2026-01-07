@@ -13,6 +13,18 @@ import { MatDivider } from "@angular/material/divider";
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
+// ENUM za sortiranje
+enum SortDirection {
+  ASC = 'asc',
+  DESC = 'desc',
+  NONE = ''
+}
+
+interface SortState {
+  column: string;
+  direction: SortDirection;
+}
+
 @Component({
   selector: 'app-problem-report-list',
   templateUrl: './problem-report-list.component.html',
@@ -27,7 +39,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     MatIcon,
     MatProgressSpinner,
     MatDivider
-],
+  ],
 })
 export class ProblemReportListComponent implements OnInit {
   reports: ProblemReportListItem[] = [];
@@ -42,6 +54,24 @@ export class ProblemReportListComponent implements OnInit {
   totalItems = 0;
   totalPages = 0;
 
+  // Sortiranje
+  sortState: SortState = {
+    column: 'id',
+    direction: SortDirection.DESC
+  };
+
+  // Dostupne kolone za sortiranje
+  sortableColumns = [
+    { key: 'id', label: 'ID' },
+    { key: 'title', label: 'Naslov' },
+    { key: 'authorName', label: 'Autor' },
+    { key: 'categoryName', label: 'Kategorija' },
+    { key: 'statusName', label: 'Status' },
+    { key: 'location', label: 'Lokacija' },
+    { key: 'creationDate', label: 'Datum' },
+    { key: 'commentsCount', label: 'Komentari' }
+  ];
+
   constructor(
     private problemReportService: ProblemReportService,
     private exportService: ExportService,
@@ -52,37 +82,184 @@ export class ProblemReportListComponent implements OnInit {
       search: [''],
       userId: [null],
       categoryId: [null],
-      statusId: [null]
+      statusId: [null],
+      sortBy: ['id'],
+      sortDirection: ['desc']
     });
   }
 
   ngOnInit(): void {
     this.loadReports();
   }
-
+originalReports: ProblemReportListItem[] = [];
   loadReports(): void {
-    this.loading = true;
-    this.error = '';
-    
-    const filter: ProblemReportFilter = {
-      ...this.filterForm.value,
-      page: this.currentPage,
-      pageSize: this.pageSize
-    };
+  this.loading = true;
+  this.error = '';
+  
+  const filter: ProblemReportFilter = {
+    ...this.filterForm.value,
+    page: this.currentPage,
+    pageSize: this.pageSize
+  };
 
-    this.problemReportService.getReports(filter).subscribe({
-      next: (response) => {
-        this.reports = response.items;
-        this.totalItems = response.totalCount;
-        this.totalPages = response.totalPages;
-        this.loading = false;
-      },
-      error: (err) => {
-        this.error = 'Greška pri učitavanju podataka: ' + err.message;
-        this.loading = false;
-      }
-    });
+  this.problemReportService.getReports(filter).subscribe({
+    next: (response) => {
+      // Sačuvaj originalne podatke
+      this.originalReports = [...response.items];
+      
+      // Postavi trenutne podatke
+      this.reports = this.originalReports;
+      
+      this.totalItems = response.totalCount;
+      this.totalPages = response.totalPages;
+      this.loading = false;
+    },
+    error: (err) => {
+      this.error = 'Greška pri učitavanju podataka: ' + err.message;
+      this.loading = false;
+    }
+  });
+}
+
+  // === SORTIRANJE ===
+
+  /**
+   * Sortira po koloni
+   */
+  sortBy(column: string): void {
+  console.log(`Sorting by ${column}, current direction: ${this.sortState.direction}`);
+  
+  // Ako već sortiramo po ovoj koloni, promijeni direction
+  if (this.sortState.column === column) {
+    switch (this.sortState.direction) {
+      case SortDirection.ASC:
+        this.sortState.direction = SortDirection.DESC;
+        break;
+      case SortDirection.DESC:
+        this.sortState.direction = SortDirection.NONE;
+        break;
+      case SortDirection.NONE:
+        this.sortState.direction = SortDirection.ASC;
+        break;
+    }
+  } else {
+    // Nova kolona, kreni sa DESC
+    this.sortState.column = column;
+    this.sortState.direction = SortDirection.DESC;
   }
+  
+  console.log(`New direction: ${this.sortState.direction}`);
+  
+  // Primijeni sortiranje bez reloada
+  this.applySorting();
+}
+private applySorting(): void {
+  if (this.sortState.direction === SortDirection.NONE) {
+    // Vrati na originalni redoslijed BEZ reloada
+    this.reports = [...this.originalReports];
+    console.log('Reset to original order');
+  } else {
+    // Sortiraj trenutne podatke
+    const sorted = this.problemReportService.sortReportsLocally(
+      [...this.reports], // Napravi kopiju
+      this.sortState.column,
+      this.sortState.direction
+    );
+    this.reports = sorted;
+    console.log('Applied sorting');
+  }
+}
+private sortLocal(): void {
+  if (this.sortState.direction === SortDirection.NONE) {
+    // Ako je NONE, vrati se na originalni redoslijed
+    // Ponovo učitaj podatke bez sortiranja
+    this.currentPage = 1;
+    this.loadReports();
+    return;
+  }
+  // Sortiraj lokalno postojeće podatke
+  this.reports = this.problemReportService.sortReportsLocally(
+    this.reports,
+    this.sortState.column,
+    this.sortState.direction
+  );}
+  /**
+   * Vraća sledeći direction za sortiranje
+   */
+  private getNextDirection(currentDirection: SortDirection): SortDirection {
+    switch (currentDirection) {
+      case SortDirection.ASC:
+        return SortDirection.DESC;
+      case SortDirection.DESC:
+        return SortDirection.NONE;
+      case SortDirection.NONE:
+        return SortDirection.ASC;
+      default:
+        return SortDirection.DESC;
+    }
+  }
+
+  /**
+   * Vraća ikonicu za sortiranje
+   */
+  getSortIcon(column: string): string {
+    if (this.sortState.column !== column) {
+      return 'sort'; // Neutralna ikonica
+    }
+
+    switch (this.sortState.direction) {
+      case SortDirection.ASC:
+        return 'arrow_upward';
+      case SortDirection.DESC:
+        return 'arrow_downward';
+      case SortDirection.NONE:
+        return 'sort';
+      default:
+        return 'sort';
+    }
+  }
+
+  /**
+   * Vraća tooltip za sortiranje
+   */
+  getSortTooltip(column: string): string {
+    if (this.sortState.column !== column) {
+      return `Sortiraj po ${this.getColumnLabel(column)}`;
+    }
+
+    switch (this.sortState.direction) {
+      case SortDirection.ASC:
+        return `Sortirano A-Z po ${this.getColumnLabel(column)}`;
+      case SortDirection.DESC:
+        return `Sortirano Z-A po ${this.getColumnLabel(column)}`;
+      case SortDirection.NONE:
+        return `Ukloni sortiranje po ${this.getColumnLabel(column)}`;
+      default:
+        return `Sortiraj po ${this.getColumnLabel(column)}`;
+    }
+  }
+
+  /**
+   * Vraća label za kolonu
+   */
+  public getColumnLabel(column: string): string {
+    const col = this.sortableColumns.find(c => c.key === column);
+    return col ? col.label : column;
+  }
+
+  /**
+   * Resetuje sortiranje
+   */
+  resetSort(): void {
+    this.sortState = {
+      column: 'id',
+      direction: SortDirection.DESC
+    };
+    this.currentPage = 1;
+    this.loadReports();
+  }
+
+  // === FILTERI ===
 
   applyFilter(): void {
     this.currentPage = 1;
@@ -91,15 +268,36 @@ export class ProblemReportListComponent implements OnInit {
 
   resetFilter(): void {
     this.filterForm.reset();
-    this.currentPage = 1;
-    this.loadReports();
+    this.resetSort(); // Resetuj i sortiranje
   }
+
+  // === PAGINACIJA ===
 
   onPageChange(page: number): void {
     if (page < 1 || page > this.totalPages) return;
     this.currentPage = page;
     this.loadReports();
   }
+
+  getPageNumbers(): number[] {
+    const pages: number[] = [];
+    const maxVisiblePages = 5;
+    
+    let startPage = Math.max(1, this.currentPage - Math.floor(maxVisiblePages / 2));
+    let endPage = Math.min(this.totalPages, startPage + maxVisiblePages - 1);
+    
+    if (endPage - startPage + 1 < maxVisiblePages) {
+      startPage = Math.max(1, endPage - maxVisiblePages + 1);
+    }
+    
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(i);
+    }
+    
+    return pages;
+  }
+
+  // === AKCIJE ===
 
   deleteReport(id: number): void {
     if (confirm('Da li ste sigurni da želite da obrišete ovaj izveštaj?')) {
@@ -125,23 +323,7 @@ export class ProblemReportListComponent implements OnInit {
   editReport(id: number): void {
     this.router.navigate(['/problem-reports/edit', id]);
   }
-  getPageNumbers(): number[] {
-  const pages: number[] = [];
-  const maxVisiblePages = 5;
-  
-  let startPage = Math.max(1, this.currentPage - Math.floor(maxVisiblePages / 2));
-  let endPage = Math.min(this.totalPages, startPage + maxVisiblePages - 1);
-  
-  if (endPage - startPage + 1 < maxVisiblePages) {
-    startPage = Math.max(1, endPage - maxVisiblePages + 1);
-  }
-  
-  for (let i = startPage; i <= endPage; i++) {
-    pages.push(i);
-  }
-  
-  return pages;
-  }
+
   getStatusClass(statusName: string): string {
     const status = statusName.toLowerCase();
     if (status.includes('nov')) return 'status-new';
@@ -149,9 +331,9 @@ export class ProblemReportListComponent implements OnInit {
     if (status.includes('rešen') || status.includes('riješen')) return 'status-done';
     return 'status-new';
   }
-  /**
-   * Exportuje trenutno prikazane podatke u Excel
-   */
+
+  // === EXPORT ===
+
   exportData(): void {
     if (this.reports.length === 0) {
       alert('Nema podataka za export!');
@@ -161,10 +343,8 @@ export class ProblemReportListComponent implements OnInit {
     this.exporting = true;
 
     try {
-      // Pripremi podatke za export
       const exportData = this.prepareExportData();
       
-      // Exportuj u Excel
       this.exportService.exportToExcel(exportData, {
         fileName: `problem-reports-${this.getCurrentDate()}.xlsx`,
         sheetName: 'Problem Reports',
@@ -182,9 +362,6 @@ export class ProblemReportListComponent implements OnInit {
     }
   }
 
-  /**
-   * Exportuje sve podatke (sa svim filterima) u Excel
-   */
   exportAllData(): void {
     if (!confirm('Da li želite da exportujete SVE podatke (može potrajati)?')) {
       return;
@@ -192,11 +369,10 @@ export class ProblemReportListComponent implements OnInit {
 
     this.exporting = true;
 
-    // Uzmi sve podatke bez paginacije
     const filter: ProblemReportFilter = {
       ...this.filterForm.value,
       page: 1,
-      pageSize: 10000 // Veliki broj da dobijemo sve
+      pageSize: 10000
     };
 
     this.problemReportService.getReports(filter).subscribe({
@@ -227,9 +403,6 @@ export class ProblemReportListComponent implements OnInit {
     });
   }
 
-  /**
-   * Exportuje podatke u CSV format
-   */
   exportToCSV(): void {
     if (this.reports.length === 0) {
       alert('Nema podataka za export!');
@@ -244,7 +417,7 @@ export class ProblemReportListComponent implements OnInit {
       this.exportService.exportToCSV(
         exportData,
         `problem-reports-${this.getCurrentDate()}.csv`,
-        ';' // Koristi ; kao delimiter za Excel u našem regionu
+        ';'
       );
       
       console.log('CSV export uspješan!');
@@ -258,9 +431,6 @@ export class ProblemReportListComponent implements OnInit {
     }
   }
 
-  /**
-   * Exportuje advanced report sa više sheetova
-   */
   exportAdvancedReport(): void {
     if (this.reports.length === 0) {
       alert('Nema podataka za export!');
@@ -286,8 +456,8 @@ export class ProblemReportListComponent implements OnInit {
         {
           sheetName: 'Filteri',
           data: [this.getCurrentFilters()],
-          columns: ['Pretraga', 'User ID', 'Category ID', 'Status ID', 'Stranica'],
-          columnWidths: [30, 15, 15, 15, 15]
+          columns: ['Pretraga', 'User ID', 'Category ID', 'Status ID', 'Stranica', 'Sortiraj po', 'Smjer'],
+          columnWidths: [20, 10, 10, 10, 10, 15, 10]
         }
       ];
 
@@ -309,9 +479,6 @@ export class ProblemReportListComponent implements OnInit {
 
   // === PRIVATE HELPER METODE ===
 
-  /**
-   * Priprema podatke za export
-   */
   private prepareExportData(items: ProblemReportListItem[] = this.reports): any[] {
     return items.map(report => ({
       'ID': report.id,
@@ -329,9 +496,6 @@ export class ProblemReportListComponent implements OnInit {
     }));
   }
 
-  /**
-   * Generiše statistiku za advanced report
-   */
   private generateStatistics(): any[] {
     const categoryStats = new Map<string, { count: number, statuses: string[] }>();
     
@@ -353,9 +517,6 @@ export class ProblemReportListComponent implements OnInit {
     }));
   }
 
-  /**
-   * Vraća trenutne filtere
-   */
   private getCurrentFilters(): any {
     const formValue = this.filterForm.value;
     return {
@@ -364,13 +525,12 @@ export class ProblemReportListComponent implements OnInit {
       'Category ID': formValue.categoryId || 'Sve',
       'Status ID': formValue.statusId || 'Svi',
       'Stranica': this.currentPage,
-      'Veličina Stranice': this.pageSize
+      'Veličina Stranice': this.pageSize,
+      'Sortiraj po': this.sortState.column,
+      'Smjer': this.sortState.direction.toUpperCase()
     };
   }
 
-  /**
-   * Računa prosječan status
-   */
   private calculateAverageStatus(statuses: string[]): string {
     const statusValues: { [key: string]: number } = {
       'novo': 1,
@@ -392,9 +552,6 @@ export class ProblemReportListComponent implements OnInit {
     return 'Rešeno/Riješeno';
   }
 
-  /**
-   * Vraća trenutni datum za ime fajla
-   */
   public getCurrentDate(): string {
     const now = new Date();
     const day = now.getDate().toString().padStart(2, '0');

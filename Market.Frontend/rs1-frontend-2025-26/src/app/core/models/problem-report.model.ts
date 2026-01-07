@@ -58,6 +58,8 @@ export interface ProblemReportFilter {
   userId?: number;
   categoryId?: number;
   statusId?: number;
+  sortBy?: string;          // Dodano
+  sortDirection?: string;  
   page?: number;
   pageSize?: number;
 }
@@ -69,4 +71,6 @@ export interface PageResult<T> {
   page: number;
   pageSize: number;
   totalPages: number;
+  sortBy?: string;
+  sortDirection?: string;
 }

@@ -91,6 +91,21 @@
               + Nova prijava
             </button>
           </div>
+          <div class="sort-info" *ngIf="sortState.direction !== ''">
+  <div class="sort-label">Sortira se po:</div>
+  <div class="sort-value">
+    {{ getColumnLabel(sortState.column) }} 
+    ({{ sortState.direction === 'asc' ? 'A-Z' : 'Z-A' }})
+  </div>
+  <button 
+    type="button" 
+    class="action-button action-secondary btn-sm"
+    (click)="resetSort()"
+  >
+    <mat-icon>clear</mat-icon>
+    Ukloni sort
+  </button>
+</div>
         </form>
       </div>
     </div>
@@ -178,19 +193,82 @@
 
         <div class="table-responsive">
           <table class="data-table">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Naslov</th>
-                <th>Autor</th>
-                <th>Kategorija</th>
-                <th>Status</th>
-                <th>Lokacija</th>
-                <th>Datum</th>
-                <th>Komentari</th>
-                <th>Akcije</th>
-              </tr>
-            </thead>
+            <!-- components/problem-report-list/problem-report-list.component.html -->
+<!-- Samo zamijenite THEAD dio: -->
+<thead>
+  <tr>
+    <!-- ID - sortabilno -->
+    <th (click)="sortBy('id')" class="sortable-header">
+      <div class="header-content">
+        <span>ID</span>
+        <mat-icon class="sort-icon">{{ getSortIcon('id') }}</mat-icon>
+      </div>
+    </th>
+    
+    <!-- Naslov - sortabilno -->
+    <th (click)="sortBy('title')" class="sortable-header">
+      <div class="header-content">
+        <span>Naslov</span>
+        <mat-icon class="sort-icon">{{ getSortIcon('title') }}</mat-icon>
+      </div>
+    </th>
+    
+    <!-- Autor - sortabilno -->
+    <th (click)="sortBy('authorName')" class="sortable-header">
+      <div class="header-content">
+        <span>Autor</span>
+        <mat-icon class="sort-icon">{{ getSortIcon('authorName') }}</mat-icon>
+      </div>
+    </th>
+    
+    <!-- Kategorija - sortabilno -->
+    <th (click)="sortBy('categoryName')" class="sortable-header">
+      <div class="header-content">
+        <span>Kategorija</span>
+        <mat-icon class="sort-icon">{{ getSortIcon('categoryName') }}</mat-icon>
+      </div>
+    </th>
+    
+    <!-- Status - sortabilno -->
+    <th (click)="sortBy('statusName')" class="sortable-header">
+      <div class="header-content">
+        <span>Status</span>
+        <mat-icon class="sort-icon">{{ getSortIcon('statusName') }}</mat-icon>
+      </div>
+    </th>
+    
+    <!-- Lokacija - sortabilno -->
+    <th (click)="sortBy('location')" class="sortable-header">
+      <div class="header-content">
+        <span>Lokacija</span>
+        <mat-icon class="sort-icon">{{ getSortIcon('location') }}</mat-icon>
+      </div>
+    </th>
+    
+    <!-- Datum - sortabilno -->
+    <th (click)="sortBy('creationDate')" class="sortable-header">
+      <div class="header-content">
+        <span>Datum</span>
+        <mat-icon class="sort-icon">{{ getSortIcon('creationDate') }}</mat-icon>
+      </div>
+    </th>
+    
+    <!-- Komentari - sortabilno -->
+    <th (click)="sortBy('commentsCount')" class="sortable-header">
+      <div class="header-content">
+        <span>Komentari</span>
+        <mat-icon class="sort-icon">{{ getSortIcon('commentsCount') }}</mat-icon>
+      </div>
+    </th>
+    
+    <!-- Akcije - nije sortabilno -->
+    <th>
+      <div class="header-content">
+        <span>Akcije</span>
+      </div>
+    </th>
+  </tr>
+</thead>
             <tbody>
               <tr *ngFor="let report of reports" class="table-row">
                 <td class="report-id">
