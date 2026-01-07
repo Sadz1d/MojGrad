@@ -17,7 +17,7 @@ import { map } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class ProblemReportService {
-  private readonly baseUrl = `${environment.apiUrl}/api/reports/problem-reports`;
+  private readonly baseUrl = `${environment.apiUrl}/reports/problem-reports`;
   private http = inject(HttpClient);
 
   // GET lista sa filterima

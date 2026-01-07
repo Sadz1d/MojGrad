@@ -17,7 +17,7 @@
           <button mat-raised-button color="primary" class="cta-button">
             <img src="assets/images/search.png" alt="Search" class="button-icon" />
           </button>
-          <button mat-raised-button color="accent" routerLink="/report" class="cta-button report-button">
+          <button mat-raised-button color="accent" routerLink="problem-reports/new" class="cta-button report-button">
             Prijavite problem
           </button>
         </div>
@@ -127,7 +127,7 @@
     </div>
 
     <div class="section-footer">
-      <button mat-raised-button class="view-all-button">
+      <button mat-raised-button class="view-all-button" routerLink="/problem-reports">
         Pogledajte sve probleme
       </button>
     </div>
@@ -250,17 +250,63 @@
 
       <h2>Prijavite problem i unaprijedite svoj grad</h2>
       <p>Pomozite svojim sugrađanima i učestvujte u izgradnji boljeg okruženja.</p>
-
-      <button mat-raised-button color="primary" routerLink="/auth/login" class="cta-main-button">
-        <img src="assets/images/add_circle.jpg" alt="Add" class="button-icon" />
-        Prijavite se sada
-      </button>
+<!-- DINAMIČKO DUGME -->
+      <div *ngIf="isLoggedIn$ | async; else loginButton">
+        <!-- Korisnik je PRIJAVLJEN - prikaži ODJAVITE SE -->
+        <button 
+          mat-raised-button 
+          color="warn" 
+          (click)="logout()" 
+          class="cta-main-button logout-button"
+        >
+          <mat-icon class="button-icon">logout</mat-icon>
+          Odjavite se
+          <span *ngIf="currentUser?.email as email" class="user-email">
+            ({{ email }})
+          </span>
+        </button>
+        
+        <!-- Dodatni link za dashboard -->
+        <div style="margin-top: 20px;">
+          <button 
+            mat-stroked-button 
+            color="primary" 
+            routerLink="/dashboard" 
+            class="dashboard-button"
+          >
+            <mat-icon>dashboard</mat-icon>
+            Moj Dashboard
+          </button>
+        </div>
+      </div>
+      
+      <ng-template #loginButton>
+        <!-- Korisnik NIJE prijavljen - prikaži PRIJAVITE SE -->
+        <button 
+          mat-raised-button 
+          color="primary" 
+          routerLink="/auth/login" 
+          class="cta-main-button login-button"
+        >
+          <mat-icon class="button-icon">login</mat-icon>
+          Prijavite se sada
+        </button>
+        
+        <!-- Dodatni link za registraciju -->
+        <div style="margin-top: 20px;">
+          <button 
+            mat-stroked-button 
+            color="accent" 
+            routerLink="/auth/register" 
+            class="register-button"
+          >
+            <mat-icon>person_add</mat-icon>
+            Registrujte se
+          </button>
+        </div>
+      </ng-template>
 
     </div>
-    <div style="text-align: center; margin-top: 20px;">
-    <button mat-raised-button color="primary" routerLink="/problem-reports" class="cta-main-button">
-      🗂️ Pregled svih prijava
-    </button>
-  </div>
+   
   </section>
 </div>
