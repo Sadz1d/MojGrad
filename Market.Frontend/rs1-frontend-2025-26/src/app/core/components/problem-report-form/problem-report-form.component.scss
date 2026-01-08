@@ -560,3 +560,76 @@ body {
 .form-control:focus {
   transform: translateY(-1px);
 }
+.user-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: linear-gradient(135deg, $accent-blue 0%, darken($accent-blue, 5%) 100%);
+  padding: 16px 24px;
+  border-radius: 14px;
+  margin-bottom: 30px;
+  border: 2px solid rgba($primary-blue, 0.3);
+  box-shadow: 0 6px 20px rgba($primary-blue, 0.15);
+  animation: fadeIn 0.5s ease-out;
+  
+  mat-icon {
+    color: $primary-blue;
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+  }
+  
+  span {
+    color: $text-dark;
+    font-weight: 600;
+    font-size: 16px;
+    
+    strong {
+      color: $primary-blue;
+      font-weight: 700;
+    }
+  }
+}
+
+// Alert za neprijavljenog korisnika
+.alert-warning {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+  color: #856404;
+  padding: 18px 24px;
+  border-radius: 12px;
+  margin-bottom: 30px;
+  border: 2px solid #ffeaa7;
+  animation: slideInUp 0.3s ease-out;
+  
+  mat-icon {
+    color: #ffc107;
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+  }
+  
+  a {
+    color: $primary-blue;
+    font-weight: 700;
+    text-decoration: none;
+    margin-left: 5px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    background: rgba($white, 0.5);
+    
+    &:hover {
+      text-decoration: underline;
+      background: rgba($white, 0.8);
+    }
+  }
+}
+
+// Disable form ako korisnik nije prijavljen
+.form-card:has(~ .alert-warning) {
+  opacity: 0.6;
+  pointer-events: none;
+}

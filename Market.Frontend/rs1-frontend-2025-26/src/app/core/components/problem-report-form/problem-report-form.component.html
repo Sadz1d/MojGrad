@@ -13,6 +13,13 @@
       <p class="brand-tagline">{{ isEditMode ? 'Izmijenite prijavu problema' : 'Prijavite problem i pomozite svom gradu' }}</p>
     </div>
 
+     <!-- Poruka ako korisnik nije prijavljen -->
+    <div *ngIf="!isAuthenticated && !isEditMode" class="alert alert-warning">
+      <mat-icon>warning</mat-icon>
+      Morate biti prijavljeni da biste kreirali novu prijavu. 
+      <a [routerLink]="['/auth/login']" [queryParams]="{ returnUrl: router.url }">Prijavite se ovdje</a>
+    </div>
+
     <!-- Form Card -->
     <div class="form-card-wrapper">
       <!-- Success Message -->
@@ -29,6 +36,12 @@
       <!-- Error Message -->
       <div *ngIf="error && !loading" class="alert alert-danger">
         {{ error }}
+      </div>
+
+      <!-- Prikaži ko je trenutno prijavljen -->
+      <div *ngIf="isAuthenticated && !isEditMode" class="user-info">
+        <mat-icon>person</mat-icon>
+        <span>Prijavljujete problem kao: <strong>{{ currentUser()?.fullName }}</strong></span>
       </div>
 
       <!-- Form -->
