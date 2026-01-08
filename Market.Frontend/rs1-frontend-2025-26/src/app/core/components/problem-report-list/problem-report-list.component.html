@@ -304,12 +304,19 @@
                     <span>{{ report.creationDate | date:'dd.MM.yyyy.' }}</span>
                   </div>
                 </td>
-                <td class="report-comments">
+                <!--<td class="report-comments">
                   <div class="comments-info">
                     <mat-icon class="comments-icon">comment</mat-icon>
                     <span class="comments-count">{{ report.commentsCount }}</span>
                   </div>
-                </td>
+                </td>-->
+                <td class="report-comments">
+  <div class="comments-info clickable" (click)="openComments(report.id)" 
+       matTooltip="Pogledaj komentare" matTooltipPosition="above">
+    <mat-icon class="comments-icon">comment</mat-icon>
+    <span class="comments-count">{{ report.commentsCount }}</span>
+  </div>
+</td>
                 <td class="report-actions">
                   <div class="action-buttons">
                     <button class="action-btn view-btn" (click)="viewReport(report.id)" matTooltip="Pregled">

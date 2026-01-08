@@ -12,7 +12,8 @@ import { ExportService } from '../../services/export.service';
 import { MatDivider } from "@angular/material/divider";
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-
+import { ModalService } from '../../services/modal.service';
+import { CurrentUserService } from '../../../core/services/auth/current-user.service';
 // ENUM za sortiranje
 enum SortDirection {
   ASC = 'asc',
@@ -71,10 +72,13 @@ export class ProblemReportListComponent implements OnInit {
     { key: 'creationDate', label: 'Datum' },
     { key: 'commentsCount', label: 'Komentari' }
   ];
-
+   isAuthenticated = false;
+  currentUserId: number | null = null;
   constructor(
     private problemReportService: ProblemReportService,
     private exportService: ExportService,
+    private modalService: ModalService,
+    private currentUserService: CurrentUserService,
     private fb: FormBuilder,
     public router: Router
   ) {
@@ -89,7 +93,16 @@ export class ProblemReportListComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.loadCurrentUser();
     this.loadReports();
+  }
+  private loadCurrentUser(): void {
+    this.isAuthenticated = this.currentUserService.isAuthenticated();
+    
+    const user = this.currentUserService.snapshot;
+    if (user) {
+      this.currentUserId = parseInt(user.id, 10) || null;
+    }
   }
 originalReports: ProblemReportListItem[] = [];
   loadReports(): void {
@@ -331,6 +344,10 @@ private sortLocal(): void {
     if (status.includes('rešen') || status.includes('riješen')) return 'status-done';
     return 'status-new';
   }
+
+  openComments(reportId: number): void {
+  this.modalService.openCommentsDialog(reportId);
+}
 
   // === EXPORT ===
 

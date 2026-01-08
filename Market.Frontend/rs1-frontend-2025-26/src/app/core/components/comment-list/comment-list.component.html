@@ -1,0 +1,261 @@
+<!-- components/comment-list/comment-list.component.html -->
+<div class="comments-dialog">
+  <!-- Header -->
+  <div class="comments-header">
+    <button class="back-btn" (click)="goBackToReports()" matTooltip="Nazad na listu">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    
+    <div class="header-content">
+      <h2>
+        <mat-icon class="header-icon">comment</mat-icon>
+        Komentari
+      </h2>
+      <p class="report-title" *ngIf="report">
+        Prijava: <strong>{{ report.title }}</strong>
+      </p>
+      <div class="report-info" *ngIf="report">
+        <span class="info-badge">
+          <mat-icon>person</mat-icon> {{ report.authorName }}
+        </span>
+        <span class="info-badge">
+          <mat-icon>category</mat-icon> {{ report.categoryName }}
+        </span>
+        <span class="info-badge">
+          <mat-icon>calendar_today</mat-icon> {{ report.creationDate | date:'dd.MM.yyyy.' }}
+        </span>
+        <span class="info-badge">
+          <mat-icon>chat_bubble</mat-icon> {{ totalItems }} komentara
+        </span>
+      </div>
+    </div>
+
+    <button class="close-btn" (click)="closeDialog()" matTooltip="Zatvori">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <!-- Loading Report -->
+  <div *ngIf="loadingReport" class="loading-report">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>Učitavanje detalja prijave...</p>
+  </div>
+
+  <!-- Main Content -->
+  <div class="comments-content" *ngIf="!loadingReport">
+    <!-- Forma za novi komentar -->
+    <div class="new-comment-card" *ngIf="isAuthenticated; else loginPrompt">
+      <h3>
+        <mat-icon>add_comment</mat-icon>
+        Dodaj novi komentar
+        <span class="user-badge" *ngIf="currentUserRole !== 'user'">
+          ({{ currentUserRole }})
+        </span>
+      </h3>
+      
+      <form [formGroup]="commentForm" (ngSubmit)="onSubmitComment()" class="comment-form">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Vaš komentar</mat-label>
+          <textarea 
+            matInput 
+            formControlName="text" 
+            rows="4" 
+            placeholder="Unesite vaš komentar ovdje..."
+            [maxlength]="2000"
+          ></textarea>
+          <mat-error *ngIf="commentForm.get('text')?.hasError('required')">
+            Komentar je obavezan
+          </mat-error>
+          <mat-error *ngIf="commentForm.get('text')?.hasError('minlength')">
+            Komentar mora imati najmanje 3 karaktera
+          </mat-error>
+          <mat-hint align="end">{{ commentForm.get('text')?.value?.length || 0 }}/2000</mat-hint>
+        </mat-form-field>
+
+        <div class="form-actions">
+          <button 
+            type="submit" 
+            class="submit-btn" 
+            [disabled]="commentForm.invalid || submittingComment"
+            mat-raised-button
+            color="primary"
+          >
+            <mat-icon *ngIf="!submittingComment">send</mat-icon>
+            <mat-spinner *ngIf="submittingComment" diameter="20"></mat-spinner>
+            {{ submittingComment ? 'Šalje se...' : 'Pošalji komentar' }}
+          </button>
+          
+          <button 
+            type="button" 
+            class="cancel-btn"
+            (click)="commentForm.reset()"
+            [disabled]="!commentForm.dirty"
+            mat-button
+          >
+            <mat-icon>clear</mat-icon>
+            Obriši tekst
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <ng-template #loginPrompt>
+      <div class="login-prompt-card">
+        <mat-icon class="prompt-icon">lock</mat-icon>
+        <h3>Prijavite se da biste komentarisali</h3>
+        <p>Morate biti prijavljeni da biste ostavili komentar na ovu prijavu.</p>
+        <button class="login-btn" (click)="goToLogin()" mat-raised-button color="primary">
+          <mat-icon>login</mat-icon>
+          Prijavi se
+        </button>
+      </div>
+    </ng-template>
+
+    <!-- Lista komentara -->
+    <div class="comments-list-section">
+      <div class="list-header">
+        <h3>
+          <mat-icon>format_list_bulleted</mat-icon>
+          Svi komentari ({{ totalItems }})
+        </h3>
+        <div class="sort-info" *ngIf="comments.length > 0">
+          <mat-icon>sort</mat-icon>
+          <span>Sortirano po datumu (najnovije prvo)</span>
+        </div>
+      </div>
+
+      <!-- Loading komentara -->
+      <div *ngIf="loading" class="loading-comments">
+        <mat-spinner diameter="40"></mat-spinner>
+        <p>Učitavanje komentara...</p>
+      </div>
+
+      <!-- Error -->
+      <div *ngIf="error && !loading" class="error-comments">
+        <mat-icon>error_outline</mat-icon>
+        <h4>Greška pri učitavanju</h4>
+        <p>{{ error }}</p>
+        <button class="retry-btn" (click)="loadComments()" mat-raised-button>
+          <mat-icon>refresh</mat-icon>
+          Pokušaj ponovo
+        </button>
+      </div>
+
+      <!-- Prazna lista -->
+      <div *ngIf="!loading && comments.length === 0 && !error" class="empty-comments">
+        <div class="empty-icon">
+          <mat-icon>chat_bubble_outline</mat-icon>
+        </div>
+        <h3>Nema komentara</h3>
+        <p *ngIf="isAuthenticated">Budite prvi koji će komentarisati ovu prijavu!</p>
+        <p *ngIf="!isAuthenticated">Prijavite se da biste ostavili prvi komentar.</p>
+      </div>
+
+      <!-- Lista komentara -->
+      <div *ngIf="!loading && comments.length > 0" class="comments-list">
+        <div *ngFor="let comment of comments" class="comment-card">
+          <div class="comment-header">
+            <div class="user-info">
+              <div class="user-avatar" [class.admin-avatar]="isAdminUser(comment.userId)" 
+                   [class.manager-avatar]="isManagerUser(comment.userId)">
+                <mat-icon>account_circle</mat-icon>
+                <span class="role-badge" *ngIf="getUserRole(comment.userId) !== 'user'">
+                  {{ getUserRole(comment.userId).charAt(0) }}
+                </span>
+              </div>
+              <div class="user-details">
+                <div class="user-name-row">
+                  <h4 class="user-name">{{ comment.userName }}</h4>
+                  <span class="user-role" *ngIf="getUserRole(comment.userId) !== 'user'">
+                    {{ getUserRole(comment.userId) }}
+                  </span>
+                </div>
+                <div class="comment-meta">
+                  <span class="comment-date">
+                    <mat-icon>schedule</mat-icon>
+                    {{ formatDate(comment.publicationDate) }}
+                  </span>
+                  <span class="edited-badge" *ngIf="comment.edited">
+                    <mat-icon>edit</mat-icon>
+                    Izmijenjeno
+                  </span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="comment-actions" *ngIf="canEditComment(comment) || canDeleteComment(comment)">
+              <button 
+                class="action-btn edit-btn" 
+                (click)="editComment(comment)"
+                matTooltip="Izmijeni komentar"
+                *ngIf="canEditComment(comment)"
+              >
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button 
+                class="action-btn delete-btn" 
+                (click)="deleteComment(comment.id)"
+                matTooltip="Obriši komentar"
+                *ngIf="canDeleteComment(comment)"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </div>
+
+          <div class="comment-body">
+            <p class="comment-text">{{ comment.text }}</p>
+          </div>
+          
+          <div class="comment-footer" *ngIf="comment.userId === currentUserId">
+            <span class="owner-badge">
+              <mat-icon>person_pin</mat-icon>
+              Vaš komentar
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Paginacija -->
+      <div class="comments-pagination" *ngIf="totalPages > 1">
+        <div class="pagination-info">
+          <span>Stranica {{ currentPage }} od {{ totalPages }} • Ukupno {{ totalItems }} komentara</span>
+        </div>
+        
+        <div class="pagination-controls">
+          <button 
+            class="pagination-btn" 
+            (click)="onPageChange(currentPage - 1)"
+            [disabled]="currentPage === 1"
+            mat-stroked-button
+          >
+            <mat-icon>chevron_left</mat-icon>
+            Prethodna
+          </button>
+          
+          <div class="page-numbers">
+            <button 
+              *ngFor="let page of getPageNumbers()" 
+              class="page-number"
+              [class.active]="currentPage === page"
+              (click)="onPageChange(page)"
+              mat-button
+            >
+              {{ page }}
+            </button>
+          </div>
+          
+          <button 
+            class="pagination-btn" 
+            (click)="onPageChange(currentPage + 1)"
+            [disabled]="currentPage === totalPages"
+            mat-stroked-button
+          >
+            Sljedeća
+            <mat-icon>chevron_right</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
