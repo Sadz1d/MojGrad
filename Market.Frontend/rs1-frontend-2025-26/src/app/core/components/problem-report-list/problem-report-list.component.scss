@@ -1200,3 +1200,33 @@ $card-shadow: 0 6px 28px rgba(0, 0, 0, 0.08);
     }
   }
 }
+// === COMMENTS INTERACTION ===
+.comments-info.clickable {
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background: rgba($accent-blue, 0.2);
+    transform: translateY(-2px);
+    
+    .comments-icon {
+      color: $primary-blue;
+      transform: scale(1.1);
+    }
+    
+    .comments-count {
+      color: $primary-blue;
+      font-weight: 700;
+    }
+  }
+  
+  .comments-icon {
+    transition: all 0.3s ease;
+  }
+  
+  .comments-count {
+    transition: all 0.3s ease;
+  }
+}

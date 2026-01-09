@@ -1,70 +1,64 @@
 // components/problem-report-form/problem-report-form.component.ts
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ProblemReportService } from '../../services/problem-report.service';
-import { CommonModule } from '@angular/common';
+import { CurrentUserService } from '../../../core/services/auth/current-user.service'; // OVO KORISTITE
+import { CreateProblemReportCommand, UpdateProblemReportCommand } from '../../models/problem-report.model';
+import { MatIcon } from "@angular/material/icon";
+import { MatProgressSpinner } from "@angular/material/progress-spinner";
 import { ReactiveFormsModule } from '@angular/forms';
-import { MatIconModule } from '@angular/material/icon';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { CommonModule } from '@angular/common';
+import { NgIf } from '@angular/common';
 @Component({
   selector: 'app-problem-report-form',
   templateUrl: './problem-report-form.component.html',
   styleUrls: ['./problem-report-form.component.scss'],
-  standalone: true,
-  imports: [
-    MatIconModule,
-  MatProgressSpinnerModule,
-    CommonModule,
-    ReactiveFormsModule,
-    // ...other imports...
-  ],
+  imports: [MatIcon, MatProgressSpinner, RouterModule, ReactiveFormsModule,CommonModule, NgIf]
 })
 export class ProblemReportFormComponent implements OnInit {
   form: FormGroup;
-  isEditMode = false;
-  reportId?: number;
   loading = false;
   submitting = false;
-  error = '';
-  successMessage = '';
+  error: string | null = null;
+  successMessage: string | null = null;
+  isEditMode = false;
+  reportId?: number;
+  isAuthenticated = false;
+  currentUser: any = null;
+  // Dohvati trenutnog korisnika
+  
 
   constructor(
     private fb: FormBuilder,
+    private problemReportService: ProblemReportService,
+    private currentUserService: CurrentUserService, // OVO KORISTITE
     private route: ActivatedRoute,
     public router: Router,
-    private problemReportService: ProblemReportService
+    
   ) {
-    this.form = this.fb.group({
-      title: ['', [
-        Validators.required,
-        Validators.maxLength(150)
-      ]],
-      description: ['', [
-        Validators.required,
-        Validators.maxLength(2000)
-      ]],
-      location: ['', [
-        Validators.maxLength(200)
-      ]],
-      categoryId: ['', [
-        Validators.required,
-        Validators.min(1)
-      ]],
-      statusId: ['', [
-        Validators.required,
-        Validators.min(1)
-      ]]
-    });
+    this.form = this.createForm();
   }
 
   ngOnInit(): void {
+    this.currentUser = this.currentUserService.currentUser;
+    this.isAuthenticated = this.currentUserService.isAuthenticated();
     this.route.params.subscribe(params => {
       if (params['id']) {
         this.isEditMode = true;
         this.reportId = +params['id'];
         this.loadReport();
       }
+    });
+  }
+
+  createForm(): FormGroup {
+    return this.fb.group({
+      title: ['', [Validators.required, Validators.maxLength(200)]],
+      description: ['', [Validators.required, Validators.maxLength(2000)]],
+      location: ['', [Validators.maxLength(200)]],
+      categoryId: ['', [Validators.required, Validators.min(1)]],
+      statusId: ['', [Validators.required, Validators.min(1)]]
     });
   }
 
@@ -84,78 +78,113 @@ export class ProblemReportFormComponent implements OnInit {
         this.loading = false;
       },
       error: (err) => {
-        this.error = 'Greška pri učitavanju: ' + err.message;
+        this.error = 'Greška pri učitavanju prijave: ' + err.message;
         this.loading = false;
       }
     });
   }
 
   onSubmit(): void {
-    if (this.form.invalid) {
-      Object.keys(this.form.controls).forEach(key => {
-        this.form.get(key)?.markAsTouched();
+    // Provjeri da li je korisnik prijavljen
+    if (!this.isAuthenticated) {
+      this.error = 'Morate biti prijavljeni da biste kreirali prijavu problema';
+      this.router.navigate(['/auth/login'], { 
+        queryParams: { returnUrl: this.router.url } 
       });
       return;
     }
 
-    this.submitting = true;
-    this.error = '';
-    this.successMessage = '';
+    if (this.form.invalid) {
+      this.markFormGroupTouched(this.form);
+      return;
+    }
 
-    const formData = this.form.value;
+    this.submitting = true;
+    this.error = null;
+    this.successMessage = null;
 
     if (this.isEditMode && this.reportId) {
-      this.problemReportService.updateReport(this.reportId, formData).subscribe({
-        next: () => {
-          this.successMessage = 'Prijava uspešno ažurirana!';
-          setTimeout(() => {
-            this.router.navigate(['/problem-reports']);
-          }, 1500);
-        },
-        error: (err) => {
-          this.error = 'Greška pri čuvanju: ' + err.message;
-          this.submitting = false;
-        }
-      });
+      this.updateReport();
     } else {
-      const createData = {
-        ...formData,
-        userId: this.getCurrentUserId() // Treba implementirati
-      };
-
-      this.problemReportService.createReport(createData).subscribe({
-        next: (id) => {
-          this.successMessage = 'Prijava uspešno kreirana!';
-          setTimeout(() => {
-            this.router.navigate(['/problem-reports', id]);
-          }, 1500);
-        },
-        error: (err) => {
-          this.error = 'Greška pri kreiranju: ' + err.message;
-          this.submitting = false;
-        }
-      });
+      this.createReport();
     }
   }
 
-  getCurrentUserId(): number {
-    // TODO: Implementiraj dobijanje ID-a trenutnog korisnika
-    // Na primer iz auth servisa ili localStorage
-    return 1; // Za sada hardcode
+  createReport(): void {
+    const currentUser = this.currentUser();
+    if (!currentUser) {
+      this.error = 'Korisnik nije pronađen. Molimo prijavite se ponovo.';
+      this.submitting = false;
+      return;
+    }
+
+    const command: CreateProblemReportCommand = {
+      ...this.form.value,
+      userId: parseInt(currentUser.id, 10)  // Konvertujte string u number
+    };
+
+    this.problemReportService.createReport(command).subscribe({
+      next: (response) => {
+        this.successMessage = 'Problem uspješno prijavljen!';
+        this.form.reset();
+        
+        // Preusmjeri nakon 2 sekunde
+        setTimeout(() => {
+          this.router.navigate(['/problem-reports']);
+        }, 2000);
+      },
+      error: (err) => {
+        this.error = 'Greška pri kreiranju prijave: ' + err.message;
+        this.submitting = false;
+      },
+      complete: () => {
+        this.submitting = false;
+      }
+    });
   }
 
-  getFieldError(fieldName: string): string {
+  updateReport(): void {
+    if (!this.reportId) return;
+
+    const command: UpdateProblemReportCommand = {
+      ...this.form.value
+    };
+
+    this.problemReportService.updateReport(this.reportId, command).subscribe({
+      next: (response) => {
+        this.successMessage = 'Prijava uspješno ažurirana!';
+        
+        // Preusmjeri nakon 2 sekunde
+        setTimeout(() => {
+          this.router.navigate(['/problem-reports']);
+        }, 2000);
+      },
+      error: (err) => {
+        this.error = 'Greška pri ažuriranju prijave: ' + err.message;
+        this.submitting = false;
+      },
+      complete: () => {
+        this.submitting = false;
+      }
+    });
+  }
+
+  getFieldError(fieldName: string): string | null {
     const field = this.form.get(fieldName);
-    if (!field?.errors || !field.touched) return '';
-    
-    if (field.errors['required']) return 'Ovo polje je obavezno.';
-    if (field.errors['maxlength']) {
-      const max = field.errors['maxlength'].requiredLength;
-      return `Maksimalno ${max} karaktera.`;
+    if (field?.errors && (field?.touched || field?.dirty)) {
+      if (field.errors['required']) return 'Ovo polje je obavezno';
+      if (field.errors['maxlength']) return `Maksimalno ${field.errors['maxlength'].requiredLength} karaktera`;
+      if (field.errors['min']) return `Minimalna vrijednost je ${field.errors['min'].min}`;
     }
-    if (field.errors['min']) return 'Vrednost mora biti veća od 0.';
-    
-    return 'Nevalidan unos.';
+    return null;
   }
-  
+
+  markFormGroupTouched(formGroup: FormGroup): void {
+    Object.values(formGroup.controls).forEach(control => {
+      control.markAsTouched();
+      if (control instanceof FormGroup) {
+        this.markFormGroupTouched(control);
+      }
+    });
+  }
 }
