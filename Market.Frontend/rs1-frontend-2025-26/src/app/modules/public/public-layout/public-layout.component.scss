@@ -11,7 +11,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 150px 20px;
+  padding: 180px 20px;
   width: 100%;
   position: relative;
   height: 120px;
@@ -632,7 +632,7 @@ button.cta-button{
   gap: 10px;
   transition: all 0.3s ease;
   min-width: 200px;
-  
+
   &:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(0,0,0,0.15);
@@ -643,7 +643,7 @@ button.cta-button{
 .login-button {
   background: linear-gradient(135deg, #1f4e79 0%, #2c5d9a 100%) !important;
   color: white !important;
-  
+
   &:hover {
     background: linear-gradient(135deg, #163b5d 0%, #1f4e79 100%) !important;
   }
@@ -653,11 +653,11 @@ button.cta-button{
 .logout-button {
   background: linear-gradient(135deg, #d32f2f 0%, #f44336 100%) !important;
   color: white !important;
-  
+
   &:hover {
     background: linear-gradient(135deg, #b71c1c 0%, #d32f2f 100%) !important;
   }
-  
+
   .user-email {
     font-size: 14px;
     opacity: 0.9;
@@ -676,7 +676,7 @@ button.cta-button{
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  
+
   mat-icon {
     font-size: 20px;
     width: 20px;
@@ -687,7 +687,7 @@ button.cta-button{
 .dashboard-button {
   border-color: #1f4e79 !important;
   color: #1f4e79 !important;
-  
+
   &:hover {
     background-color: rgba(31, 78, 121, 0.1) !important;
   }
@@ -696,7 +696,7 @@ button.cta-button{
 .register-button {
   border-color: #fbc02d !important;
   color: #fbc02d !important;
-  
+
   &:hover {
     background-color: rgba(251, 192, 45, 0.1) !important;
   }
@@ -708,18 +708,18 @@ button.cta-button{
     opacity: 0;
     transform: translateY(-20px);
   }
-  
+
   .button-change-enter-active {
     opacity: 1;
     transform: translateY(0);
     transition: all 0.3s ease;
   }
-  
+
   .button-change-leave {
     opacity: 1;
     transform: translateY(0);
   }
-  
+
   .button-change-leave-active {
     opacity: 0;
     transform: translateY(20px);
@@ -734,8 +734,131 @@ button.cta-button{
     font-size: 16px;
     min-width: 180px;
   }
-  
+
   .logout-button .user-email {
     display: none; // Sakrij email na mobilnim
+  }
+}
+//* ========================================= */
+/*              APP HEADER                  */
+/* ========================================= */
+
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  height: 72px;
+  padding: 0 32px;
+
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  border-bottom: 1px solid rgba(31, 78, 121, 0.08);
+}
+
+/* LEFT */
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+
+  .header-logo {
+    width: 40px;
+    height: 40px;
+  }
+
+  .header-title {
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: 0.3px;
+    color: #1f4e79;
+  }
+}
+
+/* NAV */
+.header-nav {
+  display: flex;
+  gap: 28px;
+
+  a {
+    text-decoration: none;
+    font-size: 14.5px;
+    font-weight: 600;
+    color: #56718c;
+    position: relative;
+    padding: 6px 2px;
+    transition: color 0.25s ease;
+
+    &:hover {
+      color: #1f4e79;
+    }
+
+    &::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: -6px;
+      width: 0;
+      height: 2px;
+      background: #fbc02d;
+      border-radius: 2px;
+      transform: translateX(-50%);
+      transition: width 0.25s ease;
+    }
+
+    &:hover::after {
+      width: 60%;
+    }
+
+    &.active {
+      color: #1f4e79;
+      font-weight: 700;
+
+      &::after {
+        width: 100%;
+        height: 3px;
+      }
+    }
+  }
+}
+
+/* RIGHT */
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  .header-user {
+    font-size: 13px;
+    color: #3a3a3a;
+    opacity: 0.85;
+  }
+
+  .header-logout {
+    padding: 6px 18px !important;
+    border-radius: 999px !important;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.25s ease;
+
+    &:hover {
+      background-color: rgba(211, 47, 47, 0.08) !important;
+      transform: translateY(-1px);
+    }
+  }
+}
+
+/* RESPONSIVE */
+@media (max-width: 960px) {
+  .header-nav {
+    display: none; // kasnije hamburger
   }
 }

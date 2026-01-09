@@ -1,3 +1,34 @@
+<!-- ================= HEADER / NAVIGATION ================= -->
+<header class="app-header">
+  <div class="header-left">
+    <img src="assets/images/logo1.png" class="header-logo" />
+    <span class="header-title">Moj Grad</span>
+  </div>
+
+  <nav class="header-nav">
+    <a routerLink="/dashboard" routerLinkActive="active">Početna</a>
+    <a routerLink="/profile" routerLinkActive="active">Moj profil</a>
+    <a routerLink="/volunteering" routerLinkActive="active">Volontiranje</a>
+    <a routerLink="/surveys" routerLinkActive="active">Ankete</a>
+    <a routerLink="/ranking" routerLinkActive="active">Bodovi / Rang lista</a>
+    <a routerLink="/support" routerLinkActive="active">Podrška</a>
+  </nav>
+
+  <div class="header-right">
+    <span class="header-user">{{ currentUser?.email }}</span>
+    <button
+      mat-stroked-button
+      color="warn"
+      (click)="logout()"
+      class="header-logout"
+    >
+      Odjava
+    </button>
+  </div>
+</header>
+<!-- ================= END HEADER ================= -->
+
+
 <div class="landing-page">
 
   <!-- Hero Section -->
@@ -253,10 +284,10 @@
 <!-- DINAMIČKO DUGME -->
       <div *ngIf="isLoggedIn$ | async; else loginButton">
         <!-- Korisnik je PRIJAVLJEN - prikaži ODJAVITE SE -->
-        <button 
-          mat-raised-button 
-          color="warn" 
-          (click)="logout()" 
+        <button
+          mat-raised-button
+          color="warn"
+          (click)="logout()"
           class="cta-main-button logout-button"
         >
           <mat-icon class="button-icon">logout</mat-icon>
@@ -265,13 +296,13 @@
             ({{ email }})
           </span>
         </button>
-        
+
         <!-- Dodatni link za dashboard -->
         <div style="margin-top: 20px;">
-          <button 
-            mat-stroked-button 
-            color="primary" 
-            routerLink="/dashboard" 
+          <button
+            mat-stroked-button
+            color="primary"
+            routerLink="/dashboard"
             class="dashboard-button"
           >
             <mat-icon>dashboard</mat-icon>
@@ -279,25 +310,25 @@
           </button>
         </div>
       </div>
-      
+
       <ng-template #loginButton>
         <!-- Korisnik NIJE prijavljen - prikaži PRIJAVITE SE -->
-        <button 
-          mat-raised-button 
-          color="primary" 
-          routerLink="/auth/login" 
+        <button
+          mat-raised-button
+          color="primary"
+          routerLink="/auth/login"
           class="cta-main-button login-button"
         >
           <mat-icon class="button-icon">login</mat-icon>
           Prijavite se sada
         </button>
-        
+
         <!-- Dodatni link za registraciju -->
         <div style="margin-top: 20px;">
-          <button 
-            mat-stroked-button 
-            color="accent" 
-            routerLink="/auth/register" 
+          <button
+            mat-stroked-button
+            color="accent"
+            routerLink="/auth/register"
             class="register-button"
           >
             <mat-icon>person_add</mat-icon>
@@ -307,6 +338,6 @@
       </ng-template>
 
     </div>
-   
+
   </section>
 </div>

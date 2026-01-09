@@ -1,0 +1,103 @@
+<div class="volunteer-actions-page">
+
+  <!-- HEADER -->
+  <div class="section-header">
+    <span class="title-badge">VOLONTIRANJE</span>
+    <h2 class="section-title">Volonterske akcije</h2>
+    <p class="section-subtitle">
+      Prijavite se i pomozite svojoj zajednici kroz aktivne volonterske akcije.
+    </p>
+  </div>
+
+  <!-- LOADING -->
+  <div *ngIf="loading" class="loading">
+    Učitavanje volonterskih akcija...
+  </div>
+
+  <!-- ERROR -->
+  <div *ngIf="errorMessage" class="error">
+    {{ errorMessage }}
+  </div>
+
+  <!-- FILTERI -->
+  <div class="filters-bar">
+
+    <!-- SEARCH -->
+    <input
+      type="text"
+      placeholder="Pretraži akcije..."
+      [(ngModel)]="searchTerm"
+      (ngModelChange)="applyFilters()"
+      class="search-input"
+    />
+
+    <!-- SAMO DOSTUPNE -->
+    <label class="checkbox">
+      <input
+        type="checkbox"
+        [(ngModel)]="showOnlyAvailable"
+        (change)="applyFilters()"
+      />
+      Samo dostupne akcije
+    </label>
+
+    <!-- SORT -->
+    <button
+      mat-stroked-button
+      (click)="sortByDateAsc = !sortByDateAsc; applyFilters()"
+    >
+      Sortiraj po datumu {{ sortByDateAsc ? '⬆️' : '⬇️' }}
+    </button>
+
+  </div>
+
+  <!-- LISTA AKCIJA -->
+  <div class="actions-grid" *ngIf="!loading && filteredActions.length">
+
+    <div class="action-card" *ngFor="let action of filteredActions">
+
+      <!-- HEADER -->
+      <div class="action-header">
+        <h3>{{ action.name }}</h3>
+        <span class="date">
+          📅 {{ action.eventDate | date:'dd.MM.yyyy' }}
+        </span>
+      </div>
+
+      <!-- BODY -->
+      <p class="description">
+        {{ action.description }}
+      </p>
+
+      <div class="meta">
+        <span>📍 {{ action.location }}</span>
+        <span>👥 {{ action.participantsCount }} / {{ action.maxParticipants }}</span>
+      </div>
+
+      <!-- FOOTER -->
+      <div class="action-footer">
+        <span class="slots" [class.full]="action.freeSlots === 0">
+          Slobodna mjesta: {{ action.freeSlots }}
+        </span>
+
+        <button
+          mat-raised-button
+          color="primary"
+          (click)="joinAction(action)"
+          [disabled]="action.freeSlots === 0 || joiningActionId === action.id">
+
+          <span *ngIf="joiningActionId !== action.id">Prijavi se</span>
+          <span *ngIf="joiningActionId === action.id">⏳ Prijava...</span>
+
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PRAZNO STANJE -->
+  <div *ngIf="!loading && !filteredActions.length" class="empty">
+    Trenutno nema dostupnih volonterskih akcija.
+  </div>
+
+</div>

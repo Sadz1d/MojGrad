@@ -21,18 +21,25 @@ import { ProblemReportService } from './core/services/problem-report.service';
 import { ProblemReportListComponent } from './core/components/problem-report-list/problem-report-list.component';
 import { ProblemReportFormComponent } from './core/components/problem-report-form/problem-report-form.component';
 import { RouterModule } from '@angular/router';
+import { VolunteerActionListComponent } from './core/components/volunteer-action-list/volunteer-action-list.component';
+import { CommonModule } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
 
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    
+
+
   ],
   imports: [
     BrowserAnimationsModule,
     HttpClientModule,
     TestAuthComponent,
+    VolunteerActionListComponent,
+    CommonModule,        // ⬅️ OVO RJEŠAVA ngIf, ngFor, date pipe
+    MatButtonModule,
     BrowserModule,
     AppRoutingModule,
     ReactiveFormsModule,
@@ -61,7 +68,7 @@ import { RouterModule } from '@angular/router';
     provideHttpClient(
       withInterceptors([
         loadingBarInterceptor,
-        
+
         errorLoggingInterceptor
       ])
     )

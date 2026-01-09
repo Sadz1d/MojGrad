@@ -5,6 +5,7 @@ import { TestAuthComponent } from './pages/test-auth/test-auth.component';
 import { ProblemReportListComponent } from './core/components/problem-report-list/problem-report-list.component';
 import { ProblemReportFormComponent } from './core/components/problem-report-form/problem-report-form.component';
 import { ProblemReportImportComponent } from './core/components/problem-report-import/problem-report-import.component';
+import { VolunteerActionListComponent } from './core/components/volunteer-action-list/volunteer-action-list.component';
 
 const routes: Routes = [
   {
@@ -20,6 +21,11 @@ const routes: Routes = [
   { path: 'problem-reports/edit/:id', component: ProblemReportFormComponent },
   { path: 'problem-reports/import', component: ProblemReportImportComponent },
   { path: 'problem-reports/:id', component: ProblemReportFormComponent },
+
+  {
+    path: 'volunteering',
+    component: VolunteerActionListComponent
+  },
 
   // 🔓 test ruta (javna)
   {
