@@ -7,6 +7,10 @@ import {RegisterComponent} from './register/register.component';
 import {ForgotPasswordComponent} from './forgot-password/forgot-password.component';
 import {LogoutComponent} from './logout/logout.component';
 import {SharedModule} from '../shared/shared-module';
+import { ReactiveFormsModule } from '@angular/forms';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
+
+
 
 
 @NgModule({
@@ -15,11 +19,13 @@ import {SharedModule} from '../shared/shared-module';
     LoginComponent,
     RegisterComponent,
     ForgotPasswordComponent,
-    LogoutComponent
+    LogoutComponent,
+    ResetPasswordComponent
   ],
   imports: [
     AuthRoutingModule,
-    SharedModule
+    SharedModule,
+    ReactiveFormsModule
   ]
 })
 export class AuthModule { }
