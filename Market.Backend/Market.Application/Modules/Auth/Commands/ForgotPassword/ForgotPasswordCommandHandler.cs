@@ -29,10 +29,19 @@ public sealed class ForgotPasswordCommandHandler(
         }
 
         // Generate reset token (simplified - in real app, generate proper token and send email)
-        var resetToken = Guid.NewGuid().ToString("N");
+        //var resetToken = Guid.NewGuid().ToString("N");
 
-        // TODO: Save reset token to database and send email
-        // For now, we'll just return success message
+        var resetToken = new PasswordResetToken
+        {
+            Token = Guid.NewGuid().ToString("N"),
+            UserId = user.Id,
+            ExpiresAt = timeProvider.GetUtcNow().UtcDateTime.AddHours(24),
+            IsUsed = false
+        };
+
+        ctx.PasswordResetTokens.Add(resetToken);
+        await ctx.SaveChangesAsync(ct);
+
 
         return new ForgotPasswordCommandDto
         {

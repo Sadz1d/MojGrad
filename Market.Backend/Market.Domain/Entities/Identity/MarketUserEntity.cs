@@ -46,4 +46,6 @@ public sealed class MarketUserEntity : BaseEntity
     }
 
     public ICollection<RefreshTokenEntity> RefreshTokens { get; private set; } = new List<RefreshTokenEntity>();
+    public ICollection<PasswordResetToken> PasswordResetTokens { get; set; } = new List<PasswordResetToken>();
+
 }

@@ -36,6 +36,8 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using Market.Application.Modules.Auth.Commands.ResetPassword;
+
 
 namespace Market.Api.Controllers;
 
@@ -79,6 +81,20 @@ public sealed class AuthController(IMediator mediator) : ControllerBase
     {
         return Ok(await mediator.Send(command, ct));
     }
+
+    /// <summary>
+    /// Reset lozinke pomoću tokena poslanog na email
+    /// </summary>
+    [HttpPost("reset-password")]
+    [AllowAnonymous]
+    public async Task<IActionResult> ResetPassword(
+        [FromBody] ResetPasswordCommand command,
+        CancellationToken ct)
+    {
+        await mediator.Send(command, ct);
+        return Ok();
+    }
+
 
     /// <summary>
     /// Obnavljanje access tokena pomoću refresh tokena
