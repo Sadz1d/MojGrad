@@ -24,6 +24,7 @@ public partial class DatabaseContext : DbContext, IAppDbContext
     public DbSet<RoleEntity> Roles => Set<RoleEntity>();
     public DbSet<UserRoleEntity> UserRoles => Set<UserRoleEntity>();
 
+
     // ===== Reports (prijave) =====
     public DbSet<ProblemReportEntity> ProblemReports => Set<ProblemReportEntity>();
     public DbSet<ProblemCategoryEntity> ProblemCategories => Set<ProblemCategoryEntity>();
@@ -55,6 +56,8 @@ public partial class DatabaseContext : DbContext, IAppDbContext
     // ===== Volunteering =====
     public DbSet<VolunteerActionEntity> VolunteerActions => Set<VolunteerActionEntity>();
     public DbSet<ActionParticipantEntity> ActionParticipants => Set<ActionParticipantEntity>();
+
+    public DbSet<PasswordResetToken> PasswordResetTokens { get; set; }
 
 
     public new DatabaseFacade Database => base.Database;

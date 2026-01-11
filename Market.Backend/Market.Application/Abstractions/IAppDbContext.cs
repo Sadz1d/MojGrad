@@ -7,6 +7,8 @@ using Market.Domain.Entities.Surveys;
 using Market.Domain.Entities.Volunteering;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
+using Market.Domain.Entities.Identity;
+
 
 namespace Market.Application.Abstractions;
 
@@ -19,6 +21,8 @@ public interface IAppDbContext
     DbSet<ProfileEntity> Profiles { get; }
     DbSet<RoleEntity> Roles { get; }
     DbSet<UserRoleEntity> UserRoles { get; }
+    DbSet<PasswordResetToken> PasswordResetTokens { get; }
+
 
 
     // ===== Reports =====
