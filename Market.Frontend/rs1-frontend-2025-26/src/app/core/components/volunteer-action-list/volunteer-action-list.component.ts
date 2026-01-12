@@ -5,6 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { VolunteerActionService } from '../../services/volunteer-action.service';
 import { VolunteerActionListItem } from '../../models/volunteer-action.model';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -34,14 +35,17 @@ export class VolunteerActionListComponent implements OnInit {
   filteredActions: VolunteerActionListItem[] = [];
 
 
+
   constructor(
-    private volunteerActionService: VolunteerActionService
-  ) {
-  }
+    private volunteerActionService: VolunteerActionService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.loadActions();
   }
+
+
 
   loadActions(): void {
     this.loading = true;
@@ -92,20 +96,28 @@ export class VolunteerActionListComponent implements OnInit {
     this.filteredActions = result;
   }
 
+  goHome(): void {
+    this.router.navigate(['/']);
+  }
 
   // =============================
   // PRIJAVI SE
   // =============================
   joinAction(action: VolunteerActionListItem): void {
 
-    if (action.freeSlots <= 0) return;
+    // 🔒 ako je već prijavljen → ništa
+    if (action.isUserJoined || action.freeSlots <= 0) {
+      return;
+    }
 
     this.joiningActionId = action.id;
 
     setTimeout(() => {
       action.participantsCount++;
       action.freeSlots--;
+      action.isUserJoined = true; // 👈 KLJUČNA LINIJA
       this.joiningActionId = null;
     }, 800);
   }
+
 }

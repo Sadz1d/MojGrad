@@ -1,13 +1,21 @@
 <div class="volunteer-actions-page">
 
   <!-- HEADER -->
-  <div class="section-header">
+  <!-- HERO HEADER -->
+  <div class="hero-section">
+
+    <img src="assets/images/logo1.png" class="hero-logo" alt="Moj Grad logo" />
+
     <span class="title-badge">VOLONTIRANJE</span>
+
     <h2 class="section-title">Volonterske akcije</h2>
+
     <p class="section-subtitle">
       Prijavite se i pomozite svojoj zajednici kroz aktivne volonterske akcije.
     </p>
+
   </div>
+
 
   <!-- LOADING -->
   <div *ngIf="loading" class="loading">
@@ -49,6 +57,9 @@
       Sortiraj po datumu {{ sortByDateAsc ? '⬆️' : '⬇️' }}
     </button>
 
+
+
+
   </div>
 
   <!-- LISTA AKCIJA -->
@@ -84,12 +95,21 @@
           mat-raised-button
           color="primary"
           (click)="joinAction(action)"
-          [disabled]="action.freeSlots === 0 || joiningActionId === action.id">
-
-          <span *ngIf="joiningActionId !== action.id">Prijavi se</span>
-          <span *ngIf="joiningActionId === action.id">⏳ Prijava...</span>
-
+          [disabled]="
+    action.freeSlots === 0 ||
+    joiningActionId === action.id ||
+    action.isUserJoined
+  "
+        >
+          <span *ngIf="action.isUserJoined">✔️ Prijavljeni ste</span>
+          <span *ngIf="!action.isUserJoined && joiningActionId !== action.id">
+    Prijavi se
+  </span>
+          <span *ngIf="joiningActionId === action.id">
+    ⏳ Prijava...
+  </span>
         </button>
+
       </div>
 
     </div>
@@ -99,5 +119,9 @@
   <div *ngIf="!loading && !filteredActions.length" class="empty">
     Trenutno nema dostupnih volonterskih akcija.
   </div>
+
+  <button class="back-home" (click)="goHome()">
+    🏠 Početna
+  </button>
 
 </div>

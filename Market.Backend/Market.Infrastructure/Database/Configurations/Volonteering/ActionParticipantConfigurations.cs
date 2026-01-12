@@ -19,6 +19,10 @@ public class ActionParticipantConfiguration
         builder.HasOne(x => x.User)
             .WithMany(u => u.ActionParticipations)
             .HasForeignKey(x => x.UserId);
+
+        builder.HasIndex(x => new { x.UserId, x.ActionId })
+    .IsUnique();
+
     }
 }
 

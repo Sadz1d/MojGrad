@@ -18,5 +18,6 @@ public class VolunteerActionConfiguration
 
         builder.Property(x => x.Location)
             .HasMaxLength(VolunteerActionEntity.Constraints.LocationMaxLength);
+
     }
 }

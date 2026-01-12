@@ -8,6 +8,9 @@ export interface VolunteerActionListItem {
   maxParticipants: number;
   participantsCount: number;
   freeSlots: number;
+
+  isUserJoined?: boolean;
+
 }
 
 // Kreiranje (ADMIN)
