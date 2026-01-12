@@ -18,7 +18,7 @@ export class ForgotPasswordComponent extends BaseComponent {
   successMessage = '';
 
   form = this.fb.group({
-    email: ['', [Validators.required, Validators.email]]
+    email: ['', [Validators.required, Validators.email]],
   });
 
   onSubmit(): void {
@@ -34,11 +34,16 @@ export class ForgotPasswordComponent extends BaseComponent {
       next: (response: any) => {
         this.stopLoading();
         this.isEmailSent = true;
-        this.successMessage = response.message;
+        this.successMessage =
+          response?.message ||
+          'Ako email postoji u sistemu, poslan je link za reset lozinke.';
       },
       error: (err: any) => {
-        this.stopLoading(err.error?.message || 'Greška pri slanju emaila. Molimo pokušajte ponovo.');
-      }
+        this.stopLoading(
+          err?.error?.message ||
+          'Greška pri slanju emaila. Molimo pokušajte ponovo.'
+        );
+      },
     });
   }
 

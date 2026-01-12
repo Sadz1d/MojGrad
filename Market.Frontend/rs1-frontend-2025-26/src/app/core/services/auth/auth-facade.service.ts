@@ -3,17 +3,21 @@ import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, throwError, of } from 'rxjs';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
-import { 
-  AuthApiService, 
-  LoginRequest, 
+import {
+  AuthApiService,
+  LoginRequest,
   LoginResponse,
   RegisterRequest,
   RegisterResponse,
   ForgotPasswordRequest,
   ForgotPasswordResponse,
   RefreshTokenRequest,
-  CurrentUserResponse
+  CurrentUserResponse,
+
 } from '../../../api-services/auth/auth-api.service';
+
+
+
 
 export interface User {
   id: string;
@@ -35,7 +39,7 @@ export class AuthFacadeService {
   private router = inject(Router);
 
   private currentUserSubject = new BehaviorSubject<User | null>(null);
-  
+
   currentUser$ = this.currentUserSubject.asObservable();
   isAuthenticated$ = this.currentUser$.pipe(map(user => !!user));
 
@@ -73,7 +77,7 @@ export class AuthFacadeService {
   // 🔄 REFRESH TOKEN
   refreshToken(): Observable<LoginResponse> {
     const user = this.getCurrentUserValue();
-    
+
     if (!user?.refreshToken) {
       return throwError(() => new Error('No refresh token available'));
     }
@@ -97,7 +101,7 @@ export class AuthFacadeService {
   // 🚪 LOGOUT
   logout(): Observable<void> {
     const user = this.getCurrentUserValue();
-    
+
     if (user?.refreshToken) {
       return this.api.logout({ refreshToken: user.refreshToken }).pipe(
         tap(() => {
@@ -127,6 +131,15 @@ export class AuthFacadeService {
     );
   }
 
+  resetPassword(token: string, newPassword: string) {
+    return this.api.resetPassword({
+      token,
+      newPassword,
+    });
+  }
+
+
+
   // 👤 GET CURRENT USER INFO
   getCurrentUserInfo(): Observable<CurrentUserResponse> {
     return this.api.getCurrentUser().pipe(
@@ -151,7 +164,7 @@ export class AuthFacadeService {
 
   private handleLoginSuccess(response: LoginResponse, fingerprint: string): void {
     const tokenPayload = this.decodeToken(response.accessToken);
-    
+
     const user: User = {
       id: tokenPayload.sub || '',
       email: tokenPayload.email || '',

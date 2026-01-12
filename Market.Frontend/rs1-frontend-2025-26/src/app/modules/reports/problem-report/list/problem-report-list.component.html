@@ -1,0 +1,31 @@
+<h2>Prijavljeni problemi</h2>
+
+<div *ngIf="reports.length === 0">
+  Nema prijava.
+</div>
+
+<ul *ngIf="reports.length > 0">
+  <li *ngFor="let r of reports">
+    <strong>{{ r.title }}</strong><br />
+    {{ r.description }}
+  </li>
+</ul>
+
+<div style="margin-top: 16px;">
+  <button (click)="prevPage()" [disabled]="page === 1">
+    ⬅ Prethodna
+  </button>
+
+  <span style="margin: 0 10px;">
+    Stranica {{ page }}
+  </span>
+
+  <button
+    (click)="nextPage()"
+    [disabled]="page * pageSize >= total">
+    Sljedeća ➡
+  </button>
+</div>
+
+
+

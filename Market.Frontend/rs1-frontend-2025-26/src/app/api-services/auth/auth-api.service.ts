@@ -3,6 +3,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { ResetPasswordRequest } from '../../core/models/reset-password.request';
+import { ResetPasswordResponse } from '../../core/models/reset-password.response';
+
 
 export interface LoginRequest {
   email: string;
@@ -105,4 +108,12 @@ export class AuthApiService {
   getCurrentUser(): Observable<CurrentUserResponse> {
     return this.http.get<CurrentUserResponse>(`${this.apiUrl}/auth/me`);
   }
+
+  resetPassword(request: ResetPasswordRequest): Observable<ResetPasswordResponse> {
+    return this.http.post<ResetPasswordResponse>(
+      '/api/auth/reset-password',
+      request
+    );
+  }
+
 }
