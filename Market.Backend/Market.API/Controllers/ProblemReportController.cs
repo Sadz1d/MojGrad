@@ -19,6 +19,8 @@ using System.Text.Json;
 using OfficeOpenXml; // Dodajte za Excel podršku
 using CsvHelper;
 using Microsoft.Extensions.Logging;
+using Market.Application.Modules.Reports.ProblemReport.Queries.GetPaged;
+using MediatR;
 
 namespace Market.API.Controllers;
 
@@ -241,4 +243,29 @@ public sealed class ProblemReportsController : ControllerBase
             return null;
         }
     }
+
+  
+        private readonly IMediator _mediator;
+
+        public ProblemReportsController(IMediator mediator)
+        {
+            _mediator = mediator;
+        }
+
+        [HttpGet("paged")]
+        public async Task<IActionResult> GetPaged(
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10,
+            CancellationToken ct = default)
+        {
+            var result = await _mediator.Send(new GetPagedProblemReportsQuery
+            {
+                Page = page,
+                PageSize = pageSize
+            }, ct);
+
+            return Ok(result);
+        }
+    
+
 }
