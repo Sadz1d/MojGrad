@@ -2,6 +2,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { StatusDropdown } from '../models/problem-report.model';
 
 export interface Status {
   id: number;
@@ -17,7 +18,7 @@ export class StatusService {
 
   constructor(private http: HttpClient) {}
 
-  getStatuses(): Observable<Status[]> {
-    return this.http.get<Status[]>(`${this.apiUrl}/reports/statuses/dropdown`);
+  getStatuses(): Observable<StatusDropdown[]> {
+    return this.http.get<StatusDropdown[]>(`${this.apiUrl}/reports/statuses/dropdown`);
   }
 }

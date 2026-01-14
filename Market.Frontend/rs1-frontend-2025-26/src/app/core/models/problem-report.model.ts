@@ -66,6 +66,18 @@ export interface ProblemReportFilter {
   pageSize?: number;
 }
 
+export interface CategoryDropdown {
+  id: number;
+  name: string;
+  description?: string;
+}
+
+export interface StatusDropdown {
+  id: number;
+  name: string;
+  description?: string;
+}
+
 // Paginacija
 export interface PageResult<T> {
   items: T[];

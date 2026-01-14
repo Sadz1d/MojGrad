@@ -41,7 +41,7 @@
       <!-- Prikaži ko je trenutno prijavljen -->
       <div *ngIf="isAuthenticated && !isEditMode" class="user-info">
         <mat-icon>person</mat-icon>
-        <span>Prijavljujete problem kao: <strong>{{ currentUser()?.fullName }}</strong></span>
+        <span>Prijavljujete problem kao: <strong>{{ getCurrentUser()?.fullName }}</strong></span>
       </div>
 
       <!-- Form -->
@@ -110,41 +110,99 @@
           </div>
         </div>
 
-        <!-- Category ID -->
+        <!-- Category Dropdown -->
         <div class="form-group">
-          <label for="categoryId" class="form-label">
+          <label for="category" class="form-label">
             <mat-icon class="field-icon">category</mat-icon>
-            ID kategorije *
+            Kategorija *
           </label>
-          <input type="number" id="categoryId" class="form-control" formControlName="categoryId"
-                 placeholder="Unesite ID kategorije (npr. 1 za Parkove)"
-                 [class.is-invalid]="getFieldError('categoryId')">
+          
+          <!-- Loading state -->
+          <div *ngIf="loadingCategories" class="loading-dropdown">
+            <mat-spinner diameter="20"></mat-spinner>
+            <span>Učitavanje kategorija...</span>
+          </div>
+          
+          <!-- Dropdown za kategorije -->
+          <select 
+            id="category" 
+            class="form-control select-control"
+            [class.is-invalid]="getFieldError('categoryId')"
+            (change)="onCategoryChange($event)"
+            [disabled]="loadingCategories">
+            
+            <option value="" disabled selected>Odaberite kategoriju...</option>
+            <option *ngFor="let category of categories" [value]="category.id">
+              {{ category.name }}
+              <span *ngIf="category.description"> - {{ category.description }}</span>
+            </option>
+          </select>
+          
+          <!-- Hidden input za categoryId -->
+          <input type="hidden" formControlName="categoryId">
+          <input type="hidden" formControlName="categoryName">
+          
           <div class="error-message" *ngIf="getFieldError('categoryId')">
             <mat-icon>error_outline</mat-icon>
             {{ getFieldError('categoryId') }}
           </div>
-          <div class="form-hint">
-            <mat-icon>search</mat-icon>
-            Pregled kategorija: 1 - Parkovi, 2 - Infrastruktura, 3 - Saobraćaj, 4 - Komunalije
+          
+          <div class="form-hint" *ngIf="!loadingCategories">
+            <mat-icon>info</mat-icon>
+            Odaberite kategoriju problema ({{ categories.length }} dostupno)
+          </div>
+          
+          <div class="error-message" *ngIf="categories.length === 0 && !loadingCategories">
+            <mat-icon>error</mat-icon>
+            Nema dostupnih kategorija. Molimo kontaktirajte administratora.
           </div>
         </div>
 
-        <!-- Status ID -->
+        <!-- Status Dropdown -->
         <div class="form-group">
-          <label for="statusId" class="form-label">
+          <label for="status" class="form-label">
             <mat-icon class="field-icon">flag</mat-icon>
-            ID statusa *
+            Status *
           </label>
-          <input type="number" id="statusId" class="form-control" formControlName="statusId"
-                 placeholder="Unesite ID statusa (npr. 1 za Nov)"
-                 [class.is-invalid]="getFieldError('statusId')">
+          
+          <!-- Loading state -->
+          <div *ngIf="loadingStatuses" class="loading-dropdown">
+            <mat-spinner diameter="20"></mat-spinner>
+            <span>Učitavanje statusa...</span>
+          </div>
+          
+          <!-- Dropdown za statuse -->
+          <select 
+            id="status" 
+            class="form-control select-control"
+            [class.is-invalid]="getFieldError('statusId')"
+            (change)="onStatusChange($event)"
+            [disabled]="loadingStatuses">
+            
+            <option value="" disabled selected>Odaberite status...</option>
+            <option *ngFor="let status of statuses" [value]="status.id">
+              {{ status.name }}
+              <span *ngIf="status.description"> - {{ status.description }}</span>
+            </option>
+          </select>
+          
+          <!-- Hidden input za statusId -->
+          <input type="hidden" formControlName="statusId">
+          <input type="hidden" formControlName="statusName">
+          
           <div class="error-message" *ngIf="getFieldError('statusId')">
             <mat-icon>error_outline</mat-icon>
             {{ getFieldError('statusId') }}
           </div>
-          <div class="form-hint">
-            <mat-icon>search</mat-icon>
-            Pregled statusa: 1 - Nov, 2 - U toku, 3 - Riješen, 4 - Odložen
+          
+          <div class="form-hint" *ngIf="!loadingStatuses">
+            <mat-icon>info</mat-icon>
+            Odaberite status prijave ({{ statuses.length }} dostupno)
+          </div>
+          
+          <div class="error-message" *ngIf="statuses.length === 0 && !loadingStatuses">
+            <mat-icon>error</mat-icon>
+            Nema dostupnih statusa. Molimo kontaktirajte administratora.
           </div>
         </div>
 
@@ -157,7 +215,7 @@
           </button>
           
           <button type="submit" class="form-button form-button-primary" 
-                  [disabled]="submitting || form.invalid">
+                  [disabled]="submitting || form.invalid || loadingCategories || loadingStatuses">
             <mat-icon *ngIf="!submitting">{{ isEditMode ? 'save' : 'send' }}</mat-icon>
             <mat-spinner *ngIf="submitting" diameter="20"></mat-spinner>
             {{ isEditMode ? 'Sačuvaj izmjene' : 'Pošalji prijavu' }}
