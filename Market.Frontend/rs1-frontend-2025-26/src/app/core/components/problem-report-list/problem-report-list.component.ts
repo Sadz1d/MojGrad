@@ -112,19 +112,24 @@ originalReports: ProblemReportListItem[] = [];
   const filter: ProblemReportFilter = {
     ...this.filterForm.value,
     page: this.currentPage,
-    pageSize: this.pageSize
+    pageSize: this.pageSize,
+    sortBy: this.sortState.column,
+    sortDirection: this.sortState.direction === SortDirection.ASC ? 'asc' : 'desc'
   };
 
   this.problemReportService.getReports(filter).subscribe({
     next: (response) => {
-      // Sačuvaj originalne podatke
-      this.originalReports = [...response.items];
-      
-      // Postavi trenutne podatke
-      this.reports = this.originalReports;
-      
+      this.reports = response.items;
       this.totalItems = response.totalCount;
-      this.totalPages = response.totalPages;
+      this.totalPages = response.totalPages || Math.ceil(this.totalItems / this.pageSize);
+      
+      console.log('Pagination:', {
+        items: response.items.length,
+        total: this.totalItems,
+        pages: this.totalPages,
+        current: this.currentPage
+      });
+      
       this.loading = false;
     },
     error: (err) => {

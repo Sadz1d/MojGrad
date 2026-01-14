@@ -14,5 +14,12 @@ public sealed class ListProblemReportQuery : BasePagedQuery<ListProblemReportQue
     public int? UserId { get; init; }        // autor
     public int? CategoryId { get; init; }    // kategorija
     public int? StatusId { get; init; }      // status
+
+    public int Page { get; set; } = 1;
+    public int PageSize { get; set; } = 10;
+
+    
+    public string? SortBy { get; set; }
+    public string? SortDirection { get; set; } = "desc";
 }
 

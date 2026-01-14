@@ -38,14 +38,19 @@ export class ProblemReportService {
     if (filter.sortBy) params = params.set('sortBy', filter.sortBy);
     if (filter.sortDirection) params = params.set('sortDirection', filter.sortDirection);
 
-    console.log('API Request URL:', this.baseUrl);
-    console.log('API Request Params:', params.toString());
+    console.log('API Request:', {
+    url: this.baseUrl + '/paged', // DODAJTE OVO!
+    params: params.toString()
+  });
 
-    return this.http.get<PageResult<ProblemReportListItem>>(this.baseUrl, { params }).pipe(
-      map(response => {
-        console.log('API Response:', response);
-        return response;
-      })
+    return this.http.get<PageResult<ProblemReportListItem>>(
+    `${this.baseUrl}/paged`, // ILI this.baseUrl + '/paged'
+    { params }
+  ).pipe(
+    map(response => {
+      console.log('📥 API Response:', response);
+      return response;
+    })
     );
   }
 

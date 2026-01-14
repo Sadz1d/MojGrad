@@ -42,7 +42,14 @@ public sealed class ProblemReportsController : ControllerBase
     [HttpGet]
     public async Task<PageResult<ListProblemReportQueryDto>> List(
         [FromQuery] ListProblemReportQuery query, CancellationToken ct)
-        => await sender.Send(query, ct);
+    {
+        // Dodajte logging
+        _logger.LogInformation("List called with Page={Page}, PageSize={PageSize}, Search={Search}",
+            query.Page, query.PageSize, query.Search);
+
+        return await sender.Send(query, ct);
+    }
+
 
     [HttpGet("{id:int}")]
     public async Task<GetProblemReportByIdQueryDto> GetById(int id, CancellationToken ct)
@@ -244,28 +251,22 @@ public sealed class ProblemReportsController : ControllerBase
         }
     }
 
-  
-        private readonly IMediator _mediator;
 
-        public ProblemReportsController(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
+    //private readonly IMediator _mediator;
 
-        [HttpGet("paged")]
-        public async Task<IActionResult> GetPaged(
-            [FromQuery] int page = 1,
-            [FromQuery] int pageSize = 10,
-            CancellationToken ct = default)
-        {
-            var result = await _mediator.Send(new GetPagedProblemReportsQuery
-            {
-                Page = page,
-                PageSize = pageSize
-            }, ct);
+    //public ProblemReportsController(IMediator mediator)
+    //{
+    //    _mediator = mediator;
+    //}
 
-            return Ok(result);
-        }
-    
+    [HttpGet("paged")]
+    public async Task<IActionResult> GetPaged(
+[FromQuery] GetPagedProblemReportsQuery query, // Ovdje promijenite
+CancellationToken ct = default)
+    {
+        var result = await sender.Send(query, ct);
+        return Ok(result);
+    }
+
 
 }

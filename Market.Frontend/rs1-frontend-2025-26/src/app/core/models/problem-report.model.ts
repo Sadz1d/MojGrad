@@ -5,10 +5,12 @@ export interface ProblemReportListItem {
   id: number;
   title: string;
   authorName: string;
-  creationDate: Date;
+  createdAt: Date;       // Backend vraća CreatedAt
+  creationDate: Date;   // Alias za kompatibilnost
   location?: string;
   categoryName: string;
-  statusName: string;
+  status: string;        // Backend vraća Status
+  statusName: string;   // Alias za kompatibilnost
   commentsCount: number;
   tasksCount: number;
   ratingsCount: number;
@@ -67,10 +69,25 @@ export interface ProblemReportFilter {
 // Paginacija
 export interface PageResult<T> {
   items: T[];
-  totalCount: number;
-  page: number;
-  pageSize: number;
-  totalPages: number;
-  sortBy?: string;
-  sortDirection?: string;
+  totalCount: number;    // Ovo backend vraća
+  page?: number;
+  pageSize?: number;
+  totalPages?: number;
+}
+export function mapToFrontendModel(backendItem: any): ProblemReportListItem {
+  return {
+    id: backendItem.id,
+    title: backendItem.title,
+    authorName: backendItem.authorName,
+    createdAt: new Date(backendItem.createdAt),
+    creationDate: new Date(backendItem.createdAt), // Alias
+    location: backendItem.location,
+    categoryName: backendItem.categoryName,
+    status: backendItem.status,
+    statusName: backendItem.status, // Alias
+    commentsCount: backendItem.commentsCount,
+    tasksCount: backendItem.tasksCount,
+    ratingsCount: backendItem.ratingsCount,
+    shortDescription: backendItem.shortDescription
+  };
 }
