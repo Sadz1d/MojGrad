@@ -11,6 +11,8 @@ using Market.Application.Modules.Reports.ProblemStatus.Queries.GetById;
 using Market.Application.Modules.Reports.ProblemStatus.Commands.Create;
 using Market.Application.Modules.Reports.ProblemStatus.Commands.Delete;
 using Market.Application.Modules.Reports.ProblemStatus.Commands.Update;
+using Market.Application.Abstractions;
+using Microsoft.EntityFrameworkCore;
 
 namespace Market.API.Controllers;
 
@@ -19,7 +21,12 @@ namespace Market.API.Controllers;
 public sealed class ProblemStatusesController : ControllerBase
 {
     private readonly ISender sender;
-    public ProblemStatusesController(ISender sender) => this.sender = sender;
+    private readonly IAppDbContext context;
+    public ProblemStatusesController(ISender sender, IAppDbContext context)
+    {
+        this.sender = sender;
+        this.context = context; // DODAJTE OVO
+    }
 
     [HttpGet]
     public async Task<PageResult<ListProblemStatusQueryDto>> List(
@@ -54,4 +61,28 @@ public sealed class ProblemStatusesController : ControllerBase
         await sender.Send(new DeleteProblemStatusCommand { Id = id }, ct);
         return NoContent();
     }
+    [HttpGet("dropdown")]
+    [ProducesResponseType(typeof(List<StatusDropdownDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetDropdownOptions(CancellationToken ct)
+    {
+        var statuses = await context.ProblemStatuses
+            .Where(s => !s.IsDeleted) // Samo aktivne
+            .OrderBy(s => s.Name)
+            .Select(s => new StatusDropdownDto
+            {
+                Id = s.Id,
+                Name = s.Name
+            })
+            .ToListAsync(ct);
+
+        return Ok(statuses);
+    }
+}
+
+// DODAJTE OVAJ DTO
+public class StatusDropdownDto
+{
+    public int Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string? Description { get; set; }
 }

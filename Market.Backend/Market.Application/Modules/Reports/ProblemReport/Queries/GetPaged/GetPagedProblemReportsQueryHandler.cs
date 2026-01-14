@@ -59,6 +59,9 @@ namespace Market.Application.Modules.Reports.ProblemReport.Queries.GetPaged
             {
                 query = request.SortBy.ToLower() switch
                 {
+                    "id" => request.SortDirection?.ToLower() == "asc"
+                     ? query.OrderBy(pr => pr.Id)
+                     : query.OrderByDescending(pr => pr.Id),
                     "title" => request.SortDirection?.ToLower() == "asc"
                         ? query.OrderBy(pr => pr.Title)
                         : query.OrderByDescending(pr => pr.Title),
