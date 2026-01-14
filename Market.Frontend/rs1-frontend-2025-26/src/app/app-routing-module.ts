@@ -54,10 +54,26 @@ const routes: Routes = [
     loadChildren: () =>
       import('./modules/public/public-module').then(m => m.PublicModule)
   },
+  {
+    path: 'rewards',
+    loadChildren: () =>
+      import('./rewards/rewards-module').then(m => m.RewardsModule)
+  },
+
+
+  {
+    path: '',
+    loadChildren: () =>
+      import('./modules/client/client-module')
+        .then(m => m.ClientModule)
+  },
 
   // fallback
   { path: '**', redirectTo: '' }
 ];
+
+
+
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

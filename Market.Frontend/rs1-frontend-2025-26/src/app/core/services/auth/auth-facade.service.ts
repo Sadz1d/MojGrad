@@ -3,6 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, throwError, of } from 'rxjs';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
+import {User} from './models/user.model';
 import {
   AuthApiService,
   LoginRequest,
@@ -17,19 +18,6 @@ import {
 } from '../../../api-services/auth/auth-api.service';
 
 
-
-
-export interface User {
-  id: string;
-  email: string;
-  fullName: string;
-  isAdmin: boolean;
-  isManager: boolean;
-  isEmployee: boolean;
-  token: string;
-  refreshToken: string;
-  expiresAt: Date;
-}
 
 @Injectable({
   providedIn: 'root'
@@ -163,15 +151,16 @@ export class AuthFacadeService {
   // ==================== HELPER METHODS ====================
 
   private handleLoginSuccess(response: LoginResponse, fingerprint: string): void {
-    const tokenPayload = this.decodeToken(response.accessToken);
 
     const user: User = {
-      id: tokenPayload.sub || '',
-      email: tokenPayload.email || '',
-      fullName: this.getFullNameFromToken(tokenPayload),
-      isAdmin: tokenPayload.is_admin === 'true',
-      isManager: tokenPayload.is_manager === 'true',
-      isEmployee: tokenPayload.is_employee === 'true',
+      id: response.id,                       // 👈 iz response
+      email: response.email,                 // 👈 iz response
+      firstName: response.firstName,         // 👈 KLJUČNO
+      lastName: response.lastName,           // 👈 KLJUČNO
+      fullName: `${response.firstName} ${response.lastName}`,
+      isAdmin: response.isAdmin,
+      isManager: response.isManager,
+      isEmployee: response.isEmployee,
       token: response.accessToken,
       refreshToken: response.refreshToken,
       expiresAt: new Date(response.expiresAtUtc)
@@ -181,6 +170,7 @@ export class AuthFacadeService {
     this.saveUserToStorage(user);
     localStorage.setItem('auth_fingerprint', fingerprint);
   }
+
 
   private updateTokens(response: LoginResponse): void {
     const currentUser = this.getCurrentUserValue();

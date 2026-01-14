@@ -47,9 +47,9 @@ export class ProblemReportListComponent implements OnInit {
   loading = false;
   error = '';
   exporting = false;
-  
+
   filterForm: FormGroup;
-  
+
   currentPage = 1;
   pageSize = 10;
   totalItems = 0;
@@ -98,17 +98,17 @@ export class ProblemReportListComponent implements OnInit {
   }
   private loadCurrentUser(): void {
     this.isAuthenticated = this.currentUserService.isAuthenticated();
-    
+
     const user = this.currentUserService.snapshot;
     if (user) {
-      this.currentUserId = parseInt(user.id, 10) || null;
+      this.currentUserId = user ? user.id : null;
     }
   }
 originalReports: ProblemReportListItem[] = [];
   loadReports(): void {
   this.loading = true;
   this.error = '';
-  
+
   const filter: ProblemReportFilter = {
     ...this.filterForm.value,
     page: this.currentPage,
@@ -119,10 +119,10 @@ originalReports: ProblemReportListItem[] = [];
     next: (response) => {
       // Sačuvaj originalne podatke
       this.originalReports = [...response.items];
-      
+
       // Postavi trenutne podatke
       this.reports = this.originalReports;
-      
+
       this.totalItems = response.totalCount;
       this.totalPages = response.totalPages;
       this.loading = false;
@@ -141,7 +141,7 @@ originalReports: ProblemReportListItem[] = [];
    */
   sortBy(column: string): void {
   console.log(`Sorting by ${column}, current direction: ${this.sortState.direction}`);
-  
+
   // Ako već sortiramo po ovoj koloni, promijeni direction
   if (this.sortState.column === column) {
     switch (this.sortState.direction) {
@@ -160,9 +160,9 @@ originalReports: ProblemReportListItem[] = [];
     this.sortState.column = column;
     this.sortState.direction = SortDirection.DESC;
   }
-  
+
   console.log(`New direction: ${this.sortState.direction}`);
-  
+
   // Primijeni sortiranje bez reloada
   this.applySorting();
 }
@@ -295,18 +295,18 @@ private sortLocal(): void {
   getPageNumbers(): number[] {
     const pages: number[] = [];
     const maxVisiblePages = 5;
-    
+
     let startPage = Math.max(1, this.currentPage - Math.floor(maxVisiblePages / 2));
     let endPage = Math.min(this.totalPages, startPage + maxVisiblePages - 1);
-    
+
     if (endPage - startPage + 1 < maxVisiblePages) {
       startPage = Math.max(1, endPage - maxVisiblePages + 1);
     }
-    
+
     for (let i = startPage; i <= endPage; i++) {
       pages.push(i);
     }
-    
+
     return pages;
   }
 
@@ -361,19 +361,19 @@ private sortLocal(): void {
 
     try {
       const exportData = this.prepareExportData();
-      
+
       this.exportService.exportToExcel(exportData, {
         fileName: `problem-reports-${this.getCurrentDate()}.xlsx`,
         sheetName: 'Problem Reports',
         dateFormat: 'DD.MM.YYYY'
       });
-      
+
       console.log('Export uspješan!');
-      
+
     } catch (error) {
       console.error('Greška pri exportu:', error);
       alert('Došlo je do greške pri exportu podataka.');
-      
+
     } finally {
       this.exporting = false;
     }
@@ -396,19 +396,19 @@ private sortLocal(): void {
       next: (response) => {
         try {
           const exportData = this.prepareExportData(response.items);
-          
+
           this.exportService.exportToExcel(exportData, {
             fileName: `problem-reports-all-${this.getCurrentDate()}.xlsx`,
             sheetName: 'Svi Problem Reports',
             dateFormat: 'DD.MM.YYYY'
           });
-          
+
           console.log('Export svih podataka uspješan!');
-          
+
         } catch (error) {
           console.error('Greška pri exportu:', error);
           alert('Došlo je do greške pri exportu podataka.');
-          
+
         } finally {
           this.exporting = false;
         }
@@ -430,19 +430,19 @@ private sortLocal(): void {
 
     try {
       const exportData = this.prepareExportData();
-      
+
       this.exportService.exportToCSV(
         exportData,
         `problem-reports-${this.getCurrentDate()}.csv`,
         ';'
       );
-      
+
       console.log('CSV export uspješan!');
-      
+
     } catch (error) {
       console.error('Greška pri CSV exportu:', error);
       alert('Došlo je do greške pri CSV exportu.');
-      
+
     } finally {
       this.exporting = false;
     }
@@ -482,13 +482,13 @@ private sortLocal(): void {
         exportData,
         `problem-reports-advanced-${this.getCurrentDate()}.xlsx`
       );
-      
+
       console.log('Advanced export uspješan!');
-      
+
     } catch (error) {
       console.error('Greška pri advanced exportu:', error);
       alert('Došlo je do greške pri advanced exportu.');
-      
+
     } finally {
       this.exporting = false;
     }
@@ -515,13 +515,13 @@ private sortLocal(): void {
 
   private generateStatistics(): any[] {
     const categoryStats = new Map<string, { count: number, statuses: string[] }>();
-    
+
     this.reports.forEach(report => {
       const key = report.categoryName;
       if (!categoryStats.has(key)) {
         categoryStats.set(key, { count: 0, statuses: [] });
       }
-      
+
       const stat = categoryStats.get(key)!;
       stat.count++;
       stat.statuses.push(report.statusName);
@@ -576,7 +576,7 @@ private sortLocal(): void {
     const year = now.getFullYear();
     const hours = now.getHours().toString().padStart(2, '0');
     const minutes = now.getMinutes().toString().padStart(2, '0');
-    
+
     return `${year}-${month}-${day}_${hours}-${minutes}`;
   }
 

@@ -1,0 +1,23 @@
+<h2>Rewards</h2>
+
+<a routerLink="/rewards/new">+ Nova nagrada</a>
+
+<table>
+  <tr>
+    <th>Naziv</th>
+    <th>Bodovi</th>
+    <th>Status</th>
+    <th>Akcije</th>
+  </tr>
+
+  <tr *ngFor="let r of rewards">
+    <td>{{ r.name }}</td>
+    <td>{{ r.minimumPoints }}</td>
+    <td>{{ r.isActive ? 'Aktivna' : 'Neaktivna' }}</td>
+    <td>
+      <button (click)="edit(r.id!)">Uredi</button>
+      <button (click)="delete(r.id!)">Obriši</button>
+    </td>
+  </tr>
+</table>
+

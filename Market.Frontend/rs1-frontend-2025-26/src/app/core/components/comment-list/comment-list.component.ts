@@ -25,7 +25,7 @@ import { ProblemReportDetail } from '../../models/problem-report.model';
     ReactiveFormsModule,
     MatIcon,
     MatProgressSpinner,
-    
+
     MatFormField,
     MatInput,
     MatButton,
@@ -83,11 +83,11 @@ export class CommentListComponent implements OnInit {
     this.isAuthenticated = this.currentUserService.isAuthenticated();
     this.isAdmin = this.currentUserService.isAdmin();
     this.isManager = this.currentUserService.isManager();
-    
+
     if (user) {
       // Pretvori string ID u number
-      this.currentUserId = parseInt(user.id, 10) || null;
-      
+      this.currentUserId = this.currentUserId = user.id || null;
+
       // Odredi rolu
       if (this.isAdmin) this.currentUserRole = 'admin';
       else if (this.isManager) this.currentUserRole = 'manager';
@@ -156,7 +156,7 @@ export class CommentListComponent implements OnInit {
         this.commentForm.reset();
         this.commentForm.markAsPristine();
         this.commentForm.markAsUntouched();
-        
+
         // Ponovo učitaj komentare
         this.loadComments();
         this.submittingComment = false;
@@ -170,7 +170,7 @@ export class CommentListComponent implements OnInit {
 
   editComment(comment: CommentListItem): void {
     if (!this.canEditComment(comment)) return;
-    
+
     const newText = prompt('Uredite komentar:', comment.text);
     if (newText && newText.trim() !== comment.text) {
       this.commentService.updateComment(comment.id, {
@@ -203,13 +203,13 @@ export class CommentListComponent implements OnInit {
 
   canEditComment(comment: CommentListItem): boolean {
     if (!this.isAuthenticated) return false;
-    
+
     // Vlasnik komentara može da edituje
     if (this.currentUserId === comment.userId) return true;
-    
+
     // Admin ili menadžer može da edituje
     if (this.isAdmin || this.isManager) return true;
-    
+
     return false;
   }
 
@@ -226,18 +226,18 @@ export class CommentListComponent implements OnInit {
   getPageNumbers(): number[] {
     const pages: number[] = [];
     const maxVisiblePages = 5;
-    
+
     let startPage = Math.max(1, this.currentPage - Math.floor(maxVisiblePages / 2));
     let endPage = Math.min(this.totalPages, startPage + maxVisiblePages - 1);
-    
+
     if (endPage - startPage + 1 < maxVisiblePages) {
       startPage = Math.max(1, endPage - maxVisiblePages + 1);
     }
-    
+
     for (let i = startPage; i <= endPage; i++) {
       pages.push(i);
     }
-    
+
     return pages;
   }
 
@@ -266,7 +266,7 @@ export class CommentListComponent implements OnInit {
       queryParams: { returnUrl: `/problem-reports/${this.data.reportId}` }
     });
   }
-  
+
 
 // Mock metoda - trebalo bi da dobijete podatke sa servera
 public isAdminUser(userId: number): boolean {
@@ -286,7 +286,7 @@ public getUserRole(userId: number): string {
   if (userId === this.currentUserId) {
     return this.currentUserRole;
   }
-  
+
   // Ako nije trenutni korisnik, možete implementirati cache ili API call
   return 'user';
 }

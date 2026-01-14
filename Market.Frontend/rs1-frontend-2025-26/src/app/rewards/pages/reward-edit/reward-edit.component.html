@@ -1,0 +1,9 @@
+<h2>Uredi nagradu</h2>
+
+<form [formGroup]="form" (ngSubmit)="submit()">
+  <!-- ISTA FORMA KAO CREATE -->
+  <button type="submit" [disabled]="form.invalid">
+    Sačuvaj izmjene
+  </button>
+</form>
+
