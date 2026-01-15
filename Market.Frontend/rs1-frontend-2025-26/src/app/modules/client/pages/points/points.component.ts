@@ -14,7 +14,20 @@ export class PointsComponent implements OnInit {
 
     if (userJson) {
       const user = JSON.parse(userJson);
-      this.userFullName = user.fullName;
+
+      // ✅ 1. Ako postoji fullName – koristi njega
+      if (user.fullName && user.fullName.trim() !== '') {
+        this.userFullName = user.fullName;
+      }
+      // ✅ 2. Ako nema fullName – koristi email bez @
+      else if (user.email) {
+        this.userFullName = user.email.split('@')[0];
+      }
+      // ✅ 3. Fallback ako baš ništa nema
+      else {
+        this.userFullName = 'Korisnik';
+      }
     }
   }
+
 }

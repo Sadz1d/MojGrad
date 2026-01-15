@@ -38,7 +38,7 @@ export class AuthFacadeService {
   // ==================== PUBLIC METHODS ====================
 
   // 🔐 LOGIN
-  login(data: LoginRequest): Observable<LoginResponse> {
+  login(data: LoginRequest): Observable<CurrentUserResponse> {
     const fingerprint = this.generateFingerprint();
     const loginData = { ...data, fingerprint };
 
@@ -46,12 +46,14 @@ export class AuthFacadeService {
       tap(response => {
         this.handleLoginSuccess(response, fingerprint);
       }),
+      switchMap(() => this.getCurrentUserInfo()),   // 👈 OVO JE KLJUČ
       catchError((error: any) => {
         this.clearAuthData();
         return throwError(() => error);
       })
     );
   }
+
 
   // 📝 REGISTER
   register(data: RegisterRequest): Observable<RegisterResponse> {
@@ -131,16 +133,23 @@ export class AuthFacadeService {
   // 👤 GET CURRENT USER INFO
   getCurrentUserInfo(): Observable<CurrentUserResponse> {
     return this.api.getCurrentUser().pipe(
-      tap(user => {
+      tap((user: CurrentUserResponse) => {
         const current = this.getCurrentUserValue();
-        if (current) {
-          const updatedUser: User = {
-            ...current,
-            ...user
-          };
-          this.currentUserSubject.next(updatedUser);
-          this.saveUserToStorage(updatedUser);
-        }
+
+        if (!current) return;
+
+        const updatedUser: User = {
+          ...current,
+          id: user.id,
+          email: user.email,
+          fullName: user.fullName ?? `${user.firstName} ${user.lastName}`,
+          isAdmin: user.isAdmin,
+          isManager: user.isManager,
+          isEmployee: user.isEmployee
+        };
+
+        this.currentUserSubject.next(updatedUser);
+        this.saveUserToStorage(updatedUser);
       }),
       catchError((error: any) => {
         return throwError(() => error);
@@ -148,19 +157,22 @@ export class AuthFacadeService {
     );
   }
 
+
   // ==================== HELPER METHODS ====================
 
   private handleLoginSuccess(response: LoginResponse, fingerprint: string): void {
 
+    const payload = this.decodeToken(response.accessToken);
+
     const user: User = {
-      id: response.id,                       // 👈 iz response
-      email: response.email,                 // 👈 iz response
-      firstName: response.firstName,         // 👈 KLJUČNO
-      lastName: response.lastName,           // 👈 KLJUČNO
-      fullName: `${response.firstName} ${response.lastName}`,
-      isAdmin: response.isAdmin,
-      isManager: response.isManager,
-      isEmployee: response.isEmployee,
+      id: payload.sub ? Number(payload.sub) : 0,
+      email: payload.email || '',
+      fullName: this.getFullNameFromToken(payload),
+
+      isAdmin: payload.is_admin === true || payload.is_admin === 'true',
+      isManager: payload.is_manager === true || payload.is_manager === 'true',
+      isEmployee: payload.is_employee === true || payload.is_employee === 'true',
+
       token: response.accessToken,
       refreshToken: response.refreshToken,
       expiresAt: new Date(response.expiresAtUtc)
@@ -170,6 +182,7 @@ export class AuthFacadeService {
     this.saveUserToStorage(user);
     localStorage.setItem('auth_fingerprint', fingerprint);
   }
+
 
 
   private updateTokens(response: LoginResponse): void {
