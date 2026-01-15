@@ -43,9 +43,12 @@ export class LoginComponent extends BaseComponent {
     };
 
     this.auth.login(payload).subscribe({
-      next: () => {
+      next: (res) => {
+        console.log('LOGIN RESPONSE:', res);
+
         this.stopLoading();
-        const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/admin/products';
+        const returnUrl =
+          this.route.snapshot.queryParams['returnUrl'] || '/admin/products';
         this.router.navigate([returnUrl]);
       },
       error: (err) => {
@@ -53,5 +56,6 @@ export class LoginComponent extends BaseComponent {
         console.error('Login error:', err);
       },
     });
+
   }
 }

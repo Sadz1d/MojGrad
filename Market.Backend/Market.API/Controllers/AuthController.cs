@@ -37,6 +37,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Market.Application.Modules.Auth.Commands.ResetPassword;
+using Market.Domain.Entities;
+using Microsoft.AspNetCore.Identity;
 
 
 namespace Market.Api.Controllers;
@@ -45,15 +47,19 @@ namespace Market.Api.Controllers;
 [Route("api/auth")]
 public sealed class AuthController(IMediator mediator) : ControllerBase
 {
+
+    //UserManager<ApplicationUser> userManager)
+    //_userManager = userManager;
+
     /// <summary>
     /// Prijava korisnika u MojGrad sistem
     /// (građanin, admin ili uposlenik)
     /// </summary>
     [HttpPost("login")]
     [AllowAnonymous]
-    public async Task<ActionResult<LoginCommandDto>> Login(
-        [FromBody] LoginCommand command,
-        CancellationToken ct)
+    public async Task<IActionResult> Login(
+         [FromBody] LoginCommand command,
+         CancellationToken ct)
     {
         return Ok(await mediator.Send(command, ct));
     }

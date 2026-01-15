@@ -17,7 +17,17 @@ export interface LoginResponse {
   accessToken: string;
   refreshToken: string;
   expiresAtUtc: string;
+
+  id: number;
+  email: string;
+  firstName: string;
+  lastName: string;
+
+  isAdmin: boolean;
+  isManager: boolean;
+  isEmployee: boolean;
 }
+
 
 export interface RegisterRequest {
   firstName: string;
@@ -55,13 +65,18 @@ export interface LogoutRequest {
 }
 
 export interface CurrentUserResponse {
-  id: string;
+  id: number;
   email: string;
+
+  firstName: string;
+  lastName: string;
   fullName: string;
+
   isAdmin: boolean;
   isManager: boolean;
   isEmployee: boolean;
 }
+
 export interface RegisterRequest {
   firstName: string;
   lastName: string;

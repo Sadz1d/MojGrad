@@ -1,0 +1,23 @@
+<h2>Nova nagrada</h2>
+
+<form [formGroup]="form" (ngSubmit)="submit()">
+
+  <label>Naziv *</label>
+  <input formControlName="name">
+
+  <label>Opis</label>
+  <textarea formControlName="description"></textarea>
+
+  <label>Minimalni bodovi *</label>
+  <input type="number" formControlName="minimumPoints">
+
+  <label>
+    <input type="checkbox" formControlName="isActive">
+    Aktivna
+  </label>
+
+  <button type="submit" [disabled]="form.invalid">
+    Sačuvaj
+  </button>
+
+</form>
