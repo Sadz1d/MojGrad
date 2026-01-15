@@ -5,6 +5,8 @@ using Market.Application.Modules.Identity.Profiles.Queries.GetById;
 using Market.Application.Modules.Identity.Profiles.Queries.List;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+//using Market.Application.Modules.Profiles.Queries;
 
 namespace Market.API.Controllers.Identity;
 
@@ -50,5 +52,24 @@ public class ProfilesController : ControllerBase
         await _mediator.Send(new DeleteProfileCommand { Id = id });
         return NoContent();
     }
+
+    [Authorize]
+    [HttpGet("me")]
+    public async Task<IActionResult> GetMyProfile(CancellationToken ct)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)
+                     ?? User.FindFirstValue("sub");
+
+        if (userId == null)
+            return Unauthorized();
+
+        var profile = await _mediator.Send(new GetProfileByIdQuery
+        {
+            Id = int.Parse(userId)
+        }, ct);
+
+        return Ok(profile);
+    }
+
 
 }
