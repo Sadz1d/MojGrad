@@ -24,12 +24,14 @@ import { RouterModule } from '@angular/router';
 import { VolunteerActionListComponent } from './core/components/volunteer-action-list/volunteer-action-list.component';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
+import { SupportComponent } from './pages/support/support.component';
 
 
 
 @NgModule({
   declarations: [
     AppComponent,
+    SupportComponent,
 
 
   ],

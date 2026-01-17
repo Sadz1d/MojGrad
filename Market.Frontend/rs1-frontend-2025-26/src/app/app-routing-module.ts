@@ -7,6 +7,9 @@ import { ProblemReportFormComponent } from './core/components/problem-report-for
 import { ProblemReportImportComponent } from './core/components/problem-report-import/problem-report-import.component';
 import { VolunteerActionListComponent } from './core/components/volunteer-action-list/volunteer-action-list.component';
 
+import { SupportComponent } from './pages/support/support.component';
+
+
 const routes: Routes = [
   {
     path: 'admin',
@@ -21,6 +24,8 @@ const routes: Routes = [
   { path: 'problem-reports/edit/:id', component: ProblemReportFormComponent },
   { path: 'problem-reports/import', component: ProblemReportImportComponent },
   { path: 'problem-reports/:id', component: ProblemReportFormComponent },
+
+  { path: 'support', component: SupportComponent },
 
   {
     path: 'volunteering',
@@ -55,13 +60,18 @@ const routes: Routes = [
       import('./modules/public/public-module').then(m => m.PublicModule)
   },
   {
-    path: 'rewards',
+    path: '',
     loadChildren: () =>
-      import('./rewards/rewards-module').then(m => m.RewardsModule)
+      import('./modules/client/client-module')
+        .then(m => m.ClientModule)
   },
 
 
-  {
+
+
+
+
+{
     path: '',
     loadChildren: () =>
       import('./modules/client/client-module')

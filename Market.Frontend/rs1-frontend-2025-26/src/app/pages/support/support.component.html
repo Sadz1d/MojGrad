@@ -1,0 +1,47 @@
+<div class="support-page">
+
+  <h2>Korisnička podrška</h2>
+
+  <!-- Kontakt -->
+  <div class="support-card">
+    <div class="icon email">📧</div>
+    <h3>Kontaktirajte podršku</h3>
+
+    <p><strong>E-mail:</strong> podrska@mojgrad.ba</p>
+    <p><strong>Telefon:</strong> 060 208 9864</p>
+    <p><strong>Radno vrijeme:</strong> 08:00 – 16:00</p>
+
+    <button class="primary"
+            (click)="sendEmail()">
+      Pošalji e-mail
+    </button>
+  </div>
+
+  <!-- Prijava problema -->
+  <div class="support-card warning">
+    <div class="icon warning">⚠️</div>
+    <h3>Prijavi problem s aplikacijom</h3>
+    <p>
+      Naišli ste na tehnički problem ili grešku prilikom korištenja aplikacije?
+    </p>
+
+    <button class="secondary"
+            (click)="reportProblem()">
+      Prijavi tehnički problem
+    </button>
+  </div>
+
+  <!-- FAQ -->
+  <div class="support-card">
+    <div class="icon faq">❓</div>
+    <h3>Često postavljana pitanja</h3>
+    <p>Pogledajte odgovore na najčešća pitanja korisnika.</p>
+
+    <button class="secondary"
+            (click)="openFaq()">
+      Pogledaj odgovore
+    </button>
+  </div>
+
+</div>
+
