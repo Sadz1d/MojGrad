@@ -1,0 +1,193 @@
+<div class="wizard-page">
+  <div class="wizard-header">
+    <h1 class="wizard-title">Kreiraj volontersku akciju</h1>
+    <p class="wizard-subtitle">Popunite sve korake kako biste pokrenuli novu akciju za zajednicu</p>
+  </div>
+
+  <mat-horizontal-stepper linear #stepper class="wizard-stepper">
+
+    <!-- STEP 1 – OSNOVNI PODACI -->
+    <mat-step [stepControl]="stepBasic" label="Osnovni podaci">
+      <form [formGroup]="stepBasic" class="wizard-step">
+        <div class="step-header">
+          <div class="step-number">1</div>
+          <div>
+            <h3>Osnovni podaci akcije</h3>
+            <p>Unesite naziv i opis vaše volonterske akcije</p>
+          </div>
+        </div>
+
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Naziv akcije *</mat-label>
+          <input matInput formControlName="name" placeholder="Npr. Čišćenje parka" />
+          <mat-icon matPrefix>title</mat-icon>
+          <mat-error *ngIf="stepBasic.get('name')?.hasError('required')">
+            Naziv je obavezan
+          </mat-error>
+          <mat-error *ngIf="stepBasic.get('name')?.hasError('minlength')">
+            Minimalno 3 znaka
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Opis akcije *</mat-label>
+          <textarea
+            matInput
+            rows="4"
+            formControlName="description"
+            placeholder="Detaljno opišite šta će se raditi na akciji...">
+          </textarea>
+          <mat-icon matPrefix>description</mat-icon>
+          <mat-hint>Opišite ciljeve, aktivnosti i očekivane rezultate</mat-hint>
+          <mat-error *ngIf="stepBasic.get('description')?.invalid">
+            Opis je obavezan
+          </mat-error>
+        </mat-form-field>
+
+        <div class="step-actions">
+          <button mat-raised-button color="primary" matStepperNext [disabled]="stepBasic.invalid">
+            Dalje
+            <mat-icon>arrow_forward</mat-icon>
+          </button>
+        </div>
+      </form>
+    </mat-step>
+
+    <!-- STEP 2 – LOKACIJA & DATUM -->
+    <mat-step [stepControl]="stepDetails" label="Lokacija i datum">
+      <form [formGroup]="stepDetails" class="wizard-step">
+        <div class="step-header">
+          <div class="step-number">2</div>
+          <div>
+            <h3>Lokacija i vrijeme</h3>
+            <p>Odredite gdje i kada će se akcija održati</p>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Lokacija *</mat-label>
+            <input matInput formControlName="location" placeholder="Npr. Park Svetog Save, Sarajevo" />
+            <mat-icon matPrefix>location_on</mat-icon>
+            <mat-error *ngIf="stepDetails.get('location')?.invalid">
+              Lokacija je obavezna
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Datum održavanja *</mat-label>
+            <input matInput type="date" formControlName="eventDate" />
+            <mat-icon matPrefix>event</mat-icon>
+            <mat-error *ngIf="stepDetails.get('eventDate')?.invalid">
+              Odaberite datum
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Vrijeme početka</mat-label>
+            <input matInput type="time" formControlName="startTime" />
+            <mat-icon matPrefix>schedule</mat-icon>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Vrijeme završetka</mat-label>
+            <input matInput type="time" formControlName="endTime" />
+            <mat-icon matPrefix>schedule</mat-icon>
+          </mat-form-field>
+        </div>
+
+        <div class="step-actions">
+          <button mat-button matStepperPrevious>
+            <mat-icon>arrow_back</mat-icon>
+            Nazad
+          </button>
+          <button mat-raised-button color="primary" matStepperNext [disabled]="stepDetails.invalid">
+            Dalje
+            <mat-icon>arrow_forward</mat-icon>
+          </button>
+        </div>
+      </form>
+    </mat-step>
+
+    <!-- STEP 3 – KAPACITET -->
+    <mat-step [stepControl]="stepCapacity" label="Kapacitet">
+      <form [formGroup]="stepCapacity" class="wizard-step">
+        <div class="step-header">
+          <div class="step-number">3</div>
+          <div>
+            <h3>Kapacitet i kategorije</h3>
+            <p>Odredite broj volontera i kategorije akcije</p>
+          </div>
+        </div>
+
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Maksimalan broj volontera *</mat-label>
+          <input matInput type="number" formControlName="maxParticipants" min="1" max="500" />
+          <mat-icon matPrefix>people</mat-icon>
+          <mat-hint>Preporučeno 10-50 volontera za optimalnu organizaciju</mat-hint>
+          <mat-error *ngIf="stepCapacity.get('maxParticipants')?.hasError('min')">
+            Mora biti najmanje 1 volonter
+          </mat-error>
+        </mat-form-field>
+
+        <div class="categories-section">
+          <label class="section-label">Kategorije akcije (opcionalno)</label>
+          <mat-chip-listbox multiple formControlName="categories" class="categories-list">
+            <mat-chip-option value="ecology">
+              <mat-icon>eco</mat-icon>
+              Ekologija
+            </mat-chip-option>
+            <mat-chip-option value="cleaning">
+              <mat-icon>cleaning_services</mat-icon>
+              Čišćenje
+            </mat-chip-option>
+            <mat-chip-option value="education">
+              <mat-icon>school</mat-icon>
+              Edukacija
+            </mat-chip-option>
+            <mat-chip-option value="social">
+              <mat-icon>diversity_3</mat-icon>
+              Socijalno
+            </mat-chip-option>
+            <mat-chip-option value="sports">
+              <mat-icon>sports</mat-icon>
+              Sport
+            </mat-chip-option>
+            <mat-chip-option value="culture">
+              <mat-icon>museum</mat-icon>
+              Kultura
+            </mat-chip-option>
+          </mat-chip-listbox>
+        </div>
+
+        <div class="checkboxes-section">
+          <mat-checkbox formControlName="requiresTools" class="checkbox-field">
+            Potrebni su alati/oprema
+          </mat-checkbox>
+          <mat-checkbox formControlName="foodProvided" class="checkbox-field">
+            Obrok će biti obezbijeđen
+          </mat-checkbox>
+        </div>
+
+        <div class="step-actions">
+          <button mat-button matStepperPrevious>
+            <mat-icon>arrow_back</mat-icon>
+            Nazad
+          </button>
+          <button
+            mat-raised-button
+            color="accent"
+            class="btn-create"
+            (click)="submit()"
+            [disabled]="stepCapacity.invalid">
+            <mat-icon>add_circle</mat-icon>
+            Kreiraj akciju
+          </button>
+        </div>
+      </form>
+    </mat-step>
+
+  </mat-horizontal-stepper>
+</div>
