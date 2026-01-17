@@ -1,0 +1,48 @@
+<div class="faq-page">
+
+  <h2>Često postavljana pitanja</h2>
+
+  <!-- FAQ GRID (2 kolone) -->
+  <div class="faq-grid">
+
+    <div
+      class="faq-item"
+      *ngFor="let faq of faqs; let i = index"
+      (click)="toggle(i)"
+    >
+      <div class="faq-question">
+        {{ faq.question }}
+        <span class="icon">
+          {{ openedIndex === i ? '−' : '+' }}
+        </span>
+      </div>
+
+      <div
+        class="faq-answer"
+        *ngIf="openedIndex === i"
+      >
+        {{ faq.answer }}
+      </div>
+    </div>
+
+  </div>
+
+  <!-- AI ASISTENT -->
+  <div class="ai-box">
+    <h3>🤖 AI asistent MojGrad</h3>
+    <p>Niste pronašli odgovor? Postavite pitanje.</p>
+
+    <input
+      type="text"
+      [(ngModel)]="userQuestion"
+      placeholder="Npr. Zašto mi se ne učitava stranica?"
+    />
+
+    <button (click)="askAi()">Pošalji</button>
+
+    <div class="ai-response" *ngIf="aiResponse">
+      {{ aiResponse }}
+    </div>
+  </div>
+
+</div>

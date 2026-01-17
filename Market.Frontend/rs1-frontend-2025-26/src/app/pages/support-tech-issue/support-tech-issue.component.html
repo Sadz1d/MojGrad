@@ -1,0 +1,21 @@
+<div class="tech-issue-page">
+  <h2>Prijava tehničkog problema</h2>
+  <p>Opišite problem koji ste primijetili u aplikaciji MojGrad.</p>
+
+  <label>Vrsta problema</label>
+  <select [(ngModel)]="type">
+    <option value="Bug">Bug / greška</option>
+    <option value="Ne radi">Ne radi funkcionalnost</option>
+    <option value="Prijedlog">Prijedlog poboljšanja</option>
+  </select>
+
+  <label>Opis problema</label>
+  <textarea
+    rows="5"
+    [(ngModel)]="description"
+    placeholder="Npr. Dugme za prijavu ne reaguje..."
+  ></textarea>
+
+  <button (click)="send()">Pošalji prijavu</button>
+</div>
+

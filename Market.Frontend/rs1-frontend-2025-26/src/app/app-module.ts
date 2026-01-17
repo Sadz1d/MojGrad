@@ -31,8 +31,6 @@ import { SupportComponent } from './pages/support/support.component';
 @NgModule({
   declarations: [
     AppComponent,
-    SupportComponent,
-
 
   ],
   imports: [
