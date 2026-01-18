@@ -24,5 +24,6 @@ public sealed class GetProblemReportByIdQueryDto
     public required int CommentsCount { get; init; }
     public required int TasksCount { get; init; }
     public required int RatingsCount { get; init; }
+    public string? ImagePath { get; set; }
 }
 

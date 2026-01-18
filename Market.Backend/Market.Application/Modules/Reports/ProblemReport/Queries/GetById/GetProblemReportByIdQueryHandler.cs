@@ -46,7 +46,9 @@ public sealed class GetProblemReportByIdQueryHandler
                 StatusName = p.Status.Name,
                 CommentsCount = p.Comments.Count,
                 TasksCount = p.Tasks.Count,
-                RatingsCount = p.Ratings.Count
+                RatingsCount = p.Ratings.Count,
+                ImagePath = p.ImagePath
+
             })
             .FirstOrDefaultAsync(ct);
 
