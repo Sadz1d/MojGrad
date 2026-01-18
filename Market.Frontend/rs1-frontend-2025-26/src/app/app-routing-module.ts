@@ -6,6 +6,10 @@ import { ProblemReportListComponent } from './core/components/problem-report-lis
 import { ProblemReportFormComponent } from './core/components/problem-report-form/problem-report-form.component';
 import { ProblemReportImportComponent } from './core/components/problem-report-import/problem-report-import.component';
 import { VolunteerActionListComponent } from './core/components/volunteer-action-list/volunteer-action-list.component';
+import { SupportTechIssueComponent } from './pages/support-tech-issue/support-tech-issue.component';
+import { SupportComponent } from './pages/support/support.component';
+import { SupportFaqComponent } from './pages/support-faq/support-faq.component';
+
 
 const routes: Routes = [
   {
@@ -21,6 +25,12 @@ const routes: Routes = [
   { path: 'problem-reports/edit/:id', component: ProblemReportFormComponent },
   { path: 'problem-reports/import', component: ProblemReportImportComponent },
   { path: 'problem-reports/:id', component: ProblemReportFormComponent },
+  { path: 'support', component: SupportComponent },
+  { path: 'reports/problem-report', component: ProblemReportFormComponent },
+  { path: 'support/tech-issue', component: SupportTechIssueComponent },
+
+  { path: 'support/faq', component: SupportFaqComponent },
+
 
   {
     path: 'volunteering',
@@ -54,10 +64,32 @@ const routes: Routes = [
     loadChildren: () =>
       import('./modules/public/public-module').then(m => m.PublicModule)
   },
+  {
+    path: '',
+    loadChildren: () =>
+      import('./modules/client/client-module')
+        .then(m => m.ClientModule)
+  },
+  {
+    path: 'surveys',
+    loadChildren: () =>
+      import('./modules/surveys/surveys.module')
+        .then(m => m.SurveysModule)
+  },
+
+{
+    path: '',
+    loadChildren: () =>
+      import('./modules/client/client-module')
+        .then(m => m.ClientModule)
+  },
 
   // fallback
   { path: '**', redirectTo: '' }
 ];
+
+
+
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

@@ -8,6 +8,8 @@ import { ProductsEditComponent } from './catalogs/products/products-edit/product
 import { ProductCategoriesComponent } from './catalogs/product-categories/product-categories.component';
 import {AdminOrdersComponent} from './orders/admin-orders.component';
 import {AdminSettingsComponent} from './admin-settings/admin-settings.component';
+import { VolunteerActionCreateComponent } from './volunteer-action-create/volunteer-action-create.component';
+
 
 const routes: Routes = [
   {
@@ -42,6 +44,13 @@ const routes: Routes = [
       {
         path: 'settings',
         component: AdminSettingsComponent,
+      },
+
+
+
+      {
+        path: 'volunteer-actions/create',
+        component: VolunteerActionCreateComponent
       },
 
 

@@ -1,0 +1,163 @@
+/* HERO */
+.survey-hero {
+  position: relative;
+  height: 320px;
+  background: url('/assets/images/pocetna_slika.png') center / cover no-repeat;
+  border-radius: 0 0 40px 40px;
+  overflow: hidden;
+  margin-bottom: 80px;
+
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 60, 120, 0.55);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 20px;
+}
+
+.hero-logo {
+  width: 70px;
+  margin-bottom: 14px;
+}
+
+.hero-badge {
+  background: #ffffff;
+  color: #1e88e5;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.hero-content h1 {
+  font-size: 34px;
+  margin: 0 0 8px;
+}
+
+.hero-content p {
+  font-size: 16px;
+  opacity: 0.95;
+}
+
+/* WRAPPER */
+.survey-wrapper {
+  max-width: 1100px;
+  margin: 20px auto 60px;   // bez negativnog margina
+  padding: 0 20px;
+  margin-top: -80px;
+}
+
+.loading {
+  color: #666;
+  font-size: 16px;
+}
+
+/* GRID */
+.survey-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* CARD */
+.survey-card {
+  display: flex;
+  align-items: center;
+  background: linear-gradient(135deg, #e3f2fd, #ffffff);
+  border-radius: 20px;
+  padding: 22px 26px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.survey-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 38px rgba(0, 0, 0, 0.18);
+}
+
+/* LEFT */
+.card-left .icon {
+  width: 56px;
+  height: 56px;
+  background: #1e88e5;
+  color: white;
+  font-size: 26px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* BODY */
+.card-body {
+  flex: 1;
+  padding: 0 20px;
+}
+
+.card-body h3 {
+  margin: 0 0 8px;
+  font-size: 20px;
+  color: #0d47a1;
+}
+
+.meta {
+  display: flex;
+  gap: 18px;
+  font-size: 14px;
+  color: #555;
+}
+
+/* RIGHT */
+.card-right {
+  display: flex;
+  align-items: center;
+}
+
+.start-btn {
+  background: linear-gradient(135deg, #1e88e5, #1565c0);
+  color: white;
+  border: none;
+  padding: 12px 28px;
+  border-radius: 24px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 6px 14px rgba(30, 136, 229, 0.35);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.start-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px rgba(30, 136, 229, 0.45);
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .survey-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .card-body {
+    padding: 0;
+  }
+
+  .start-btn {
+    width: 100%;
+    text-align: center;
+  }
+}
