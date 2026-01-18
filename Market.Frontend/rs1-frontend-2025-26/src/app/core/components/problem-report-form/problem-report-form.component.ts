@@ -378,11 +378,9 @@ private uploadImage(file: File) {
     });
   }
 
-  getImageUrl(path: string): string {
-  if (!path) return '';
-  return path.startsWith('http')
-    ? path
-    : `https://localhost:7260/${path}`;
+  getImageUrl(reportId: number): string {
+  if (!reportId) return '';
+  return `https://localhost:7260/api/reports/problem-reports/${reportId}/image`;
 }
 
 

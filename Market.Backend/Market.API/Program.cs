@@ -193,7 +193,7 @@ public partial class Program
             {
                 FileProvider = new PhysicalFileProvider(uploadsPath),
                 RequestPath = "/Uploads",
-                ServeUnknownFileTypes = true // dozvoljava sve ekstenzije (slike, pdf, etc.)
+                ServeUnknownFileTypes = true
             });
 
 

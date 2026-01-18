@@ -1,26 +1,28 @@
-﻿using Market.API.Models.Requests;
+﻿using CsvHelper;
+using Market.API.Models.Requests;
+using Market.Application.Abstractions;
 using Market.Application.Modules.Reports.ProblemReport.Commands.Create;
 using Market.Application.Modules.Reports.ProblemReport.Commands.Delete;
 using Market.Application.Modules.Reports.ProblemReport.Commands.Import;
 using Market.Application.Modules.Reports.ProblemReport.Commands.Update;
 using Market.Application.Modules.Reports.ProblemReport.Dtos;
 using Market.Application.Modules.Reports.ProblemReport.Queries.GetById;
+using Market.Application.Modules.Reports.ProblemReport.Queries.GetPaged;
 using Market.Application.Modules.Reports.ProblemReport.Queries.List;
 using Market.Domain.Entities.Reports;
+using MediatR;
 //using Market.Application.Modules.Reports.ProblemReport.Queries.GetById;
 //using Market.Application.Modules.Reports.ProblemReport.Commands.Create;
 //using Market.Application.Modules.Reports.ProblemReport.Commands.Update;
 //using Market.Application.Modules.Reports.ProblemReport.Commands.Delete;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using OfficeOpenXml; // Dodajte za Excel podršku
 using System.Formats.Asn1;
 using System.Globalization;
 using System.Text.Json;
-using OfficeOpenXml; // Dodajte za Excel podršku
-using CsvHelper;
-using Microsoft.Extensions.Logging;
-using Market.Application.Modules.Reports.ProblemReport.Queries.GetPaged;
-using MediatR;
 
 namespace Market.API.Controllers;
 
@@ -30,11 +32,13 @@ public sealed class ProblemReportsController : ControllerBase
 {
     private readonly ISender sender;
     private readonly ILogger<ProblemReportsController> _logger;
+    private readonly IAppDbContext _dbContext;
     public ProblemReportsController(ISender sender,
-        ILogger<ProblemReportsController> logger)
+        ILogger<ProblemReportsController> logger, IAppDbContext dbContext)
     {
         this.sender = sender;
         _logger = logger;
+        _dbContext = dbContext;
         // EPPlus 8+ license setting (replaces obsolete LicenseContext)
         OfficeOpenXml.ExcelPackage.License.SetNonCommercialPersonal("Your Name or Organization");
     }
@@ -310,5 +314,29 @@ CancellationToken ct = default)
         return Ok(new { imageUrl = $"/Uploads/ProblemReports/{fileName}" });
     }
 
+    [Authorize] // zahtijeva prijavljeni korisnik
+    [HttpGet("{id}/image")]
+    public IActionResult GetReportImage(int id)
+    {
+        var report = _dbContext.ProblemReports.Find(id);
+        if (report == null || string.IsNullOrEmpty(report.ImagePath))
+            return NotFound();
+
+        var path = Path.Combine(Directory.GetCurrentDirectory(), report.ImagePath);
+        if (!System.IO.File.Exists(path))
+            return NotFound();
+
+        // Odredi MIME tip po ekstenziji
+        var ext = Path.GetExtension(path).ToLower();
+        var mime = ext switch
+        {
+            ".jpg" or ".jpeg" => "image/jpeg",
+            ".png" => "image/png",
+            ".gif" => "image/gif",
+            _ => "application/octet-stream"
+        };
+
+        return PhysicalFile(path, mime);
+    }
 
 }

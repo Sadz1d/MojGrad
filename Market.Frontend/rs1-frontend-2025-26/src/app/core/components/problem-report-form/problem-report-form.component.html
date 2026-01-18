@@ -101,12 +101,8 @@
        accept="image/*"
        (change)="onFileSelected($event)">
 
-<img
-    *ngIf="imagePreview"
-    [src]="imagePreview"
-    alt="Slika prijave"
-    style="max-width: 100%; border-radius: 8px;"
-/>
+<img *ngIf="reportId" [src]="getImageUrl(reportId)" alt="Problem image" />
+
 
 <mat-progress-bar
   *ngIf="progress > 0"
