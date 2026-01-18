@@ -156,6 +156,11 @@ export class ProblemReportFormComponent implements OnInit, OnDestroy {
             categoryName: category ? category.name : '',
             statusName: status ? status.name : ''
           });
+          if (report.imagePath) {
+    this.imagePreview = report.imagePath.startsWith('http')
+      ? report.imagePath
+      : `https://localhost:7260/${report.imagePath}`;
+  }
           this.loading = false;
         },
         error: (err) => {

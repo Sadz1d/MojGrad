@@ -33,6 +33,7 @@ export interface ProblemReportDetail {
   commentsCount: number;
   tasksCount: number;
   ratingsCount: number;
+  imagePath?: string;
 }
 
 // Za kreiranje (CreateProblemReportCommand)
