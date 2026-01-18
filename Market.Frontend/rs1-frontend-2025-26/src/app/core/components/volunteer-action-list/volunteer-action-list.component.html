@@ -100,33 +100,51 @@
 
       <!-- FOOTER -->
       <div class="action-footer">
-        <span class="slots" [class.full]="action.freeSlots === 0">
-          Slobodna mjesta: {{ action.freeSlots }}
-        </span>
+  <span class="slots" [class.full]="action.freeSlots === 0">
+    Slobodna mjesta: {{ action.freeSlots }}
+  </span>
 
+        <!-- USER BUTTON -->
         <button
           mat-raised-button
           color="primary"
           (click)="joinAction(action)"
           [disabled]="
-    action.freeSlots === 0 ||
-    joiningActionId === action.id ||
-    action.isUserJoined
-  "
+      action.freeSlots === 0 ||
+      joiningActionId === action.id ||
+      action.isUserJoined
+    "
         >
           <span *ngIf="action.isUserJoined">✔️ Prijavljeni ste</span>
           <span *ngIf="!action.isUserJoined && joiningActionId !== action.id">
-    Prijavi se
-  </span>
+      Prijavi se
+    </span>
           <span *ngIf="joiningActionId === action.id">
-    ⏳ Prijava...
-  </span>
+      ⏳ Prijava...
+    </span>
+        </button>
+      </div>
+
+      <!-- ✅ ADMIN ACTIONS – IDE ODMAH ISPOD FOOTERA -->
+      <div *ngIf="isAdmin" class="admin-actions">
+        <button
+          mat-stroked-button
+          color="primary"
+          (click)="editAction(action)"
+        >
+          ✏️ Uredi
         </button>
 
+        <button
+          mat-stroked-button
+          color="warn"
+          (click)="deleteAction(action.id)"
+        >
+          🗑 Obriši
+        </button>
       </div>
 
     </div>
-  </div>
 
   <!-- PRAZNO STANJE -->
   <div *ngIf="!loading && !filteredActions.length" class="empty">
@@ -141,3 +159,7 @@
 
 
 
+
+
+
+</div>

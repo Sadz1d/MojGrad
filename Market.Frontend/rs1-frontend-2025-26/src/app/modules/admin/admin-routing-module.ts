@@ -52,7 +52,10 @@ const routes: Routes = [
         path: 'volunteer-actions/create',
         component: VolunteerActionCreateComponent
       },
-      
+      {
+        path: 'volunteer-actions/edit/:id',
+        component: VolunteerActionCreateComponent
+      },
       // default admin route → /admin/products
       {
         path: '',

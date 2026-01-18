@@ -39,6 +39,8 @@ export class VolunteerActionListComponent implements OnInit {
   dateFrom?: string;
   dateTo?: string;
 
+  isAdmin = false;
+
   constructor(
     private volunteerActionService: VolunteerActionService,
     private router: Router
@@ -46,9 +48,24 @@ export class VolunteerActionListComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadActions();
+    const user = JSON.parse(localStorage.getItem('auth_user') || '{}');
+    this.isAdmin = true;
   }
 
+  editAction(action: VolunteerActionListItem): void {
+    this.router.navigate(['/admin/volunteer-actions/edit', action.id]);
+  }
 
+  deleteAction(id: number): void {
+    if (!confirm('Da li ste sigurni da želite obrisati ovu akciju?')) {
+      return;
+    }
+
+    this.volunteerActionService.deleteAction(id).subscribe(() => {
+      this.actions = this.actions.filter(a => a.id !== id);
+      this.applyFilters();
+    });
+  }
 
   loadActions(): void {
     this.loading = true;
