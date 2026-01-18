@@ -182,7 +182,7 @@ public partial class Program
             app.UseCors("FrontendPolicy");
 
             // Omogući serviranje statičkih fajlova iz wwwroot (ako već ne postoji)
-            app.UseStaticFiles();
+            //app.UseStaticFiles();
 
             // Serviranje fajlova iz foldera "Uploads"
             var uploadsPath = Path.Combine(Directory.GetCurrentDirectory(), "Uploads");

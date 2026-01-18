@@ -376,4 +376,14 @@ private uploadImage(file: File) {
         this.markFormGroupTouched(control);
       }
     });
-  }}
+  }
+
+  getImageUrl(path: string): string {
+  if (!path) return '';
+  return path.startsWith('http')
+    ? path
+    : `https://localhost:7260/${path}`;
+}
+
+
+}
