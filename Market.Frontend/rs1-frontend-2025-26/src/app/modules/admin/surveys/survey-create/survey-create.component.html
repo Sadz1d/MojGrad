@@ -1,30 +1,69 @@
-<h2>Nova anketa</h2>
+<div class="survey-create-wrapper">
 
-<div class="form">
+  <div class="survey-card">
+    <h2 class="title">Nova anketa</h2>
+    <p class="subtitle">
+      Kreirajte anketu koja će biti dostupna građanima u odabranom periodu.
+    </p>
 
-  <label>Pitanje</label>
-  <input
-    type="text"
-    [(ngModel)]="model.question"
-    placeholder="Unesite pitanje ankete"
-  />
+    <form class="survey-form">
 
-  <label>Datum početka</label>
-  <input
-    type="date"
-    [(ngModel)]="model.startDate"
-  />
+      <!-- PITANJE -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Pitanje ankete</mat-label>
+        <input
+          matInput
+          placeholder="Unesite pitanje ankete"
+          [(ngModel)]="model.question"
+          name="question"
+          required
+        />
+      </mat-form-field>
 
-  <label>Datum završetka</label>
-  <input
-    type="date"
-    [(ngModel)]="model.endDate"
-  />
+      <!-- DATUMI -->
+      <div class="date-row">
+        <mat-form-field appearance="outline">
+          <mat-label>Datum početka</mat-label>
+          <input
+            matInput
+            type="date"
+            [(ngModel)]="model.startDate"
+            name="startDate"
+          />
+        </mat-form-field>
 
-  <br>
+        <mat-form-field appearance="outline">
+          <mat-label>Datum završetka</mat-label>
+          <input
+            matInput
+            type="date"
+            [(ngModel)]="model.endDate"
+            name="endDate"
+          />
+        </mat-form-field>
+      </div>
 
-  <button (click)="save()" [disabled]="saving">
-    Sačuvaj
-  </button>
+      <!-- ACTIONS -->
+      <div class="actions">
+        <button
+          mat-stroked-button
+          color="primary"
+          routerLink="/admin"
+        >
+          Odustani
+        </button>
+
+        <button
+          mat-raised-button
+          color="primary"
+          (click)="save()"
+          [disabled]="saving || !model.question"
+        >
+          {{ saving ? 'Sačuvavam...' : 'Sačuvaj anketu' }}
+        </button>
+      </div>
+
+    </form>
+  </div>
 
 </div>
