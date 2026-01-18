@@ -3,7 +3,8 @@ import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, throwError, of } from 'rxjs';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
-import {User} from './models/user.model';
+import { User } from './models/user.model';
+
 import {
   AuthApiService,
   LoginRequest,

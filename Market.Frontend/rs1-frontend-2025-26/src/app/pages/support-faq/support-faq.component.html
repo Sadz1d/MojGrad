@@ -1,0 +1,78 @@
+<div class="faq-page">
+
+  <h2 class="faq-title">Često postavljana pitanja</h2>
+
+  <div class="faq-columns">
+
+    <!-- LIJEVA KOLONA -->
+    <div class="faq-column">
+      <div
+        class="faq-item"
+        *ngFor="let faq of faqsLeft; let i = index"
+        (click)="toggleLeft(i)"
+      >
+        <div class="faq-question">
+          {{ faq.question }}
+          <span class="icon">
+            {{ openedLeft === i ? '−' : '+' }}
+          </span>
+        </div>
+
+        <div class="faq-answer" *ngIf="openedLeft === i">
+          {{ faq.answer }}
+        </div>
+      </div>
+    </div>
+
+    <!-- DESNA KOLONA -->
+    <div class="faq-column">
+      <div
+        class="faq-item"
+        *ngFor="let faq of faqsRight; let i = index"
+        (click)="toggleRight(i)"
+      >
+        <div class="faq-question">
+          {{ faq.question }}
+          <span class="icon">
+            {{ openedRight === i ? '−' : '+' }}
+          </span>
+        </div>
+
+        <div class="faq-answer" *ngIf="openedRight === i">
+          {{ faq.answer }}
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- AI ASISTENT -->
+  <!-- AI ASISTENT -->
+  <div class="ai-box">
+    <div class="ai-header">
+      🤖 <span>AI asistent MojGrad</span>
+    </div>
+
+    <p class="ai-subtitle">
+      Niste pronašli odgovor? Postavite pitanje.
+    </p>
+
+    <div class="ai-input-row">
+      <input
+        type="text"
+        [(ngModel)]="userQuestion"
+        placeholder="Npr. Zašto mi se ne učitava stranica?"
+      />
+
+      <button (click)="askAi()" [disabled]="loading">
+        {{ loading ? 'Razmišljam...' : 'Pošalji' }}
+      </button>
+    </div>
+
+    <div class="ai-message" *ngIf="aiResponse">
+      <span class="ai-icon">🤖</span>
+      <span class="ai-text">{{ aiResponse }}</span>
+    </div>
+  </div>
+
+</div>
