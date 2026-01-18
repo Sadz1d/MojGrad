@@ -15,6 +15,7 @@ export interface ProblemReportListItem {
   tasksCount: number;
   ratingsCount: number;
   shortDescription?: string;
+  imagePath?: string;
 }
 
 // Za detalje (GetProblemReportByIdQueryDto)
