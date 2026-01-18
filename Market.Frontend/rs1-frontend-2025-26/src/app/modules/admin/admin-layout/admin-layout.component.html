@@ -35,6 +35,8 @@
       </button>
     </div>
 
+
+
     <!-- MENU -->
     <nav class="menu">
       <div class="menu-section">
@@ -45,9 +47,14 @@
 
         </a>
       </div>
-      <a routerLink="/volunteering" class="menu-link">
-        📋 Sve volonterske akcije
+      <a
+        mat-button
+        routerLink="/volunteering"
+        class="menu-item menu-secondary">
+        <mat-icon>list_alt</mat-icon>
+        <span>Sve volonterske akcije</span>
       </a>
+
 
 
       <div class="menu-section">
@@ -62,6 +69,13 @@
         <a mat-button routerLink="/auth/logout" class="menu-item logout">
           <mat-icon>logout</mat-icon>
           <span>Odjava</span>
+        </a>
+      </div>
+
+      <div class="back-home-box">
+        <a routerLink="/" class="back-home-btn">
+          <mat-icon>home</mat-icon>
+          <span>Nazad na početnu</span>
         </a>
       </div>
     </nav>

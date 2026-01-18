@@ -10,19 +10,23 @@ import { AuthFacadeService } from '../../../core/services/auth/auth-facade.servi
 })
 export class PublicLayoutComponent {
   private auth = inject(AuthFacadeService);
-  
+
   currentYear: string = "2025";
-  
+
   // Observable za praćenje stanja prijave
   isLoggedIn$ = this.auth.isAuthenticated$;
-  
+
   // Metoda za odjavu
   logout(): void {
     this.auth.logout().subscribe();
   }
-  
+
   // Getter za trenutnog korisnika (za ime/email u dugmetu)
   get currentUser() {
     return this.auth.getCurrentUserValue();
+  }
+
+  get isAdmin(): boolean {
+    return this.auth.isAdmin();
   }
 }

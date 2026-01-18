@@ -189,6 +189,35 @@ body {
   }
 }
 
+//back home
+.back-home-box {
+  padding: 0 24px;
+  margin-bottom: 24px;
+}
+
+.back-home-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #e8eff8, #f5f9ff);
+  color: #1f4e79;
+  font-weight: 600;
+  text-decoration: none;
+  transition: 0.25s ease;
+  border: 1px solid #cbd5e0;
+
+  mat-icon {
+    font-size: 20px;
+  }
+
+  &:hover {
+    background: #d9ecff;
+    transform: translateX(4px);
+  }
+}
+
 /* ================================
    MENU
 ================================ */
@@ -237,6 +266,13 @@ body {
     width: 20px !important;
     height: 20px !important;
     color: $text-light !important;
+  }
+  .menu-secondary {
+    background: rgba(44, 90, 160, 0.05) !important;
+
+    &:hover {
+      background: rgba(44, 90, 160, 0.12) !important;
+    }
   }
 
   &:hover {

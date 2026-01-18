@@ -59,7 +59,7 @@ const routes: Routes = [
       // default admin route → /admin/products
       {
         path: '',
-        redirectTo: 'products',
+        redirectTo: 'volunteer-actions/create',
         pathMatch: 'full',
       },
     ],
