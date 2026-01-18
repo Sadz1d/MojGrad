@@ -98,6 +98,7 @@ using Market.API;
 using Market.API.Middleware;
 using Market.Application;
 using Market.Infrastructure;
+using Microsoft.Extensions.FileProviders;
 using Serilog;
 
 public partial class Program
@@ -165,7 +166,16 @@ public partial class Program
 
             app.UseHttpsRedirection();
 
-            // ✅ CORS MORA BITI OVDJE (PRIJE AUTH)
+            app.UseStaticFiles();
+
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine(Directory.GetCurrentDirectory(), "Uploads")),
+                RequestPath = "/Uploads"
+            });
+
+
             app.UseCors("FrontendPolicy");
 
             app.UseAuthentication();

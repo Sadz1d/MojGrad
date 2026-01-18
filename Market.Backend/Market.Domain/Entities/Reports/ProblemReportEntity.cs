@@ -11,7 +11,7 @@ public class ProblemReportEntity : BaseEntity
     public int CategoryId { get; set; }
     public int StatusId { get; set; }
     public DateTime CreationDate { get; set; }
-
+    public string? ImagePath { get; set; }
     public MarketUserEntity User { get; set; } = default!;
     public ProblemCategoryEntity Category { get; set; } = default!;
     public ProblemStatusEntity Status { get; set; } = default!;
