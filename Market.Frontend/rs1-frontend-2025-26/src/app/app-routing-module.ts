@@ -59,6 +59,12 @@ const routes: Routes = [
     loadChildren: () =>
       import('./rewards/rewards-module').then(m => m.RewardsModule)
   },
+  {
+    path: 'surveys',
+    loadChildren: () =>
+      import('./modules/surveys/surveys.module')
+        .then(m => m.SurveysModule)
+  },
 
 
   {

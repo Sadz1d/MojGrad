@@ -1,0 +1,55 @@
+<!-- HERO SEKCIJA -->
+<section class="survey-hero">
+  <div class="overlay"></div>
+
+  <div class="hero-content">
+    <img
+      src="/assets/images/logo.png"
+      alt="MojGrad"
+      class="hero-logo"
+    />
+
+    <span class="hero-badge">ANKETE</span>
+
+    <h1>Ankete za građane</h1>
+    <p>Vaše mišljenje pomaže unapređenju grada Mostara.</p>
+  </div>
+</section>
+
+<!-- LISTA ANKETA -->
+<section class="survey-wrapper">
+
+  <p class="loading" *ngIf="loading">
+    Učitavanje anketa...
+  </p>
+
+  <div class="survey-grid" *ngIf="!loading">
+
+    <div class="survey-card" *ngFor="let s of surveys">
+
+      <!-- LEFT -->
+      <div class="card-left">
+        <div class="icon">🗳️</div>
+      </div>
+
+      <!-- BODY -->
+      <div class="card-body">
+        <h3>{{ s.question }}</h3>
+
+        <div class="meta">
+          <span>📅 Aktivna do {{ s.endDate | date:'dd.MM.yyyy' }}</span>
+          <span>👥 {{ s.responsesCount }} odgovora</span>
+        </div>
+      </div>
+
+      <!-- RIGHT -->
+      <div class="card-right">
+        <button class="start-btn">
+          Započni
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+</section>
