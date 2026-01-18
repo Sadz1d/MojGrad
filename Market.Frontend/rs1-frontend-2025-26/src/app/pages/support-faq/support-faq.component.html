@@ -3,50 +3,29 @@
   <h2>Često postavljana pitanja</h2>
 
   <!-- FAQ GRID (2 kolone) -->
-  <div class="faq-columns">
+  <div class="faq-grid">
 
-    <!-- LIJEVA KOLONA -->
-    <div class="faq-column">
-      <div
-        class="faq-item"
-        *ngFor="let faq of faqsLeft; let i = index"
-        (click)="toggleLeft(i)"
-      >
-        <div class="faq-question">
-          {{ faq.question }}
-          <span class="icon">
-          {{ openedLeft === i ? '−' : '+' }}
+    <div
+      class="faq-item"
+      *ngFor="let faq of faqs; let i = index"
+      (click)="toggle(i)"
+    >
+      <div class="faq-question">
+        {{ faq.question }}
+        <span class="icon">
+          {{ openedIndex === i ? '−' : '+' }}
         </span>
-        </div>
-
-        <div class="faq-answer" *ngIf="openedLeft === i">
-          {{ faq.answer }}
-        </div>
       </div>
-    </div>
 
-    <!-- DESNA KOLONA -->
-    <div class="faq-column">
       <div
-        class="faq-item"
-        *ngFor="let faq of faqsRight; let i = index"
-        (click)="toggleRight(i)"
+        class="faq-answer"
+        *ngIf="openedIndex === i"
       >
-        <div class="faq-question">
-          {{ faq.question }}
-          <span class="icon">
-          {{ openedRight === i ? '−' : '+' }}
-        </span>
-        </div>
-
-        <div class="faq-answer" *ngIf="openedRight === i">
-          {{ faq.answer }}
-        </div>
+        {{ faq.answer }}
       </div>
     </div>
 
   </div>
-
 
   <!-- AI ASISTENT -->
   <div class="ai-box">
