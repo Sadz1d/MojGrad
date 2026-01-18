@@ -1,105 +1,129 @@
 .faq-page {
-  width: 100%;
-  max-width: 1400px;   // 🔹 šire, ali ne ružno
-  margin: 40px auto;
-  padding: 0 40px;     // 🔹 prostor sa strane
+  padding: 40px;
 }
 
-
-h2 {
+.faq-title {
   text-align: center;
-  margin-bottom: 50px;
-  font-size: 50px;
+  font-size: 32px;
+  margin-bottom: 40px;
+}
+
+.faq-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+.faq-column {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
 
 .faq-item {
-  background: #ffffff;
-  border-radius: 12px;
-  padding: 20px 28px;
-  margin-bottom: 15px;
-  cursor: pointer;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+  background: #fff;
+  border-radius: 14px;
+  padding: 20px 24px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
 }
 
 .faq-question {
-  font-size: 1.25rem;  // 🔹 veći font za pitanja
+  display: flex;
+  justify-content: space-between;
+  font-size: 18px;
   font-weight: 600;
-}
-
-.faq-answer {
-  font-size: 1.05rem;   // 🔹 veći font za odgovore
-  line-height: 1.6;
-}
-
-/* Grid za FAQ pitanja */
-.faq-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
-}
-
-
-.icon {
-  font-size: 1.5rem;
-  color: #10b981;
-}
-
-/* AI BOX */
-/* AI BOX – veći i izraženiji */
-.ai-box {
-  margin-top: 60px;
-  padding: 40px;
-  background: #ffffff;
-  border-radius: 20px;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
-}
-
-/* Naslov AI */
-.ai-box h3 {
-  font-size: 1.5rem;
-  margin-bottom: 10px;
-}
-
-/* Opis teksta */
-.ai-box p {
-  font-size: 1.1rem;
-  margin-bottom: 20px;
-  color: #555;
-}
-
-/* Input polje */
-.ai-box input {
-  width: 100%;
-  padding: 16px;
-  font-size: 1.05rem;
-  border-radius: 10px;
-  border: 1px solid #ccc;
-}
-
-/* Dugme */
-.ai-box button {
-  margin-top: 15px;
-  padding: 12px 24px;
-  font-size: 1.05rem;
-  background: #10b981;
-  color: white;
-  border-radius: 10px;
-  border: none;
   cursor: pointer;
 }
 
-/* AI odgovor */
-.ai-response {
-  margin-top: 20px;
-  font-size: 1.05rem;
-  background: #e6f7f1;
-  padding: 16px;
+.faq-answer {
+  margin-top: 12px;
+  font-size: 16px;
+  color: #444;
+}
+
+.icon {
+  font-size: 22px;
+  color: #10b981;
+}
+
+/* AI */
+.ai-box {
+  margin-top: 40px;
+  padding: 28px;
+  background: #ffffff;
+  border-radius: 18px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+}
+
+.ai-header {
+  font-size: 22px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.ai-subtitle {
+  color: #666;
+  margin-bottom: 18px;
+  font-size: 15px;
+}
+
+/* INPUT + BUTTON (CHAT STYLE) */
+.ai-input-row {
+  display: flex;
+  gap: 12px;
+}
+
+.ai-input-row input {
+  flex: 1;
+  padding: 14px 16px;
   border-radius: 12px;
+  border: 1px solid #ddd;
+  font-size: 16px;
+  outline: none;
 }
 
-
-@media (max-width: 900px) {
-  .faq-grid {
-    grid-template-columns: 1fr;
-  }
+.ai-input-row input:focus {
+  border-color: #10b981;
 }
+
+.ai-input-row button {
+  padding: 0 22px;
+  border-radius: 12px;
+  background: #10b981;
+  color: white;
+  border: none;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.ai-input-row button:disabled {
+  background: #a7f3d0;
+  cursor: not-allowed;
+}
+
+/* AI ODGOVOR – CHAT BUBBLE */
+.ai-message {
+  margin-top: 18px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: #ecfdf5;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border-left: 4px solid #10b981;
+}
+
+.ai-icon {
+  font-size: 20px;
+}
+
+.ai-text {
+  font-size: 15px;
+  color: #065f46;
+}
+

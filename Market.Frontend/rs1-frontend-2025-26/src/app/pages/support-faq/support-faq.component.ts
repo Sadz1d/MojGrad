@@ -1,84 +1,99 @@
 import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import {CommonModule} from '@angular/common';
+import {FormsModule} from '@angular/forms';
+import { AiService } from '../../services/ai.service';
 
 
 @Component({
   selector: 'app-support-faq',
-  standalone: true,
-  imports: [CommonModule,FormsModule],
+  imports: [
+    CommonModule, // ⬅ za *ngIf, *ngFor
+    FormsModule   // ⬅ za ngModel
+  ],
   templateUrl: './support-faq.component.html',
   styleUrls: ['./support-faq.component.scss']
 })
 export class SupportFaqComponent {
 
-  openedIndex: number | null = null;
-
-  faqs = [
+  // Lijeva kolona
+  faqsLeft = [
     {
       question: 'Kako prijaviti tehnički problem?',
-      answer:
-        'Tehnički problem možete prijaviti putem sekcije Korisnička podrška, gdje je dostupna forma za prijavu problema.'
-    },
-    {
-      question: 'Da li su prijave tehničkih problema javne?',
-      answer:
-        'Ne. Prijave tehničkih problema nisu javne i vidljive su isključivo administratorskom timu aplikacije MojGrad.'
+      answer: 'Tehnički problem možete prijaviti putem sekcije Korisnička podrška gdje se nalazi forma za prijavu problema.'
     },
     {
       question: 'Kako mogu kontaktirati korisničku podršku?',
-      answer:
-        'Korisničku podršku možete kontaktirati putem kontakt forme ili putem e-mail adrese navedene u sekciji Podrška.'
-    },
-    {
-      question: 'Šta da uradim ako se aplikacija ne učitava?',
-      answer:
-        'Provjerite internet konekciju i pokušajte osvježiti stranicu. Ako se problem nastavi, prijavite tehnički problem putem podrške.'
+      answer: 'Korisničku podršku možete kontaktirati putem forme ili AI asistenta.'
     },
     {
       question: 'Mogu li izmijeniti ili obrisati poslanu prijavu?',
-      answer:
-        'Nakon slanja, prijavu nije moguće direktno izmijeniti. Za dodatne izmjene potrebno je kontaktirati podršku.'
-    },
-    {
-      question: 'Da li je AI asistent zamjena za korisničku podršku?',
-      answer:
-        'Ne. AI asistent služi kao pomoć za brze odgovore na najčešća pitanja, dok složenije probleme rješava tim za korisničku podršku.'
+      answer: 'Trenutno nije moguće mijenjati ili brisati prijave nakon slanja.'
     },
     {
       question: 'Kako funkcioniše sistem bodovanja u aplikaciji?',
-      answer:
-        'Korisnici ostvaruju bodove kroz volontiranje i aktivnosti u aplikaciji, a bodovi se koriste za rang listu i nagrade.'
-    },
-    {
-      question: 'Da li mogu prijaviti problem bez registracije?',
-      answer:
-        'Ne. Prijava problema je dostupna samo registrovanim korisnicima kako bi se osigurala vjerodostojnost prijava.'
+      answer: 'Bodovi se dodjeljuju za prijave, volontiranje i druge aktivnosti.'
     },
     {
       question: 'Kako mogu provjeriti status svoje prijave?',
-      answer:
-        'Status prijave možete pratiti u sekciji Moje prijave, gdje su prikazane sve vaše prijavljene aktivnosti.'
+      answer: 'Status prijave možete pratiti u sekciji Moje prijave.'
     }
   ];
 
+  // Desna kolona
+  faqsRight = [
+    {
+      question: 'Da li su prijave tehničkih problema javne?',
+      answer: 'Ne. Prijave tehničkih problema su vidljive samo administraciji.'
+    },
+    {
+      question: 'Šta da uradim ako se aplikacija ne učitava?',
+      answer: 'Pokušajte osvježiti stranicu ili kontaktirati podršku.'
+    },
+    {
+      question: 'Da li je AI asistent zamjena za korisničku podršku?',
+      answer: 'Ne. AI asistent je pomoćni alat, ali ne zamjenjuje podršku.'
+    },
+    {
+      question: 'Da li mogu prijaviti problem bez registracije?',
+      answer: 'Ne. Prijava problema zahtijeva prijavljenog korisnika.'
+    }
+  ];
 
-  userQuestion = '';
-  aiResponse = '';
+  openedLeft: number | null = null;
+  openedRight: number | null = null;
 
-  toggle(index: number) {
-    this.openedIndex = this.openedIndex === index ? null : index;
+  toggleLeft(index: number) {
+    this.openedLeft = this.openedLeft === index ? null : index;
   }
 
+  toggleRight(index: number) {
+    this.openedRight = this.openedRight === index ? null : index;
+  }
+
+  // AI
+  userQuestion = '';
+  aiResponse = '';
+  loading = false;
+  error = '';
+
+  constructor(private aiService: AiService) {}
+
   askAi() {
-    if (!this.userQuestion.trim()) {
-      this.aiResponse = 'Molimo unesite pitanje.';
-      return;
-    }
+    if (!this.userQuestion.trim()) return;
 
-    this.aiResponse =
-      '🤖 AI asistent: Hvala na pitanju. Ako odgovor nije pronađen u FAQ sekciji, vaš upit će biti proslijeđen podršci.';
+    this.loading = true;
+    this.aiResponse = '';
+    this.error = '';
 
-    this.userQuestion = '';
+    this.aiService.ask(this.userQuestion).subscribe({
+      next: (res) => {
+        this.aiResponse = res.answer;
+        this.loading = false;
+      },
+      error: () => {
+        this.error = 'Došlo je do greške prilikom poziva AI asistenta.';
+        this.loading = false;
+      }
+    });
   }
 }

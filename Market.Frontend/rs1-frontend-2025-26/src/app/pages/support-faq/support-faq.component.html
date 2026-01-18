@@ -1,47 +1,77 @@
 <div class="faq-page">
 
-  <h2>Često postavljana pitanja</h2>
+  <h2 class="faq-title">Često postavljana pitanja</h2>
 
-  <!-- FAQ GRID (2 kolone) -->
-  <div class="faq-grid">
+  <div class="faq-columns">
 
-    <div
-      class="faq-item"
-      *ngFor="let faq of faqs; let i = index"
-      (click)="toggle(i)"
-    >
-      <div class="faq-question">
-        {{ faq.question }}
-        <span class="icon">
-          {{ openedIndex === i ? '−' : '+' }}
-        </span>
-      </div>
-
+    <!-- LIJEVA KOLONA -->
+    <div class="faq-column">
       <div
-        class="faq-answer"
-        *ngIf="openedIndex === i"
+        class="faq-item"
+        *ngFor="let faq of faqsLeft; let i = index"
+        (click)="toggleLeft(i)"
       >
-        {{ faq.answer }}
+        <div class="faq-question">
+          {{ faq.question }}
+          <span class="icon">
+            {{ openedLeft === i ? '−' : '+' }}
+          </span>
+        </div>
+
+        <div class="faq-answer" *ngIf="openedLeft === i">
+          {{ faq.answer }}
+        </div>
+      </div>
+    </div>
+
+    <!-- DESNA KOLONA -->
+    <div class="faq-column">
+      <div
+        class="faq-item"
+        *ngFor="let faq of faqsRight; let i = index"
+        (click)="toggleRight(i)"
+      >
+        <div class="faq-question">
+          {{ faq.question }}
+          <span class="icon">
+            {{ openedRight === i ? '−' : '+' }}
+          </span>
+        </div>
+
+        <div class="faq-answer" *ngIf="openedRight === i">
+          {{ faq.answer }}
+        </div>
       </div>
     </div>
 
   </div>
 
   <!-- AI ASISTENT -->
+  <!-- AI ASISTENT -->
   <div class="ai-box">
-    <h3>🤖 AI asistent MojGrad</h3>
-    <p>Niste pronašli odgovor? Postavite pitanje.</p>
+    <div class="ai-header">
+      🤖 <span>AI asistent MojGrad</span>
+    </div>
 
-    <input
-      type="text"
-      [(ngModel)]="userQuestion"
-      placeholder="Npr. Zašto mi se ne učitava stranica?"
-    />
+    <p class="ai-subtitle">
+      Niste pronašli odgovor? Postavite pitanje.
+    </p>
 
-    <button (click)="askAi()">Pošalji</button>
+    <div class="ai-input-row">
+      <input
+        type="text"
+        [(ngModel)]="userQuestion"
+        placeholder="Npr. Zašto mi se ne učitava stranica?"
+      />
 
-    <div class="ai-response" *ngIf="aiResponse">
-      {{ aiResponse }}
+      <button (click)="askAi()" [disabled]="loading">
+        {{ loading ? 'Razmišljam...' : 'Pošalji' }}
+      </button>
+    </div>
+
+    <div class="ai-message" *ngIf="aiResponse">
+      <span class="ai-icon">🤖</span>
+      <span class="ai-text">{{ aiResponse }}</span>
     </div>
   </div>
 
