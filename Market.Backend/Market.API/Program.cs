@@ -164,21 +164,43 @@ public partial class Program
             app.UseExceptionHandler();
             app.UseMiddleware<RequestResponseLoggingMiddleware>();
 
+            //app.UseStaticFiles();
+
+            //app.UseStaticFiles(new StaticFileOptions
+            //{
+            //    FileProvider = new PhysicalFileProvider(
+            //        Path.Combine(Directory.GetCurrentDirectory(), "Uploads")),
+            //    RequestPath = "/Uploads",
+            //    ServeUnknownFileTypes = true,
+            //});
+
             app.UseHttpsRedirection();
 
-            app.UseStaticFiles();
-
-            app.UseStaticFiles(new StaticFileOptions
-            {
-                FileProvider = new PhysicalFileProvider(
-                    Path.Combine(Directory.GetCurrentDirectory(), "Uploads")),
-                RequestPath = "/Uploads"
-            });
+            
 
 
             app.UseCors("FrontendPolicy");
 
+            // Omogući serviranje statičkih fajlova iz wwwroot (ako već ne postoji)
+            app.UseStaticFiles();
+
+            // Serviranje fajlova iz foldera "Uploads"
+            var uploadsPath = Path.Combine(Directory.GetCurrentDirectory(), "Uploads");
+            if (!Directory.Exists(uploadsPath))
+                Directory.CreateDirectory(uploadsPath);
+
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(uploadsPath),
+                RequestPath = "/Uploads",
+                ServeUnknownFileTypes = true // dozvoljava sve ekstenzije (slike, pdf, etc.)
+            });
+
+
             app.UseAuthentication();
+
+
+
             app.UseAuthorization();
 
             app.MapControllers();

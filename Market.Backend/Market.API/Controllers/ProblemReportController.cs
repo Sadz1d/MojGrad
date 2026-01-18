@@ -269,4 +269,46 @@ CancellationToken ct = default)
     }
 
 
+    [HttpPost("{id:int}/upload-image")]
+    [Consumes("multipart/form-data")]
+    public async Task<IActionResult> UploadImage(
+    int id,
+    IFormFile image,
+    CancellationToken ct)
+    {
+        if (image == null || image.Length == 0)
+            return BadRequest("Slika nije odabrana.");
+
+        var report = await sender.Send(
+            new GetProblemReportByIdQuery { Id = id }, ct);
+
+        if (report == null)
+            return NotFound();
+
+        var uploadsRoot = Path.Combine(
+            Directory.GetCurrentDirectory(),
+            "Uploads",
+            "ProblemReports");
+
+        if (!Directory.Exists(uploadsRoot))
+            Directory.CreateDirectory(uploadsRoot);
+
+        var extension = Path.GetExtension(image.FileName);
+        var fileName = $"{Guid.NewGuid()}{extension}";
+        var filePath = Path.Combine(uploadsRoot, fileName);
+
+        using var stream = new FileStream(filePath, FileMode.Create);
+        await image.CopyToAsync(stream, ct);
+
+        // UPDATE entity (preko command-a ili repo-a)
+        await sender.Send(new UpdateProblemReportImageCommand
+        {
+            ProblemReportId = id,
+            ImagePath = $"/Uploads/ProblemReports/{fileName}"
+        }, ct);
+
+        return Ok(new { imageUrl = $"/Uploads/ProblemReports/{fileName}" });
+    }
+
+
 }

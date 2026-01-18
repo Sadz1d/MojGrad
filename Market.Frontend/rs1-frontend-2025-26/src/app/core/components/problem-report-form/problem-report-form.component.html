@@ -91,6 +91,32 @@
           </div>
         </div>
 
+        <!-- Image -->
+        <div class="form-group">
+          <label for="image" class="form-label">
+            <mat-icon class="field-icon">image</mat-icon>
+            Slika (opciono)
+          </label>
+          <input type="file"
+       accept="image/*"
+       (change)="onFileSelected($event)">
+
+<img *ngIf="imagePreview"
+     [src]="imagePreview"
+     width="200">
+
+<mat-progress-bar
+  *ngIf="progress > 0"
+  mode="determinate"
+  [value]="progress">
+</mat-progress-bar>
+
+          <div class="error-message" *ngIf="getFieldError('image')">
+            <mat-icon>error_outline</mat-icon>
+            {{ getFieldError('image') }}
+          </div>
+        </div>
+
         <!-- Location -->
         <div class="form-group">
           <label for="location" class="form-label">

@@ -14,12 +14,14 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { HttpClient, HttpEvent, HttpEventType } from '@angular/common/http';
+import { MatProgressBar } from "@angular/material/progress-bar";
 
 @Component({
   selector: 'app-problem-report-form',
   templateUrl: './problem-report-form.component.html',
   styleUrls: ['./problem-report-form.component.scss'],
-  imports: [MatIcon, MatProgressSpinner, RouterModule, ReactiveFormsModule, CommonModule]
+  imports: [MatIcon, MatProgressSpinner, RouterModule, ReactiveFormsModule, CommonModule, MatProgressBar]
 })
 export class ProblemReportFormComponent implements OnInit, OnDestroy {
   form: FormGroup;
@@ -50,6 +52,7 @@ export class ProblemReportFormComponent implements OnInit, OnDestroy {
     private statusService: StatusService,
     private route: ActivatedRoute,
     public router: Router,
+    private http: HttpClient
   ) {
     this.form = this.createForm();
   }
@@ -223,6 +226,8 @@ export class ProblemReportFormComponent implements OnInit, OnDestroy {
     }
   }
 
+  
+
   createReport(): void {
     const currentUser = this.getCurrentUser(); // KORISTIMO FIXED GETTER
     if (!currentUser) {
@@ -247,6 +252,12 @@ export class ProblemReportFormComponent implements OnInit, OnDestroy {
         next: (response) => {
           this.successMessage = 'Problem uspješno prijavljen!';
           this.form.reset();
+
+           if (this.imagePreview && this.selectedFile) {
+    // POST image nakon što imamo reportId
+    this.reportId = response;
+    this.uploadImage(this.selectedFile);
+  }
           
           setTimeout(() => {
             this.router.navigate(['/problem-reports']);
@@ -293,6 +304,55 @@ export class ProblemReportFormComponent implements OnInit, OnDestroy {
         }
       });
   }
+
+
+  progress = 0;
+imagePreview: string | null = null;
+selectedFile: File | null = null;
+
+onFileSelected(event: any) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  this.selectedFile = file;
+  // preview
+  const reader = new FileReader();
+  reader.onload = () => this.imagePreview = reader.result as string;
+  reader.readAsDataURL(file);
+
+  if (this.reportId) {
+    this.uploadImage(file);
+  }
+}
+
+private uploadImage(file: File) {
+  const formData = new FormData();
+  formData.append('image', file);
+
+  this.http.post(
+    `https://localhost:7260/api/reports/problem-reports/${this.reportId}/upload-image`,
+    formData,
+    {
+      reportProgress: true,
+      observe: 'events'
+    }
+  ).subscribe(event => {
+
+    if (event.type === HttpEventType.UploadProgress) {
+      this.progress = Math.round(
+        100 * event.loaded / (event.total ?? 1)
+      );
+    }
+
+    if (event.type === HttpEventType.Response) {
+      console.log('Upload završen');
+    }
+  });
+}
+
+
+
+
 
   getFieldError(fieldName: string): string | null {
     const field = this.form.get(fieldName);
