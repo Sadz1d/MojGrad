@@ -41,7 +41,7 @@
       <!-- Prikaži ko je trenutno prijavljen -->
       <div *ngIf="isAuthenticated && !isEditMode" class="user-info">
         <mat-icon>person</mat-icon>
-        <span>Prijavljujete problem kao: <strong>{{ getCurrentUser()?.fullName }}</strong></span>
+        <span>Prijavljujete problem kao: <strong>{{ currentUserFullName }}</strong></span>
       </div>
 
       <!-- Form -->

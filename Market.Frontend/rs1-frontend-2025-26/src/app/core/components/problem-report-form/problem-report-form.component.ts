@@ -3,7 +3,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ProblemReportService } from '../../services/problem-report.service';
-import { AuthFacadeService } from '../../../core/services/auth/auth-facade.service'; // OVO PROMIJENITE
+import { AuthFacadeService, User } from '../../../core/services/auth/auth-facade.service'; // OVO PROMIJENITE
 import { CategoryService } from '../../services/category.service';
 import { StatusService } from '../../services/status.service';
 import { CreateProblemReportCommand, UpdateProblemReportCommand } from '../../models/problem-report.model';
@@ -31,6 +31,8 @@ export class ProblemReportFormComponent implements OnInit, OnDestroy {
   reportId?: number;
   isAuthenticated = false;
   
+  currentUserFullName: string = 'Korisnik';
+
   // Dropdown podaci
   categories: CategoryDropdown[] = [];
   statuses: StatusDropdown[] = [];
@@ -55,6 +57,11 @@ export class ProblemReportFormComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.isAuthenticated = this.authFacadeService.isAuthenticated();
     
+    const user: User | null = this.authFacadeService.getCurrentUserValue();
+    if (user) {
+      this.currentUserFullName = user.fullName || 'Korisnik';
+    }
+
     // Dohvati dropdown podatke
     this.loadCategories();
     this.loadStatuses();

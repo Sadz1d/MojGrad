@@ -18,6 +18,8 @@
     <span class="header-user">{{ currentUser?.email }}</span>
     <button
       mat-stroked-button
+      routerLink="/auth/logout"
+          routerLinkActive="active"
       color="warn"
       (click)="logout()"
       class="header-logout"
@@ -283,9 +285,14 @@
       <p>Pomozite svojim sugrađanima i učestvujte u izgradnji boljeg okruženja.</p>
 <!-- DINAMIČKO DUGME -->
       <div *ngIf="isLoggedIn$ | async; else loginButton">
-        <!-- Korisnik je PRIJAVLJEN - prikaži ODJAVITE SE -->
+        <!-- Korisnik je PRIJAVLJEN - prikaži ODJAVITE SE <a mat-list-item routerLink="/auth/logout" routerLinkActive="active" class="logout-item">
+        <mat-icon matListItemIcon>logout</mat-icon>
+        <span matListItemTitle>{{ 'ADMIN_PANEL.MENU.LOGOUT' | translate }}</span>
+      </a> -->
         <button
           mat-raised-button
+          routerLink="/auth/logout"
+          routerLinkActive="active"
           color="warn"
           (click)="logout()"
           class="cta-main-button logout-button"
