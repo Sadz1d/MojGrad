@@ -293,3 +293,5 @@ export class AuthFacadeService {
     return this.getCurrentUserValue()?.isEmployee || false;
   }
 }
+
+export type { User };

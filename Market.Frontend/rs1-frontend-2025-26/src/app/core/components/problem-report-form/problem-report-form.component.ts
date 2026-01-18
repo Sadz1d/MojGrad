@@ -238,7 +238,7 @@ export class ProblemReportFormComponent implements OnInit, OnDestroy {
       location: formValue.location,
       categoryId: formValue.categoryId,
       statusId: formValue.statusId,
-      userId: parseInt(currentUser.id, 10)
+      userId: currentUser.id
     };
 
     this.problemReportService.createReport(command)
