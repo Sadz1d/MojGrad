@@ -13,7 +13,28 @@ export class SurveyService {
 
   constructor(private http: HttpClient) {}
 
-  getAll(): Observable<{ total: number; items: SurveyListItem[] }> {
-    return this.http.get<{ total: number; items: SurveyListItem[] }>(this.apiUrl);
+  getAll(filters: {
+    search?: string;
+    activeOn?: string;
+    onlyActive?: boolean;
+    fromDate?: string;
+    toDate?: string;
+  }): Observable<{ total: number; items: SurveyListItem[] }> {
+
+    return this.http.get<{ total: number; items: SurveyListItem[] }>(
+      this.apiUrl,
+      {
+        params: {
+          search: filters.search ?? '',
+          activeOn: filters.activeOn ?? '',
+          onlyActive: filters.onlyActive ?? false,
+          fromDate: filters.fromDate ?? '',
+          toDate: filters.toDate ?? '',
+          page: 1,
+          pageSize: 20
+        }
+      }
+    );
   }
+
 }

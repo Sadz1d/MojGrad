@@ -4,7 +4,7 @@
 
   <div class="hero-content">
     <img
-      src="/assets/images/logo.png"
+      src="/assets/images/logo1.png"
       alt="MojGrad"
       class="hero-logo"
     />
@@ -15,6 +15,49 @@
     <p>Vaše mišljenje pomaže unapređenju grada Mostara.</p>
   </div>
 </section>
+<!-- FILTERI -->
+<div class="survey-filters">
+
+  <input
+    type="text"
+    placeholder="Pretraži pitanje (min. 3 znaka)"
+    [(ngModel)]="filters.search"
+  />
+
+  <input
+    type="date"
+    [(ngModel)]="filters.activeOn"
+    title="Aktivna na datum"
+  />
+
+  <label class="checkbox">
+    <input
+      type="checkbox"
+      [(ngModel)]="filters.onlyActive"
+      (change)="onOnlyActiveChange()"
+    />
+
+    Samo aktivne
+  </label>
+
+  <input
+    type="date"
+    [(ngModel)]="filters.fromDate"
+    title="Od datuma"
+  />
+
+  <input
+    type="date"
+    [(ngModel)]="filters.toDate"
+    title="Do datuma"
+  />
+
+  <button (click)="load()">
+    Filtriraj
+  </button>
+
+
+</div>
 
 <!-- LISTA ANKETA -->
 <section class="survey-wrapper">
@@ -35,6 +78,13 @@
       <!-- BODY -->
       <div class="card-body">
         <h3>{{ s.question }}</h3>
+        <span
+          class="status"
+          [class.active]="s.isActive"
+          [class.inactive]="!s.isActive">
+  {{ s.isActive ? 'Aktivna' : 'Neaktivna' }}
+</span>
+
 
         <div class="meta">
           <span>📅 Aktivna do {{ s.endDate | date:'dd.MM.yyyy' }}</span>
