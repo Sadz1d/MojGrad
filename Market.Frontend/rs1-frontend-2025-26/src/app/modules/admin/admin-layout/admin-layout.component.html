@@ -1,109 +1,93 @@
 <mat-sidenav-container class="sidenav-container">
   <!-- SIDEBAR -->
   <mat-sidenav mode="side" opened class="sidenav">
-    <!-- SIDEBAR HEADER WITH USER INFO -->
-    <div class="sidebar-header">
-      <!-- User Info -->
-      <div class="user-info">
-        <div class="user-avatar">
-          <mat-icon>account_circle</mat-icon>
-        </div>
-        <div class="user-details">
-          <div class="user-email">{{ auth.currentUser()?.email }}</div>
-          <div class="user-role">
-            @if (auth.isAdmin()) {
-            <mat-chip class="role-chip admin">
-              <mat-icon>admin_panel_settings</mat-icon>
-              {{ 'ADMIN_PANEL.ROLES.ADMIN' | translate }}
-            </mat-chip>
-            } @else if (auth.isManager()) {
-            <mat-chip class="role-chip manager">
-              <mat-icon>manage_accounts</mat-icon>
-              {{ 'ADMIN_PANEL.ROLES.MANAGER' | translate }}
-            </mat-chip>
-            } @else if (auth.isEmployee()) {
-            <mat-chip class="role-chip employee">
-              <mat-icon>badge</mat-icon>
-              {{ 'ADMIN_PANEL.ROLES.EMPLOYEE' | translate }}
-            </mat-chip>
-            }
-          </div>
-        </div>
+
+    <!-- BRAND / LOGO -->
+    <div class="brand">
+      <div class="brand-logo">
+        <img src="assets/images/logo.png" alt="Moj Grad" />
       </div>
-
-      <!-- Language Selector -->
-      <div class="language-selector">
-        <button mat-icon-button [matMenuTriggerFor]="langMenu" class="lang-button">
-          <span class="flag-icon">{{ getCurrentLanguage()?.flag }}</span>
-          <mat-icon>arrow_drop_down</mat-icon>
-        </button>
-
-        <mat-menu #langMenu="matMenu">
-          <button
-            mat-menu-item
-            *ngFor="let lang of languages"
-            (click)="switchLanguage(lang.code)"
-            [class.active-lang]="currentLang === lang.code"
-          >
-            <span class="flag-icon">{{ lang.flag }}</span>
-            <span>{{ lang.name }}</span>
-            <mat-icon *ngIf="currentLang === lang.code" class="check-icon">check</mat-icon>
-          </button>
-        </mat-menu>
+      <div class="brand-text">
+        <h1>Moj Grad</h1>
+        <p class="brand-subtitle">Administracija</p>
       </div>
     </div>
 
-    <!-- NAVIGATION MENU -->
-    <mat-nav-list>
-      <!-- CATALOG SECTION -->
-      <div class="nav-section-title">
-        {{ 'ADMIN_PANEL.MENU.CATALOG' | translate }}
+    <!-- USER -->
+    <div class="user-box">
+      <div class="user-avatar">
+        <mat-icon>account_circle</mat-icon>
+      </div>
+      <div class="user-details">
+        <div class="email">{{ auth.currentUser()?.email }}</div>
+        <div class="role">
+          <span class="role-badge">Admin</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- LANGUAGE -->
+    <div class="lang-box">
+      <button mat-stroked-button class="lang-btn">
+        <span class="lang-flag">🌍</span>
+        <span>Bosanski</span>
+        <mat-icon class="lang-chevron">expand_more</mat-icon>
+      </button>
+    </div>
+
+    <!-- MENU -->
+    <nav class="menu">
+      <div class="menu-section">
+        <div class="menu-title">Volontiranje</div>
+        <a mat-raised-button routerLink="/admin/volunteer-actions/create" routerLinkActive="active" class="menu-item">
+          <mat-icon>volunteer_activism</mat-icon>
+          <span>Kreiraj akciju</span>
+        </a>
       </div>
 
-      <a mat-list-item routerLink="/admin/product-categories" routerLinkActive="active">
-        <mat-icon matListItemIcon>category</mat-icon>
-        <span matListItemTitle>{{ 'ADMIN_PANEL.MENU.CATEGORIES' | translate }}</span>
-      </a>
-
-      <a mat-list-item routerLink="/admin/products" routerLinkActive="active">
-        <mat-icon matListItemIcon>inventory_2</mat-icon>
-        <span matListItemTitle>{{ 'ADMIN_PANEL.MENU.PRODUCTS' | translate }}</span>
-      </a>
-
-      <mat-divider></mat-divider>
-
-      <!-- ORDERS SECTION -->
-      <div class="nav-section-title">
-        {{ 'ADMIN_PANEL.MENU.ORDERS_SECTION' | translate }}
+      <div class="menu-section">
+        <div class="menu-title">Sistem</div>
+        <a mat-button routerLink="/admin/settings" routerLinkActive="active" class="menu-item">
+          <mat-icon>settings</mat-icon>
+          <span>Postavke</span>
+        </a>
       </div>
 
-      <a mat-list-item routerLink="/admin/orders" routerLinkActive="active">
-        <mat-icon matListItemIcon>shopping_cart</mat-icon>
-        <span matListItemTitle>{{ 'ADMIN_PANEL.MENU.ORDERS' | translate }}</span>
-      </a>
-
-      <mat-divider></mat-divider>
-
-      <!-- SYSTEM SECTION -->
-      <div class="nav-section-title">
-        {{ 'ADMIN_PANEL.MENU.SYSTEM' | translate }}
+      <div class="menu-bottom">
+        <a mat-button routerLink="/auth/logout" class="menu-item logout">
+          <mat-icon>logout</mat-icon>
+          <span>Odjava</span>
+        </a>
       </div>
-
-      <a mat-list-item routerLink="/admin/settings" routerLinkActive="active">
-        <mat-icon matListItemIcon>settings</mat-icon>
-        <span matListItemTitle>{{ 'ADMIN_PANEL.MENU.SETTINGS' | translate }}</span>
-      </a>
-
-      <!-- LOGOUT -->
-      <a mat-list-item routerLink="/auth/logout" routerLinkActive="active" class="logout-item">
-        <mat-icon matListItemIcon>logout</mat-icon>
-        <span matListItemTitle>{{ 'ADMIN_PANEL.MENU.LOGOUT' | translate }}</span>
-      </a>
-    </mat-nav-list>
+    </nav>
   </mat-sidenav>
 
-  <!-- MAIN CONTENT -->
+
+  <!-- CONTENT -->
   <mat-sidenav-content class="main-content">
-    <router-outlet></router-outlet>
+    <div class="admin-hero">
+      <div class="hero-content">
+        <h1>Dobrodošli u Moj Grad</h1>
+        <p>Upravljajte volonterskim akcijama, pratikte prijave problema i unaprijedite svoj grad.</p>
+        <div class="hero-stats">
+          <div class="stat">
+            <span class="stat-number">24</span>
+            <span class="stat-label">Aktivne akcije</span>
+          </div>
+          <div class="stat">
+            <span class="stat-number">156</span>
+            <span class="stat-label">Riješeni problemi</span>
+          </div>
+          <div class="stat">
+            <span class="stat-number">89%</span>
+            <span class="stat-label">Zadovoljstvo</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-wrapper">
+      <router-outlet></router-outlet>
+    </div>
   </mat-sidenav-content>
 </mat-sidenav-container>
