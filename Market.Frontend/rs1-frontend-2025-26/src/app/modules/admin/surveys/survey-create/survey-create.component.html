@@ -1,0 +1,30 @@
+<h2>Nova anketa</h2>
+
+<div class="form">
+
+  <label>Pitanje</label>
+  <input
+    type="text"
+    [(ngModel)]="model.question"
+    placeholder="Unesite pitanje ankete"
+  />
+
+  <label>Datum početka</label>
+  <input
+    type="date"
+    [(ngModel)]="model.startDate"
+  />
+
+  <label>Datum završetka</label>
+  <input
+    type="date"
+    [(ngModel)]="model.endDate"
+  />
+
+  <br>
+
+  <button (click)="save()" [disabled]="saving">
+    Sačuvaj
+  </button>
+
+</div>

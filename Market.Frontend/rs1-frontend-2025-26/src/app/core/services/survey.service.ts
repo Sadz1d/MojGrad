@@ -36,5 +36,12 @@ export class SurveyService {
       }
     );
   }
+  create(payload: {
+    question: string;
+    startDate: string;
+    endDate: string;
+  }) {
+    return this.http.post(this.apiUrl, payload);
+  }
 
 }
