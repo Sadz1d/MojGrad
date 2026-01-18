@@ -38,6 +38,15 @@
       (ngModelChange)="applyFilters()"
       class="search-input"
     />
+    <input
+      type="text"
+      placeholder="Lokacija"
+      [(ngModel)]="filterLocation"
+      (ngModelChange)="applyFilters()" />
+
+
+    <input type="date" [(ngModel)]="dateFrom" (change)="applyFilters()" />
+    <input type="date" [(ngModel)]="dateTo" (change)="applyFilters()" />
 
     <!-- SAMO DOSTUPNE -->
     <label class="checkbox">
@@ -69,10 +78,14 @@
 
       <!-- HEADER -->
       <div class="action-header">
+
         <h3>{{ action.name }}</h3>
         <span class="date">
           📅 {{ action.eventDate | date:'dd.MM.yyyy' }}
         </span>
+        <span class="status available" *ngIf="action.freeSlots > 0">AKTIVNA</span>
+        <span class="status full" *ngIf="action.freeSlots === 0">POPUNJENA</span>
+
       </div>
 
       <!-- BODY -->
@@ -125,3 +138,6 @@
   </button>
 
 </div>
+
+
+

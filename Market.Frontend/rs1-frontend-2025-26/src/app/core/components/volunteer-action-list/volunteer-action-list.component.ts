@@ -34,7 +34,10 @@ export class VolunteerActionListComponent implements OnInit {
 
   filteredActions: VolunteerActionListItem[] = [];
 
+  filterLocation = '';
 
+  dateFrom?: string;
+  dateTo?: string;
 
   constructor(
     private volunteerActionService: VolunteerActionService,
@@ -92,6 +95,25 @@ export class VolunteerActionListComponent implements OnInit {
         ? new Date(a.eventDate).getTime() - new Date(b.eventDate).getTime()
         : new Date(b.eventDate).getTime() - new Date(a.eventDate).getTime()
     );
+
+    if (this.filterLocation.trim()) {
+      result = result.filter(a =>
+        a.location.toLowerCase().includes(this.filterLocation.toLowerCase())
+      );
+    }
+
+    if (this.dateFrom) {
+      result = result.filter(a =>
+        new Date(a.eventDate) >= new Date(this.dateFrom!)
+      );
+    }
+
+    if (this.dateTo) {
+      result = result.filter(a =>
+        new Date(a.eventDate) <= new Date(this.dateTo!)
+      );
+    }
+
 
     this.filteredActions = result;
   }
