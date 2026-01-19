@@ -258,3 +258,45 @@
   background: #fee2e2;
   color: #991b1b;
 }
+/* ADMIN ACTIONS – PRO LOOK */
+.admin-actions {
+  display: flex;
+  gap: 8px;
+  margin-right: 12px;
+}
+
+.icon-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 16px;
+  background: #f1f5f9;
+  transition: all 0.2s ease;
+}
+
+.icon-btn.edit {
+  color: #1e88e5;
+}
+
+.icon-btn.delete {
+  color: #c62828;
+}
+
+.icon-btn:hover {
+  transform: translateY(-2px);
+  background: #e2e8f0;
+}
+
+/* DESNI DIO KARTICE */
+.card-right {
+  display: flex;
+  align-items: center;
+}
+

@@ -43,5 +43,16 @@ export class SurveyService {
   }) {
     return this.http.post(this.apiUrl, payload);
   }
+  update(id: number, data: any) {
+    return this.http.put(`${this.apiUrl}/${id}`, data);
+  }
+
+  delete(id: number) {
+    return this.http.delete(`${this.apiUrl}/${id}`);
+  }
+
+  getById(id: number) {
+    return this.http.get<any>(`${this.apiUrl}/${id}`);
+  }
 
 }

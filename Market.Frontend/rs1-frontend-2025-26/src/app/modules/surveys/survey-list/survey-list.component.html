@@ -91,13 +91,52 @@
           <span>👥 {{ s.responsesCount }} odgovora</span>
         </div>
       </div>
+      <!-- ✅ OVDJE DODAJEŠ -->
+      <div class="admin-actions">
+        <button
+          mat-stroked-button
+          color="primary"
+          [routerLink]="['/admin/surveys/edit', s.id]"
+        >
+          Uredi
+        </button>
 
+        <button
+          mat-stroked-button
+          color="warn"
+          (click)="delete(s.id)"
+        >
+          Obriši
+        </button>
+      </div>
+      <!-- ✅ KRAJ -->
       <!-- RIGHT -->
       <div class="card-right">
+
+        <div class="admin-actions">
+          <button
+            class="icon-btn edit"
+            [routerLink]="['/admin/surveys/edit', s.id]"
+            title="Uredi anketu"
+          >
+            ✏️
+          </button>
+
+          <button
+            class="icon-btn delete"
+            (click)="delete(s.id)"
+            title="Obriši anketu"
+          >
+            🗑
+          </button>
+        </div>
+
         <button class="start-btn">
           Započni
         </button>
+
       </div>
+
 
     </div>
 

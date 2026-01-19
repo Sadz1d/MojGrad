@@ -51,7 +51,10 @@ const routes: Routes = [
         path: 'surveys/create',
         component: SurveyCreateComponent
       },
-
+      {
+        path: 'surveys/edit/:id',
+        component: SurveyCreateComponent
+      },
       {
         path: 'volunteer-actions/create',
         component: VolunteerActionCreateComponent

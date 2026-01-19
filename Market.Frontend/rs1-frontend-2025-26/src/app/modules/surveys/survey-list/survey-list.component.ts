@@ -54,6 +54,19 @@ export class SurveyListComponent implements OnInit {
     }
     this.load();
   }
+  delete(id: number): void {
+    if (!confirm('Jeste li sigurni da želite obrisati anketu?')) {
+      return;
+    }
 
+    this.surveyService.delete(id).subscribe({
+      next: () => {
+        this.load(); // refresh liste
+      },
+      error: () => {
+        alert('Greška prilikom brisanja ankete');
+      }
+    });
+  }
 
 }
