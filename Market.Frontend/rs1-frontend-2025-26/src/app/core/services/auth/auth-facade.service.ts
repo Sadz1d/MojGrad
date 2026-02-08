@@ -141,7 +141,7 @@ export class AuthFacadeService {
 
         const updatedUser: User = {
           ...current,
-          id: user.id,
+          id: parseInt(user.id, 10),
           email: user.email,
           fullName: user.fullName ?? `${user.firstName} ${user.lastName}`,
           isAdmin: user.isAdmin,
@@ -168,6 +168,8 @@ export class AuthFacadeService {
     const user: User = {
       id: payload.sub ? Number(payload.sub) : 0,
       email: payload.email || '',
+      firstName: payload.firstName || payload.given_name || '',
+      lastName: payload.lastName || payload.family_name || '',
       fullName: this.getFullNameFromToken(payload),
 
       isAdmin: payload.is_admin === true || payload.is_admin === 'true',

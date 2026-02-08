@@ -32,14 +32,16 @@ using Market.Application.Modules.Auth.Commands.Login;
 using Market.Application.Modules.Auth.Commands.Logout;
 using Market.Application.Modules.Auth.Commands.Refresh;
 using Market.Application.Modules.Auth.Commands.Register;
+using Market.Application.Modules.Auth.Commands.ResetPassword;
+using Market.Application.Modules.Identity.Users.Queries.GetById;
+using Market.Application.Modules.Identity.Users.Queries.GetCurrentUser;
+using Market.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
-using Market.Application.Modules.Auth.Commands.ResetPassword;
-using Market.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
-
+using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace Market.Api.Controllers;
 
@@ -133,20 +135,36 @@ public sealed class AuthController(IMediator mediator) : ControllerBase
     [HttpGet("me")]
     public async Task<IActionResult> GetCurrentUser(CancellationToken ct)
     {
-        // This would require a new query handler
-        // For now, return basic info from claims
-        var userId = User.FindFirst("sub")?.Value;
-        var email = User.FindFirst(ClaimTypes.Email)?.Value;
-        var fullName = $"{User.FindFirst("firstName")?.Value} {User.FindFirst("lastName")?.Value}".Trim();
+        // 1️⃣ Uzmi userId iz JWT (sub claim)
+        var userIdClaim = User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value
+                          ?? User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
+        if (!int.TryParse(userIdClaim, out var userId))
+            return Unauthorized();
+
+        // 2️⃣ Pošalji GetMarketUserByIdQuery preko MediatR
+        var query = new GetMarketUserByIdQuery
+        {
+            Id = userId
+        };
+        var user = await mediator.Send(query, ct);
+
+
+        // 3️⃣ Mapiraj DTO u JSON koji frontend očekuje
         return Ok(new
         {
-            Id = userId,
-            Email = email,
-            FullName = string.IsNullOrEmpty(fullName) ? null : fullName,
-            IsAdmin = bool.TryParse(User.FindFirst("is_admin")?.Value, out var isAdmin) && isAdmin,
-            IsManager = bool.TryParse(User.FindFirst("is_manager")?.Value, out var isManager) && isManager,
-            IsEmployee = bool.TryParse(User.FindFirst("is_employee")?.Value, out var isEmployee) && isEmployee
+            Id = user.Id,
+            Email = user.Email,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            FullName = string.IsNullOrEmpty(user.FirstName + user.LastName)
+                        ? null
+                        : $"{user.FirstName} {user.LastName}".Trim(),
+            IsAdmin = user.IsAdmin,
+            IsManager = user.IsManager,
+            IsEmployee = user.IsEmployee
         });
     }
+
 }
+

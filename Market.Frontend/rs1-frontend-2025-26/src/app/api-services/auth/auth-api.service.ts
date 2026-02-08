@@ -41,6 +41,8 @@ export interface RegisterRequest {
 export interface RegisterResponse {
   userId: number;
   email: string;
+  firstName: string;
+  lastName: string;
   fullName: string;
   message: string;
 }
@@ -65,7 +67,7 @@ export interface LogoutRequest {
 }
 
 export interface CurrentUserResponse {
-  id: number;
+  id: string;
   email: string;
 
   firstName: string;
