@@ -135,6 +135,17 @@ export class ProblemReportFormComponent implements OnInit, OnDestroy {
       });
   }
 
+   loadReportImage(reportId: number) {
+    const headers = { Authorization: `Bearer ${this.authFacadeService.getToken()}` };
+    this.http.get(`https://localhost:7260/api/reports/problem-reports/${reportId}/image`, 
+      { headers, responseType: 'blob' })
+      .subscribe(blob => {
+        this.imagePreview = URL.createObjectURL(blob);
+      }, err => {
+        console.error('Greška pri učitavanju slike:', err);
+      });
+  }
+
   loadReport(): void {
     if (!this.reportId) return;
     
@@ -157,10 +168,9 @@ export class ProblemReportFormComponent implements OnInit, OnDestroy {
             statusName: status ? status.name : ''
           });
           if (report.imagePath) {
-    this.imagePreview = report.imagePath.startsWith('http')
-      ? report.imagePath
-      : `https://localhost:7260/${report.imagePath}`;
-  }
+            this.loadReportImage(this.reportId!);
+          }
+
           this.loading = false;
         },
         error: (err) => {
