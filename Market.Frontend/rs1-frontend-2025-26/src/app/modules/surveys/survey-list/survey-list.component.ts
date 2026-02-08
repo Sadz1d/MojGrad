@@ -6,17 +6,38 @@ import { SurveyListItem } from '../../../core/models/survey.model';
   selector: 'app-survey-list',
   standalone: false,
   templateUrl: './survey-list.component.html',
-  styleUrls: ['./survey-list.component.scss'] // ⬅️ OVO JE FALILO
+  styleUrls: ['./survey-list.component.scss']
 })
 export class SurveyListComponent implements OnInit {
 
   surveys: SurveyListItem[] = [];
-  loading = true;
+  loading = false;
+
+  filters = {
+    search: '',
+    activeOn: '',
+    onlyActive: false,
+    fromDate: '',
+    toDate: ''
+  };
 
   constructor(private surveyService: SurveyService) {}
 
   ngOnInit(): void {
-    this.surveyService.getAll().subscribe({
+    this.load();
+
+  }
+
+  load(): void {
+
+    // ✅ FE VALIDACIJA
+    if (this.filters.search && this.filters.search.length < 3) {
+      return;
+    }
+
+    this.loading = true;
+
+    this.surveyService.getAll(this.filters).subscribe({
       next: (res) => {
         this.surveys = res.items;
         this.loading = false;
@@ -26,4 +47,26 @@ export class SurveyListComponent implements OnInit {
       }
     });
   }
+
+  onOnlyActiveChange(): void {
+    if (this.filters.onlyActive) {
+      this.filters.activeOn = '';
+    }
+    this.load();
+  }
+  delete(id: number): void {
+    if (!confirm('Jeste li sigurni da želite obrisati anketu?')) {
+      return;
+    }
+
+    this.surveyService.delete(id).subscribe({
+      next: () => {
+        this.load(); // refresh liste
+      },
+      error: () => {
+        alert('Greška prilikom brisanja ankete');
+      }
+    });
+  }
+
 }

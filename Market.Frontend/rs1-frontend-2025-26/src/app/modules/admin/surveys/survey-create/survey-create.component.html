@@ -1,0 +1,69 @@
+<div class="survey-create-wrapper">
+
+  <div class="survey-card">
+    <h2 class="title">Nova anketa</h2>
+    <p class="subtitle">
+      Kreirajte anketu koja će biti dostupna građanima u odabranom periodu.
+    </p>
+
+    <form class="survey-form">
+
+      <!-- PITANJE -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Pitanje ankete</mat-label>
+        <input
+          matInput
+          placeholder="Unesite pitanje ankete"
+          [(ngModel)]="model.question"
+          name="question"
+          required
+        />
+      </mat-form-field>
+
+      <!-- DATUMI -->
+      <div class="date-row">
+        <mat-form-field appearance="outline">
+          <mat-label>Datum početka</mat-label>
+          <input
+            matInput
+            type="date"
+            [(ngModel)]="model.startDate"
+            name="startDate"
+          />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Datum završetka</mat-label>
+          <input
+            matInput
+            type="date"
+            [(ngModel)]="model.endDate"
+            name="endDate"
+          />
+        </mat-form-field>
+      </div>
+
+      <!-- ACTIONS -->
+      <div class="actions">
+        <button
+          mat-stroked-button
+          color="primary"
+          routerLink="/admin"
+        >
+          Odustani
+        </button>
+
+        <button
+          mat-raised-button
+          color="primary"
+          (click)="save()"
+          [disabled]="saving || !model.question"
+        >
+          {{ saving ? 'Sačuvavam...' : 'Sačuvaj anketu' }}
+        </button>
+      </div>
+
+    </form>
+  </div>
+
+</div>

@@ -34,7 +34,12 @@ export class VolunteerActionListComponent implements OnInit {
 
   filteredActions: VolunteerActionListItem[] = [];
 
+  filterLocation = '';
 
+  dateFrom?: string;
+  dateTo?: string;
+
+  isAdmin = false;
 
   constructor(
     private volunteerActionService: VolunteerActionService,
@@ -43,9 +48,24 @@ export class VolunteerActionListComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadActions();
+    const user = JSON.parse(localStorage.getItem('auth_user') || '{}');
+    this.isAdmin = true;
   }
 
+  editAction(action: VolunteerActionListItem): void {
+    this.router.navigate(['/admin/volunteer-actions/edit', action.id]);
+  }
 
+  deleteAction(id: number): void {
+    if (!confirm('Da li ste sigurni da želite obrisati ovu akciju?')) {
+      return;
+    }
+
+    this.volunteerActionService.deleteAction(id).subscribe(() => {
+      this.actions = this.actions.filter(a => a.id !== id);
+      this.applyFilters();
+    });
+  }
 
   loadActions(): void {
     this.loading = true;
@@ -92,6 +112,25 @@ export class VolunteerActionListComponent implements OnInit {
         ? new Date(a.eventDate).getTime() - new Date(b.eventDate).getTime()
         : new Date(b.eventDate).getTime() - new Date(a.eventDate).getTime()
     );
+
+    if (this.filterLocation.trim()) {
+      result = result.filter(a =>
+        a.location.toLowerCase().includes(this.filterLocation.toLowerCase())
+      );
+    }
+
+    if (this.dateFrom) {
+      result = result.filter(a =>
+        new Date(a.eventDate) >= new Date(this.dateFrom!)
+      );
+    }
+
+    if (this.dateTo) {
+      result = result.filter(a =>
+        new Date(a.eventDate) <= new Date(this.dateTo!)
+      );
+    }
+
 
     this.filteredActions = result;
   }
