@@ -9,6 +9,7 @@ import { ProductCategoriesComponent } from './catalogs/product-categories/produc
 import {AdminOrdersComponent} from './orders/admin-orders.component';
 import {AdminSettingsComponent} from './admin-settings/admin-settings.component';
 import { VolunteerActionCreateComponent } from './volunteer-action-create/volunteer-action-create.component';
+import {SurveyCreateComponent} from './surveys/survey-create/survey-create.component';
 
 
 const routes: Routes = [
@@ -46,18 +47,26 @@ const routes: Routes = [
         component: AdminSettingsComponent,
       },
 
-
-
+      {
+        path: 'surveys/create',
+        component: SurveyCreateComponent
+      },
+      {
+        path: 'surveys/edit/:id',
+        component: SurveyCreateComponent
+      },
       {
         path: 'volunteer-actions/create',
         component: VolunteerActionCreateComponent
       },
-
-
+      {
+        path: 'volunteer-actions/edit/:id',
+        component: VolunteerActionCreateComponent
+      },
       // default admin route → /admin/products
       {
         path: '',
-        redirectTo: 'products',
+        redirectTo: 'volunteer-actions/create',
         pathMatch: 'full',
       },
     ],

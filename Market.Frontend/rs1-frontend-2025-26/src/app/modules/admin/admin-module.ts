@@ -22,7 +22,8 @@ import {SharedModule} from '../shared/shared-module';
 import { OrderDetailsDialogComponent } from './orders/admin-orders-details-dialog/order-details-dialog.component';
 import { ChangeStatusDialogComponent } from './orders/change-status-dialog/change-status-dialog.component';
 import { VolunteerActionCreateComponent } from './volunteer-action-create/volunteer-action-create.component';
-
+import { SurveyCreateComponent } from './surveys/survey-create/survey-create.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -37,6 +38,8 @@ import { VolunteerActionCreateComponent } from './volunteer-action-create/volunt
     OrderDetailsDialogComponent,
     ChangeStatusDialogComponent,
     VolunteerActionCreateComponent,
+    SurveyCreateComponent,
+
 
   ],
   imports: [
@@ -47,6 +50,7 @@ import { VolunteerActionCreateComponent } from './volunteer-action-create/volunt
     MatInputModule,
     MatButtonModule,
     ReactiveFormsModule,
+    FormsModule,
   ]
 })
 export class AdminModule { }

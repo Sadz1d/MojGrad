@@ -35,6 +35,8 @@
       </button>
     </div>
 
+
+
     <!-- MENU -->
     <nav class="menu">
       <div class="menu-section">
@@ -42,8 +44,27 @@
         <a mat-raised-button routerLink="/admin/volunteer-actions/create" routerLinkActive="active" class="menu-item">
           <mat-icon>volunteer_activism</mat-icon>
           <span>Kreiraj akciju</span>
+
         </a>
       </div>
+      <a
+        mat-button
+        routerLink="/volunteering"
+        class="menu-item menu-secondary">
+        <mat-icon>list_alt</mat-icon>
+        <span>Sve volonterske akcije</span>
+      </a>
+      <div class="menu-section">
+        <div class="menu-title">Ankete</div>
+
+        <a mat-button
+           routerLink="/admin/surveys/create"
+           class="menu-item">
+          <mat-icon>poll</mat-icon>
+          <span>Kreiraj anketu</span>
+        </a>
+      </div>
+
 
       <div class="menu-section">
         <div class="menu-title">Sistem</div>
@@ -57,6 +78,13 @@
         <a mat-button routerLink="/auth/logout" class="menu-item logout">
           <mat-icon>logout</mat-icon>
           <span>Odjava</span>
+        </a>
+      </div>
+
+      <div class="back-home-box">
+        <a routerLink="/" class="back-home-btn">
+          <mat-icon>home</mat-icon>
+          <span>Nazad na početnu</span>
         </a>
       </div>
     </nav>

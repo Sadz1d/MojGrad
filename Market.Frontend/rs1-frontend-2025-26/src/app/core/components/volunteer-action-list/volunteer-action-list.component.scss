@@ -192,6 +192,9 @@
   justify-content: space-between;
   align-items: center;
 }
+.action-footer button:not(:disabled):hover {
+  transform: scale(1.03);
+}
 
 .slots {
   font-size: 14px;
@@ -232,6 +235,21 @@ button {
   background: #ffffff;
   border-radius: 14px;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+  flex-wrap: wrap; // da se lijepo slaže na manjim ekranima
+}
+.filters-bar input[type="text"],
+.filters-bar input[type="date"] {
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid #dce3ea;
+  font-size: 14px;
+  min-width: 160px;
+}
+
+.filters-bar input:focus {
+  outline: none;
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 2px rgba(13,110,253,0.15);
 }
 
 /* SEARCH INPUT */
@@ -284,4 +302,25 @@ button[mat-stroked-button] {
 
 .back-home:hover {
   background: #0b5ed7;
+}
+.status {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+.status.available {
+  background: #e7f7ed;
+  color: #2e7d32;
+}
+
+.status.full {
+  background: #fdecea;
+  color: #d32f2f;
+}
+.admin-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
 }

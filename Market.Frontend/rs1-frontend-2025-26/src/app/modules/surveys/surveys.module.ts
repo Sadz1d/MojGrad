@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SurveysRoutingModule } from './surveys-routing.module';
 import { SurveyListComponent } from './survey-list/survey-list.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -9,7 +10,8 @@ import { SurveyListComponent } from './survey-list/survey-list.component';
   ],
   imports: [
     CommonModule,
-    SurveysRoutingModule
+    SurveysRoutingModule,
+    FormsModule
   ]
 })
 export class SurveysModule {}

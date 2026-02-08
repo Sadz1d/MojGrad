@@ -862,3 +862,16 @@ button.cta-button{
     display: none; // kasnije hamburger
   }
 }
+.admin-panel-button {
+  background: linear-gradient(135deg, #1f4e79, #2c5d9a) !important;
+  color: white !important;
+  padding: 14px 30px !important;
+  border-radius: 40px !important;
+  font-weight: 700;
+  font-size: 16px;
+
+  &:hover {
+    background: linear-gradient(135deg, #163b5d, #1f4e79) !important;
+    transform: translateY(-2px);
+  }
+}
