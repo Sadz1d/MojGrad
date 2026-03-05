@@ -202,7 +202,7 @@ public sealed class ProblemReportsController : ControllerBase
         bool skipFirstRow,
         CancellationToken cancellationToken)
     {
-       
+
         var items = new List<ImportProblemReportDto>();
 
         using var stream = new MemoryStream();
@@ -314,7 +314,6 @@ CancellationToken ct = default)
         return Ok(new { imageUrl = $"/Uploads/ProblemReports/{fileName}" });
     }
 
-    [Authorize] // zahtijeva prijavljeni korisnik
     [HttpGet("{id}/image")]
     public IActionResult GetReportImage(int id)
     {
@@ -322,7 +321,8 @@ CancellationToken ct = default)
         if (report == null || string.IsNullOrEmpty(report.ImagePath))
             return NotFound();
 
-        var path = Path.Combine(Directory.GetCurrentDirectory(), report.ImagePath);
+        var relativePath = report.ImagePath.TrimStart('/');
+        var path = Path.Combine(Directory.GetCurrentDirectory(), relativePath);
         if (!System.IO.File.Exists(path))
             return NotFound();
 

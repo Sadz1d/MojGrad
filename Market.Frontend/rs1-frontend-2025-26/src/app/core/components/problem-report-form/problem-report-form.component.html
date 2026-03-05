@@ -2,7 +2,7 @@
 <div class="form-container">
   <!-- Pozadinska slika sa overlay-em -->
   <div class="form-overlay"></div>
-  
+
   <div class="form-content">
     <!-- Logo & Brand -->
     <div class="form-brand">
@@ -13,10 +13,10 @@
       <p class="brand-tagline">{{ isEditMode ? 'Izmijenite prijavu problema' : 'Prijavite problem i pomozite svom gradu' }}</p>
     </div>
 
-     <!-- Poruka ako korisnik nije prijavljen -->
+    <!-- Poruka ako korisnik nije prijavljen -->
     <div *ngIf="!isAuthenticated && !isEditMode" class="alert alert-warning">
       <mat-icon>warning</mat-icon>
-      Morate biti prijavljeni da biste kreirali novu prijavu. 
+      Morate biti prijavljeni da biste kreirali novu prijavu.
       <a [routerLink]="['/auth/login']" [queryParams]="{ returnUrl: router.url }">Prijavite se ovdje</a>
     </div>
 
@@ -50,9 +50,9 @@
           <div class="form-title-badge">{{ isEditMode ? 'IZMJENA PRIJAVE' : 'NOVA PRIJAVA' }}</div>
           <h2 class="form-title">{{ isEditMode ? 'Izmijenite prijavu problema' : 'Kreirajte novu prijavu' }}</h2>
           <p class="form-subtitle">
-            {{ isEditMode ? 
-              'Ažurirajte podatke o postojećoj prijavi.' : 
-              'Popunite formular kako biste prijavili problem u gradu.' 
+            {{ isEditMode ?
+            'Ažurirajte podatke o postojećoj prijavi.' :
+            'Popunite formular kako biste prijavili problem u gradu.'
             }}
           </p>
         </div>
@@ -98,17 +98,30 @@
             Slika (opciono)
           </label>
           <input type="file"
-       accept="image/*"
-       (change)="onFileSelected($event)">
+                 accept="image/*"
+                 (change)="onFileSelected($event)">
 
-<img *ngIf="reportId" [src]="getImageUrl(reportId)" alt="Problem image" />
+          <!-- Local preview after picking a file -->
+          <div *ngIf="imagePreview" class="image-preview-container">
+            <img [src]="imagePreview" alt="Pregled slike" class="image-preview" />
+            <button type="button" class="remove-image-btn" (click)="removeImage()">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
 
 
-<mat-progress-bar
-  *ngIf="progress > 0"
-  mode="determinate"
-  [value]="progress">
-</mat-progress-bar>
+          <mat-progress-bar
+            *ngIf="progress > 0 && progress < 100"
+            mode="determinate"
+            [value]="progress"
+            class="upload-progress">
+          </mat-progress-bar>
+          <div *ngIf="progress > 0 && progress < 100" class="upload-progress-label">
+            Uploadovanje slike... {{ progress }}%
+          </div>
+          <div *ngIf="progress === 100" class="upload-success">
+            <mat-icon>check_circle</mat-icon> Slika uspješno uploadovana
+          </div>
 
           <div class="error-message" *ngIf="getFieldError('image')">
             <mat-icon>error_outline</mat-icon>
@@ -141,42 +154,42 @@
             <mat-icon class="field-icon">category</mat-icon>
             Kategorija *
           </label>
-          
+
           <!-- Loading state -->
           <div *ngIf="loadingCategories" class="loading-dropdown">
             <mat-spinner diameter="20"></mat-spinner>
             <span>Učitavanje kategorija...</span>
           </div>
-          
+
           <!-- Dropdown za kategorije -->
-          <select 
-            id="category" 
+          <select
+            id="category"
             class="form-control select-control"
             [class.is-invalid]="getFieldError('categoryId')"
             (change)="onCategoryChange($event)"
             [disabled]="loadingCategories">
-            
+
             <option value="" disabled selected>Odaberite kategoriju...</option>
             <option *ngFor="let category of categories" [value]="category.id">
               {{ category.name }}
               <span *ngIf="category.description"> - {{ category.description }}</span>
             </option>
           </select>
-          
+
           <!-- Hidden input za categoryId -->
           <input type="hidden" formControlName="categoryId">
           <input type="hidden" formControlName="categoryName">
-          
+
           <div class="error-message" *ngIf="getFieldError('categoryId')">
             <mat-icon>error_outline</mat-icon>
             {{ getFieldError('categoryId') }}
           </div>
-          
+
           <div class="form-hint" *ngIf="!loadingCategories">
             <mat-icon>info</mat-icon>
             Odaberite kategoriju problema ({{ categories.length }} dostupno)
           </div>
-          
+
           <div class="error-message" *ngIf="categories.length === 0 && !loadingCategories">
             <mat-icon>error</mat-icon>
             Nema dostupnih kategorija. Molimo kontaktirajte administratora.
@@ -189,42 +202,42 @@
             <mat-icon class="field-icon">flag</mat-icon>
             Status *
           </label>
-          
+
           <!-- Loading state -->
           <div *ngIf="loadingStatuses" class="loading-dropdown">
             <mat-spinner diameter="20"></mat-spinner>
             <span>Učitavanje statusa...</span>
           </div>
-          
+
           <!-- Dropdown za statuse -->
-          <select 
-            id="status" 
+          <select
+            id="status"
             class="form-control select-control"
             [class.is-invalid]="getFieldError('statusId')"
             (change)="onStatusChange($event)"
             [disabled]="loadingStatuses">
-            
+
             <option value="" disabled selected>Odaberite status...</option>
             <option *ngFor="let status of statuses" [value]="status.id">
               {{ status.name }}
               <span *ngIf="status.description"> - {{ status.description }}</span>
             </option>
           </select>
-          
+
           <!-- Hidden input za statusId -->
           <input type="hidden" formControlName="statusId">
           <input type="hidden" formControlName="statusName">
-          
+
           <div class="error-message" *ngIf="getFieldError('statusId')">
             <mat-icon>error_outline</mat-icon>
             {{ getFieldError('statusId') }}
           </div>
-          
+
           <div class="form-hint" *ngIf="!loadingStatuses">
             <mat-icon>info</mat-icon>
             Odaberite status prijave ({{ statuses.length }} dostupno)
           </div>
-          
+
           <div class="error-message" *ngIf="statuses.length === 0 && !loadingStatuses">
             <mat-icon>error</mat-icon>
             Nema dostupnih statusa. Molimo kontaktirajte administratora.
@@ -233,13 +246,13 @@
 
         <!-- Form Actions -->
         <div class="form-actions">
-          <button type="button" class="form-button form-button-secondary" 
+          <button type="button" class="form-button form-button-secondary"
                   (click)="router.navigate(['/problem-reports'])">
             <mat-icon>arrow_back</mat-icon>
             Nazad na listu
           </button>
-          
-          <button type="submit" class="form-button form-button-primary" 
+
+          <button type="submit" class="form-button form-button-primary"
                   [disabled]="submitting || form.invalid || loadingCategories || loadingStatuses">
             <mat-icon *ngIf="!submitting">{{ isEditMode ? 'save' : 'send' }}</mat-icon>
             <mat-spinner *ngIf="submitting" diameter="20"></mat-spinner>

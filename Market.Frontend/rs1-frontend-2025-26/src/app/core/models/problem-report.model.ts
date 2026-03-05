@@ -63,7 +63,7 @@ export interface ProblemReportFilter {
   categoryId?: number;
   statusId?: number;
   sortBy?: string;          // Dodano
-  sortDirection?: string;  
+  sortDirection?: string;
   page?: number;
   pageSize?: number;
 }

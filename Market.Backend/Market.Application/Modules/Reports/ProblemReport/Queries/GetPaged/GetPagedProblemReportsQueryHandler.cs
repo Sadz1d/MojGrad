@@ -112,7 +112,8 @@ namespace Market.Application.Modules.Reports.ProblemReport.Queries.GetPaged
                     RatingsCount = pr.Ratings.Count,
                     ShortDescription = pr.Description.Length > 100
                         ? pr.Description.Substring(0, 100) + "..."
-                        : pr.Description
+                        : pr.Description,
+                    ImagePath = pr.ImagePath
                 })
                 .ToListAsync(ct);
 

@@ -18,7 +18,7 @@
     <button
       mat-stroked-button
       routerLink="/auth/logout"
-          routerLinkActive="active"
+      routerLinkActive="active"
       color="warn"
       (click)="logout()"
       class="header-logout"
@@ -87,85 +87,38 @@
 
     <div class="features-grid">
 
-      <!-- KARTICA 1 -->
-      <div class="problem-card">
-        <div class="image-wrapper">
-          <img src="assets/images/grass.jpg">
-          <span class="status-badge status-new">NOVO</span>
-        </div>
-
-        <div class="problem-content">
-          <h3>Nepokošena trava u parku</h3>
-
-          <div class="meta">
-            <span class="category">🌳 Parkovi</span>
-            <span class="date">📅 Danas</span>
+      <ng-container *ngIf="newestReports.length > 0; else noReports">
+        <div class="problem-card" *ngFor="let report of newestReports">
+          <div class="image-wrapper">
+            <img *ngIf="getImageUrl(report.imagePath) as imgUrl"
+                 [src]="imgUrl"
+                 alt="Slika problema"
+                 (error)="$any($event.target).style.display='none'">
+            <div *ngIf="!report.imagePath" class="no-image-placeholder">
+              <span>📷</span>
+            </div>
+            <span class="status-badge" [ngClass]="getStatusClass(report.statusName)">
+              {{ getStatusLabel(report.statusName) }}
+            </span>
           </div>
 
-          <p>Trava u gradskom parku nije pokošena nekoliko sedmica.</p>
-          <div class="location">📍 Park Zrinjevac</div>
-        </div>
-      </div>
+          <div class="problem-content">
+            <h3>{{ report.title }}</h3>
 
-      <!-- KARTICA 2 -->
-      <div class="problem-card">
-        <div class="image-wrapper">
-          <img src="assets/images/light.jpg">
-          <span class="status-badge status-progress">U TOKU</span>
-        </div>
+            <div class="meta">
+              <span class="category">📁 {{ report.categoryName }}</span>
+              <span class="date">📅 {{ report.creationDate | date:'dd.MM.yyyy' }}</span>
+            </div>
 
-        <div class="problem-content">
-          <h3>Polomljena rasvjeta</h3>
-
-          <div class="meta">
-            <span class="category">🚧 Infrastruktura</span>
-            <span class="date">📅 Jučer</span>
+            <p>{{ report.shortDescription }}</p>
+            <div class="location" *ngIf="report.location">📍 {{ report.location }}</div>
           </div>
-
-          <p>Oštećena rasvjeta na ulazu u centar grada.</p>
-          <div class="location">📍 Splitska ulica</div>
         </div>
-      </div>
+      </ng-container>
 
-      <!-- KARTICA 3 -->
-      <div class="problem-card">
-        <div class="image-wrapper">
-          <img src="assets/images/semafor.jpg">
-          <span class="status-badge status-done">RIJEŠENO</span>
-        </div>
-
-        <div class="problem-content">
-          <h3>Neispravan semafor</h3>
-
-          <div class="meta">
-            <span class="category">🚦 Saobraćaj</span>
-            <span class="date">📅 Prije 2 dana</span>
-          </div>
-
-          <p>Semafor na glavnoj raskrsnici ne radi i stvara gužve.</p>
-          <div class="location">📍 Raskrsnica Avenija</div>
-        </div>
-      </div>
-
-      <!-- KARTICA 4 -->
-      <div class="problem-card">
-        <div class="image-wrapper">
-          <img src="assets/images/park1.jpg">
-          <span class="status-badge status-new">NOVO</span>
-        </div>
-
-        <div class="problem-content">
-          <h3>Oštećeno dječje igralište</h3>
-
-          <div class="meta">
-            <span class="category">🛝 Infrastruktura</span>
-            <span class="date">📅 Danas</span>
-          </div>
-
-          <p>Slomljena ograda i oštećene sprave na igralištu.</p>
-          <div class="location">📍 Igralište Centar</div>
-        </div>
-      </div>
+      <ng-template #noReports>
+        <!-- prazno ako nema prijava -->
+      </ng-template>
 
     </div>
 
@@ -293,7 +246,7 @@
 
       <h2>Prijavite problem i unaprijedite svoj grad</h2>
       <p>Pomozite svojim sugrađanima i učestvujte u izgradnji boljeg okruženja.</p>
-<!-- DINAMIČKO DUGME -->
+      <!-- DINAMIČKO DUGME -->
       <div *ngIf="isLoggedIn$ | async; else loginButton">
         <!-- Korisnik je PRIJAVLJEN - prikaži ODJAVITE SE <a mat-list-item routerLink="/auth/logout" routerLinkActive="active" class="logout-item">
         <mat-icon matListItemIcon>logout</mat-icon>

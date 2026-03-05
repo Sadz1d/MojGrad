@@ -24,27 +24,27 @@
   background-repeat: no-repeat;
 
   .hero-content {
-  display: flex;
-  position: absolute;
-  inset: 0;
-  grid-template-columns: 1.5fr 0.8fr; // text gets more space
-  gap: 60px;
-  align-items: center;
+    display: flex;
+    position: absolute;
+    inset: 0;
+    grid-template-columns: 1.5fr 0.8fr; // text gets more space
+    gap: 60px;
+    align-items: center;
 
-  max-width: 1200px; // was 1200px
-  width: 100%;
+    max-width: 1200px; // was 1200px
+    width: 100%;
 
-  margin-left: 0;     // shift left
-  padding-left: 300px; // subtle left offset
+    margin-left: 0;     // shift left
+    padding-left: 300px; // subtle left offset
 
-  z-index: 2;
+    z-index: 2;
 
-  @media (max-width: 960px) {
-    grid-template-columns: 1fr;
-    text-align: center;
-    padding-left: 0;
+    @media (max-width: 960px) {
+      grid-template-columns: 1fr;
+      text-align: center;
+      padding-left: 0;
+    }
   }
-}
 
 
   .hero-text {
@@ -111,23 +111,23 @@
       }
 
       button.cta-button .button-icon {
-  width: 45px;   // povećaj širinu slike
-  height: 45px;  // povećaj visinu slike
-  object-fit: contain; // da slika ne bude iskrivljena
-}
-button.cta-button{
-  width: 120px;
+        width: 45px;   // povećaj širinu slike
+        height: 45px;  // povećaj visinu slike
+        object-fit: contain; // da slika ne bude iskrivljena
+      }
+      button.cta-button{
+        width: 120px;
 
-}
+      }
 
       button.report-button {
-  background-color: #fbc02d; // žuta boja (Material Yellow 700)
-  color: #000;               // crni tekst
-  font-size: 20px;
-  padding: 14px 28px;        // veći button
-  border-radius: 100px;
-  width: 250px;
-}
+        background-color: #fbc02d; // žuta boja (Material Yellow 700)
+        color: #000;               // crni tekst
+        font-size: 20px;
+        padding: 14px 28px;        // veći button
+        border-radius: 100px;
+        width: 250px;
+      }
 
       .button-icon {
         width: 20px;
@@ -231,6 +231,17 @@ button.cta-button{
         object-fit: cover;
       }
 
+      .no-image-placeholder {
+        width: 100%;
+        height: 180px;
+        background: #f0f4f8;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 48px;
+        color: #ccc;
+      }
+
       .status-badge {
         position: absolute;
         top: 12px;
@@ -311,8 +322,8 @@ button.cta-button{
   /* Pozadinska slika sa overlay-em */
   background:
     linear-gradient(
-      rgba(0, 0, 0, 0.25),  // blagi overlay za bolju vidljivost
-      rgba(0, 0, 0, 0.25)
+        rgba(0, 0, 0, 0.25),  // blagi overlay za bolju vidljivost
+        rgba(0, 0, 0, 0.25)
     ),
     url("/assets/images/park.jpg");
   background-size: cover;

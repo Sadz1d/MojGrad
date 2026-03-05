@@ -33,7 +33,7 @@ export class ProblemReportFormComponent implements OnInit, OnDestroy {
   isEditMode = false;
   reportId?: number;
   isAuthenticated = false;
-  
+
   currentUserFullName: string = 'Korisnik';
 
   // Dropdown podaci
@@ -41,7 +41,7 @@ export class ProblemReportFormComponent implements OnInit, OnDestroy {
   statuses: StatusDropdown[] = [];
   loadingCategories = false;
   loadingStatuses = false;
-  
+
   // RxJS unsubscribe subject
   private destroy$ = new Subject<void>();
 
@@ -60,7 +60,7 @@ export class ProblemReportFormComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.isAuthenticated = this.authFacadeService.isAuthenticated();
-    
+
     const user: User | null = this.authFacadeService.getCurrentUserValue();
     if (user) {
       this.currentUserFullName = user.fullName;
@@ -69,7 +69,7 @@ export class ProblemReportFormComponent implements OnInit, OnDestroy {
     // Dohvati dropdown podatke
     this.loadCategories();
     this.loadStatuses();
-    
+
     // Provjeri edit mode
     this.route.params
       .pipe(takeUntil(this.destroy$))
@@ -136,9 +136,9 @@ export class ProblemReportFormComponent implements OnInit, OnDestroy {
       });
   }
 
-   loadReportImage(reportId: number) {
+  loadReportImage(reportId: number) {
     const headers = { Authorization: `Bearer ${this.authFacadeService.getToken()}` };
-    this.http.get(`https://localhost:7260/api/reports/problem-reports/${reportId}/image`, 
+    this.http.get(`https://localhost:7260/api/reports/problem-reports/${reportId}/image`,
       { headers, responseType: 'blob' })
       .subscribe(blob => {
         this.imagePreview = URL.createObjectURL(blob);
@@ -149,16 +149,15 @@ export class ProblemReportFormComponent implements OnInit, OnDestroy {
 
   loadReport(): void {
     if (!this.reportId) return;
-    
+
     this.loading = true;
     this.problemReportService.getReport(this.reportId)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (report) => {
-          // Pronađi odgovarajuće nazive za ID-jeve
           const category = this.categories.find(c => c.id === report.categoryId);
           const status = this.statuses.find(s => s.id === report.statusId);
-          
+
           this.form.patchValue({
             title: report.title,
             description: report.description,
@@ -168,8 +167,10 @@ export class ProblemReportFormComponent implements OnInit, OnDestroy {
             categoryName: category ? category.name : '',
             statusName: status ? status.name : ''
           });
+
+          // Use imagePath from DTO directly — no extra HTTP call needed
           if (report.imagePath) {
-            this.loadReportImage(this.reportId!);
+            this.imagePreview = `https://localhost:7260${report.imagePath}`;
           }
 
           this.loading = false;
@@ -185,7 +186,7 @@ export class ProblemReportFormComponent implements OnInit, OnDestroy {
     const selectElement = event.target as HTMLSelectElement;
     const selectedId = parseInt(selectElement.value, 10);
     const selectedCategory = this.categories.find(c => c.id === selectedId);
-    
+
     if (selectedCategory) {
       this.form.patchValue({
         categoryId: selectedCategory.id,
@@ -198,7 +199,7 @@ export class ProblemReportFormComponent implements OnInit, OnDestroy {
     const selectElement = event.target as HTMLSelectElement;
     const selectedId = parseInt(selectElement.value, 10);
     const selectedStatus = this.statuses.find(s => s.id === selectedId);
-    
+
     if (selectedStatus) {
       this.form.patchValue({
         statusId: selectedStatus.id,
@@ -210,8 +211,8 @@ export class ProblemReportFormComponent implements OnInit, OnDestroy {
   onSubmit(): void {
     if (!this.isAuthenticated) {
       this.error = 'Morate biti prijavljeni da biste kreirali prijavu problema';
-      this.router.navigate(['/auth/login'], { 
-        queryParams: { returnUrl: this.router.url } 
+      this.router.navigate(['/auth/login'], {
+        queryParams: { returnUrl: this.router.url }
       });
       return;
     }
@@ -242,7 +243,7 @@ export class ProblemReportFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  
+
 
   createReport(): void {
     const currentUser = this.getCurrentUser(); // KORISTIMO FIXED GETTER
@@ -269,12 +270,12 @@ export class ProblemReportFormComponent implements OnInit, OnDestroy {
           this.successMessage = 'Problem uspješno prijavljen!';
           this.form.reset();
 
-           if (this.imagePreview && this.selectedFile) {
-    // POST image nakon što imamo reportId
-    this.reportId = response;
-    this.uploadImage(this.selectedFile);
-  }
-          
+          if (this.imagePreview && this.selectedFile) {
+            // POST image nakon što imamo reportId
+            this.reportId = response;
+            this.uploadImage(this.selectedFile);
+          }
+
           setTimeout(() => {
             this.router.navigate(['/problem-reports']);
           }, 2000);
@@ -306,7 +307,7 @@ export class ProblemReportFormComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (response) => {
           this.successMessage = 'Prijava uspješno ažurirana!';
-          
+
           setTimeout(() => {
             this.router.navigate(['/problem-reports']);
           }, 2000);
@@ -323,48 +324,54 @@ export class ProblemReportFormComponent implements OnInit, OnDestroy {
 
 
   progress = 0;
-imagePreview: string | null = null;
-selectedFile: File | null = null;
+  imagePreview: string | null = null;
+  selectedFile: File | null = null;
 
-onFileSelected(event: any) {
-  const file = event.target.files[0];
-  if (!file) return;
-
-  this.selectedFile = file;
-  // preview
-  const reader = new FileReader();
-  reader.onload = () => this.imagePreview = reader.result as string;
-  reader.readAsDataURL(file);
-
-  if (this.reportId) {
-    this.uploadImage(file);
+  removeImage(): void {
+    this.imagePreview = null;
+    this.selectedFile = null;
+    this.progress = 0;
   }
-}
 
-private uploadImage(file: File) {
-  const formData = new FormData();
-  formData.append('image', file);
+  onFileSelected(event: any) {
+    const file = event.target.files[0];
+    if (!file) return;
 
-  this.http.post(
-    `https://localhost:7260/api/reports/problem-reports/${this.reportId}/upload-image`,
-    formData,
-    {
-      reportProgress: true,
-      observe: 'events'
+    this.selectedFile = file;
+    // preview
+    const reader = new FileReader();
+    reader.onload = () => this.imagePreview = reader.result as string;
+    reader.readAsDataURL(file);
+
+    if (this.reportId) {
+      this.uploadImage(file);
     }
-  ).subscribe(event => {
+  }
 
-    if (event.type === HttpEventType.UploadProgress) {
-      this.progress = Math.round(
-        100 * event.loaded / (event.total ?? 1)
-      );
-    }
+  private uploadImage(file: File) {
+    const formData = new FormData();
+    formData.append('image', file);
 
-    if (event.type === HttpEventType.Response) {
-      console.log('Upload završen');
-    }
-  });
-}
+    this.http.post(
+      `https://localhost:7260/api/reports/problem-reports/${this.reportId}/upload-image`,
+      formData,
+      {
+        reportProgress: true,
+        observe: 'events'
+      }
+    ).subscribe(event => {
+
+      if (event.type === HttpEventType.UploadProgress) {
+        this.progress = Math.round(
+          100 * event.loaded / (event.total ?? 1)
+        );
+      }
+
+      if (event.type === HttpEventType.Response) {
+        console.log('Upload završen');
+      }
+    });
+  }
 
 
 
@@ -390,9 +397,9 @@ private uploadImage(file: File) {
   }
 
   getImageUrl(reportId: number): string {
-  if (!reportId) return '';
-  return `https://localhost:7260/api/reports/problem-reports/${reportId}/image`;
-}
+    if (!reportId) return '';
+    return `https://localhost:7260/api/reports/problem-reports/${reportId}/image`;
+  }
 
 
 }

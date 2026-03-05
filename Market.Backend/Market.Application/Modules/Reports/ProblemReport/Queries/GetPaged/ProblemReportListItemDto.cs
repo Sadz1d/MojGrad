@@ -16,5 +16,6 @@ namespace Market.Application.Modules.Reports.ProblemReport.Queries.GetPaged
         public int TasksCount { get; set; }
         public int RatingsCount { get; set; }
         public string? ShortDescription { get; set; }
+        public string? ImagePath { get; set; }
     }
 }
