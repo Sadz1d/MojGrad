@@ -48,6 +48,15 @@ public sealed class RegisterCommandHandler(
         ctx.Users.Add(user);
         await ctx.SaveChangesAsync(ct);
 
+        // 5️⃣ Automatski kreiraj prazan profil za korisnika
+        var profile = new ProfileEntity
+        {
+            UserId = user.Id,
+            CreatedAtUtc = timeProvider.GetUtcNow().UtcDateTime
+        };
+        ctx.Profiles.Add(profile);
+        await ctx.SaveChangesAsync(ct);
+
         // 5️⃣ Povrat odgovora
         return new RegisterCommandDto
         {

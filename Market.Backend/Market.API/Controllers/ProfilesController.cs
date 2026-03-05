@@ -2,8 +2,10 @@ using Market.Application.Modules.Identity.Profiles.Commands.Create;
 using Market.Application.Modules.Identity.Profiles.Commands.Delete;
 using Market.Application.Modules.Identity.Profiles.Commands.Update;
 using Market.Application.Modules.Identity.Profiles.Queries.GetById;
+using Market.Application.Modules.Identity.Profiles.Queries.GetByUserId;
 using Market.Application.Modules.Identity.Profiles.Queries.List;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 //using Market.Application.Modules.Profiles.Queries;
@@ -32,6 +34,13 @@ public class ProfilesController : ControllerBase
     {
         var result = await _mediator.Send(new GetProfileByIdQuery { Id = id });
         return Ok(result);
+    }
+
+    [HttpGet("by-user/{userId:int}")]
+    public async Task<IActionResult> GetByUserId(int userId, CancellationToken ct)
+    {
+        var profile = await _mediator.Send(new GetProfileByUserIdQuery { UserId = userId }, ct);
+        return Ok(profile);
     }
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateProfileCommand command)

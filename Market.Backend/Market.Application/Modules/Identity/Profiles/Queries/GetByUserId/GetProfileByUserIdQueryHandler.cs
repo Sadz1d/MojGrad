@@ -1,26 +1,29 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Market.Application.Abstractions;
 using Market.Application.Common.Exceptions;
-using Market.Domain.Entities.Identity;
+using Market.Application.Modules.Identity.Profiles.Queries.GetById;
 
-namespace Market.Application.Modules.Identity.Profiles.Queries.GetById;
+namespace Market.Application.Modules.Identity.Profiles.Queries.GetByUserId;
 
-public sealed class GetProfileByIdQueryHandler : IRequestHandler<GetProfileByIdQuery, GetProfileByIdQueryDto>
+public sealed class GetProfileByUserIdQueryHandler
+    : IRequestHandler<GetProfileByUserIdQuery, GetProfileByIdQueryDto>
 {
     private readonly IAppDbContext _ctx;
+    public GetProfileByUserIdQueryHandler(IAppDbContext ctx) => _ctx = ctx;
 
-    public GetProfileByIdQueryHandler(IAppDbContext ctx) => _ctx = ctx;
-
-    public async Task<GetProfileByIdQueryDto> Handle(GetProfileByIdQuery request, CancellationToken ct)
+    public async Task<GetProfileByIdQueryDto> Handle(
+        GetProfileByUserIdQuery request, CancellationToken ct)
     {
         var profile = await _ctx.Profiles
             .Include(p => p.User)
             .ThenInclude(u => u.Reports)
             .AsNoTracking()
-            .FirstOrDefaultAsync(p => p.Id == request.Id, ct);
+            .FirstOrDefaultAsync(p => p.UserId == request.UserId, ct);
 
         if (profile == null)
-            throw new MarketNotFoundException($"Profile with Id {request.Id} not found.");
+            throw new MarketNotFoundException(
+                $"Profile for UserId {request.UserId} not found.");
 
         return new GetProfileByIdQueryDto
         {

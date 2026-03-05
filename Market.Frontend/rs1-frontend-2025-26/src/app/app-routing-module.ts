@@ -9,6 +9,7 @@ import { VolunteerActionListComponent } from './core/components/volunteer-action
 import { SupportTechIssueComponent } from './pages/support-tech-issue/support-tech-issue.component';
 import { SupportComponent } from './pages/support/support.component';
 import { SupportFaqComponent } from './pages/support-faq/support-faq.component';
+import { ProfileComponent } from './core/components/profile-component/profile.component';
 
 
 const routes: Routes = [
@@ -20,6 +21,7 @@ const routes: Routes = [
       import('./modules/admin/admin-module').then(m => m.AdminModule)
   },
 
+  { path: 'profile', component: ProfileComponent },
   { path: 'problem-reports', component: ProblemReportListComponent },
   { path: 'problem-reports/new', component: ProblemReportFormComponent },
   { path: 'problem-reports/edit/:id', component: ProblemReportFormComponent },
@@ -77,7 +79,7 @@ const routes: Routes = [
         .then(m => m.SurveysModule)
   },
 
-{
+  {
     path: '',
     loadChildren: () =>
       import('./modules/client/client-module')
