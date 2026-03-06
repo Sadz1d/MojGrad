@@ -39,7 +39,7 @@ export class LoginComponent extends BaseComponent {
     const payload = {
       email: this.form.value.email ?? '',
       password: this.form.value.password ?? ''
-      // ❌ fingerprint ne šaljemo ovdje, AuthFacadeService će ga dodati automatski
+
     };
 
     this.auth.login(payload).subscribe({

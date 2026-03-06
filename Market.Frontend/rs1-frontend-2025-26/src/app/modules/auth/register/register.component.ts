@@ -24,7 +24,7 @@ export class RegisterComponent extends BaseComponent {
   passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
     const password = control.get('password')?.value;
     const confirmPassword = control.get('confirmPassword')?.value;
-    
+
     if (password && confirmPassword && password !== confirmPassword) {
       control.get('confirmPassword')?.setErrors({ passwordMismatch: true });
       return { passwordMismatch: true };
@@ -38,8 +38,7 @@ export class RegisterComponent extends BaseComponent {
     email: ['', [Validators.required, Validators.email]],
     password: ['', [
       Validators.required,
-      Validators.minLength(6),
-      Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$/)
+      Validators.minLength(3)
     ]],
     confirmPassword: ['', [Validators.required]],
     phoneNumber: [''],
@@ -49,7 +48,7 @@ export class RegisterComponent extends BaseComponent {
   get passwordErrors() {
     const password = this.form.get('password');
     if (!password || !password.errors) return '';
-    
+
     if (password.errors['required']) return 'Lozinka je obavezna';
     if (password.errors['minlength']) return 'Lozinka mora imati najmanje 6 karaktera';
     if (password.errors['pattern']) return 'Lozinka mora sadržati veliko slovo, malo slovo i cifru';
@@ -57,6 +56,9 @@ export class RegisterComponent extends BaseComponent {
   }
 
   onSubmit(): void {
+    // Mark all fields touched so mat-error messages become visible
+    this.form.markAllAsTouched();
+
     if (this.form.invalid || this.isLoading) return;
 
     this.startLoading();
@@ -78,7 +80,7 @@ export class RegisterComponent extends BaseComponent {
       next: (response: any) => {
         this.stopLoading();
         this.successMessage = response.message || 'Uspešno ste registrovani! Sada se možete prijaviti.';
-        
+
         // Preusmjeri na login nakon 3 sekunde
         setTimeout(() => {
           this.router.navigate(['/auth/login']);
@@ -86,9 +88,9 @@ export class RegisterComponent extends BaseComponent {
       },
       error: (err: any) => {
         this.stopLoading(
-          err.error?.message || 
-          err.error?.errors?.Email?.[0] || 
-          err.error?.errors?.Password?.[0] || 
+          err.error?.message ||
+          err.error?.errors?.Email?.[0] ||
+          err.error?.errors?.Password?.[0] ||
           'Greška pri registraciji. Molimo pokušajte ponovo.'
         );
         console.error('Register error:', err);

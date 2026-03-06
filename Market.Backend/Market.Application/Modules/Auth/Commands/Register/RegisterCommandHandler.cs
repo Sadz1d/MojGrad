@@ -52,6 +52,7 @@ public sealed class RegisterCommandHandler(
         var profile = new ProfileEntity
         {
             UserId = user.Id,
+            Phone = request.PhoneNumber?.Trim(),
             CreatedAtUtc = timeProvider.GetUtcNow().UtcDateTime
         };
         ctx.Profiles.Add(profile);

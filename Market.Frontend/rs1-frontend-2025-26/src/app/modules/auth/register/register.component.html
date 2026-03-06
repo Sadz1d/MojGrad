@@ -1,7 +1,7 @@
 <!-- src/app/modules/auth/register/register.component.html -->
 <div class="auth-container">
   <div class="auth-overlay"></div>
-  
+
   <div class="auth-content">
     <!-- Logo & Brand -->
     <div class="auth-brand">
@@ -94,7 +94,7 @@
               matInput
               formControlName="password"
               [type]="hidePassword ? 'password' : 'text'"
-              placeholder="Unesite lozinku (min. 6 karaktera)"
+              placeholder="Unesite lozinku (min. 3 karaktera)"
               autocomplete="new-password"
               class="input-field"
             />
@@ -113,7 +113,7 @@
               Lozinka je obavezna
             </mat-error>
             <mat-error *ngIf="form.get('password')?.hasError('minlength')" class="field-error">
-              Lozinka mora imati najmanje 6 karaktera
+              Lozinka mora imati najmanje 3 karaktera
             </mat-error>
           </mat-form-field>
 
@@ -164,8 +164,8 @@
           <!-- Terms & Conditions -->
           <div class="terms-row">
             <mat-checkbox formControlName="acceptTerms" color="primary" class="terms-checkbox">
-              <span class="checkbox-label">Prihvatam 
-                <a href="#" class="terms-link">uslove korištenja</a> i 
+              <span class="checkbox-label">Prihvatam
+                <a href="#" class="terms-link">uslove korištenja</a> i
                 <a href="#" class="terms-link">politiku privatnosti</a>
               </span>
             </mat-checkbox>
@@ -181,7 +181,7 @@
               color="primary"
               type="submit"
               class="submit-button"
-              [disabled]="form.invalid || isLoading"
+              [disabled]="isLoading"
             >
               <ng-container *ngIf="!isLoading; else loadingTpl">
                 <mat-icon class="button-icon">person_add</mat-icon>

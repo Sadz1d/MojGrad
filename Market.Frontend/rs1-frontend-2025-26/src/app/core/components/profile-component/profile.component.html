@@ -1,6 +1,5 @@
 <div class="profile-page">
 
-  <!-- Loading -->
   <div *ngIf="loading" class="loading-screen">
     <div class="spinner"></div>
     <p>Učitavanje profila...</p>
@@ -8,7 +7,6 @@
 
   <ng-container *ngIf="!loading && profile">
 
-    <!-- Top bar -->
     <div class="topbar">
       <button class="back-btn" (click)="router.navigate(['/'])">
         <mat-icon>arrow_back</mat-icon>
@@ -16,25 +14,15 @@
       </button>
     </div>
 
-    <!-- Hero banner -->
     <div class="profile-hero">
-      <div class="hero-bg"></div>
       <div class="hero-content">
-
-        <!-- Avatar -->
         <div class="avatar-wrap">
-          <img *ngIf="getProfilePictureUrl() as imgUrl"
-               [src]="imgUrl"
-               class="avatar-img"
-               (error)="$any($event.target).style.display='none'"
-               alt="Profilna slika" />
-          <div *ngIf="!getProfilePictureUrl()" class="avatar-letter">
-            {{ getAvatarLetter() }}
-          </div>
+          <img *ngIf="getProfilePictureUrl() as imgUrl" [src]="imgUrl" class="avatar-img"
+               (error)="$any($event.target).style.display='none'" alt="Profilna slika" />
+          <div *ngIf="!getProfilePictureUrl()" class="avatar-letter">{{ getAvatarLetter() }}</div>
           <div class="avatar-ring"></div>
         </div>
 
-        <!-- Name & roles -->
         <div class="hero-info">
           <h1 class="hero-name">{{ profile.userFullName }}</h1>
           <p class="hero-email">{{ profile.email }}</p>
@@ -43,7 +31,6 @@
           </div>
         </div>
 
-        <!-- Quick stats -->
         <div class="hero-stats">
           <div class="stat">
             <span class="stat-value">{{ profile.points }}</span>
@@ -60,90 +47,147 @@
             <span class="stat-label">Član od</span>
           </div>
         </div>
-
       </div>
     </div>
 
-    <!-- Cards grid -->
-    <div class="cards-grid">
+    <div *ngIf="saveSuccess" class="save-toast">
+      <mat-icon>check_circle</mat-icon>
+      Profil uspješno sačuvan!
+    </div>
 
-      <!-- Biography -->
-      <div class="info-card bio-card">
+    <!-- EDIT MODE -->
+    <div *ngIf="editMode" class="edit-panel">
+      <div class="edit-panel-inner">
+        <div class="edit-header">
+          <mat-icon>edit</mat-icon>
+          <h2>Uredi profil</h2>
+        </div>
+
+        <div class="edit-grid">
+          <div class="edit-field">
+            <label>Broj telefona</label>
+            <div class="input-wrap">
+              <mat-icon>phone</mat-icon>
+              <input type="tel" [(ngModel)]="editForm.phone" placeholder="+387 XX XXX XXX" />
+            </div>
+          </div>
+
+          <div class="edit-field">
+            <label>Adresa</label>
+            <div class="input-wrap">
+              <mat-icon>location_on</mat-icon>
+              <input type="text" [(ngModel)]="editForm.address" placeholder="Ulica i broj, Grad" />
+            </div>
+          </div>
+
+          <div class="edit-field full-width">
+            <label>Profilna slika</label>
+
+            <!-- Preview -->
+            <div *ngIf="picturePreview" class="picture-preview-wrap">
+              <img [src]="picturePreview" class="picture-preview" alt="Pregled slike"
+                   (error)="$any($event.target).style.display='none'" />
+              <button type="button" class="remove-picture-btn" (click)="removePicture()">
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
+
+            <div *ngIf="!picturePreview" class="picture-placeholder">
+              <mat-icon>person</mat-icon>
+            </div>
+
+            <label class="file-upload-btn">
+              <mat-icon>upload</mat-icon>
+              {{ selectedPictureFile ? selectedPictureFile.name : 'Odaberi sliku' }}
+              <input type="file" accept="image/*" (change)="onPictureSelected($event)" hidden />
+            </label>
+
+            <div *ngIf="uploadProgress > 0 && uploadProgress < 100" class="picture-progress">
+              <div class="progress-bar" [style.width.%]="uploadProgress"></div>
+              <span>{{ uploadProgress }}%</span>
+            </div>
+          </div>
+
+          <div class="edit-field full-width">
+            <label>Biografija</label>
+            <div class="input-wrap textarea-wrap">
+              <mat-icon>person</mat-icon>
+              <textarea [(ngModel)]="editForm.biographyText" rows="4"
+                        placeholder="Napišite nešto o sebi..."></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="saveError" class="save-error">
+          <mat-icon>error_outline</mat-icon>
+          {{ saveError }}
+        </div>
+
+        <div class="edit-actions">
+          <button class="action-btn secondary" (click)="cancelEdit()" [disabled]="saving">
+            <mat-icon>close</mat-icon>
+            Odustani
+          </button>
+          <button class="action-btn primary" (click)="saveProfile()" [disabled]="saving">
+            <mat-icon *ngIf="!saving">save</mat-icon>
+            <div *ngIf="saving" class="btn-spinner"></div>
+            {{ saving ? 'Čuvanje...' : 'Sačuvaj izmjene' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIEW MODE -->
+    <div *ngIf="!editMode" class="cards-grid">
+      <div class="info-card">
         <div class="card-header">
           <mat-icon>person</mat-icon>
           <h3>O meni</h3>
         </div>
-        <p *ngIf="profile.biographyText; else noBio" class="bio-text">
-          {{ profile.biographyText }}
-        </p>
-        <ng-template #noBio>
-          <p class="empty-text">Nije dodana biografija.</p>
-        </ng-template>
+        <p *ngIf="profile.biographyText; else noBio" class="bio-text">{{ profile.biographyText }}</p>
+        <ng-template #noBio><p class="empty-text">Nije dodana biografija.</p></ng-template>
       </div>
 
-      <!-- Contact info -->
-      <div class="info-card contact-card">
+      <div class="info-card">
         <div class="card-header">
           <mat-icon>contact_phone</mat-icon>
           <h3>Kontakt informacije</h3>
         </div>
-
         <div class="info-row">
           <mat-icon class="row-icon">email</mat-icon>
-          <div>
-            <span class="row-label">Email adresa</span>
-            <span class="row-value">{{ profile.email }}</span>
-          </div>
+          <div><span class="row-label">Email adresa</span><span class="row-value">{{ profile.email }}</span></div>
         </div>
-
         <div class="info-row">
           <mat-icon class="row-icon">phone</mat-icon>
-          <div>
-            <span class="row-label">Telefon</span>
-            <span class="row-value">{{ profile.phone || 'Nije uneseno' }}</span>
-          </div>
+          <div><span class="row-label">Telefon</span><span class="row-value">{{ profile.phone || 'Nije uneseno' }}</span></div>
         </div>
-
         <div class="info-row">
           <mat-icon class="row-icon">location_on</mat-icon>
-          <div>
-            <span class="row-label">Adresa</span>
-            <span class="row-value">{{ profile.address || 'Nije uneseno' }}</span>
-          </div>
+          <div><span class="row-label">Adresa</span><span class="row-value">{{ profile.address || 'Nije uneseno' }}</span></div>
         </div>
       </div>
 
-      <!-- Activity -->
-      <div class="info-card activity-card">
+      <div class="info-card">
         <div class="card-header">
           <mat-icon>bar_chart</mat-icon>
           <h3>Aktivnost</h3>
         </div>
-
         <div class="activity-row">
-          <div class="activity-icon-wrap green">
-            <mat-icon>report_problem</mat-icon>
-          </div>
+          <div class="activity-icon-wrap green"><mat-icon>report_problem</mat-icon></div>
           <div class="activity-info">
             <span class="activity-label">Ukupno prijavljenih problema</span>
             <span class="activity-value">{{ profile.reportsCount }}</span>
           </div>
         </div>
-
         <div class="activity-row">
-          <div class="activity-icon-wrap gold">
-            <mat-icon>stars</mat-icon>
-          </div>
+          <div class="activity-icon-wrap gold"><mat-icon>stars</mat-icon></div>
           <div class="activity-info">
             <span class="activity-label">Skupljeni bodovi</span>
             <span class="activity-value">{{ profile.points }} bodova</span>
           </div>
         </div>
-
         <div class="activity-row">
-          <div class="activity-icon-wrap blue">
-            <mat-icon>calendar_today</mat-icon>
-          </div>
+          <div class="activity-icon-wrap blue"><mat-icon>calendar_today</mat-icon></div>
           <div class="activity-info">
             <span class="activity-label">Datum registracije</span>
             <span class="activity-value">{{ getMemberSince() }}</span>
@@ -151,21 +195,15 @@
         </div>
       </div>
 
-      <!-- Account info -->
-      <div class="info-card account-card">
+      <div class="info-card">
         <div class="card-header">
           <mat-icon>manage_accounts</mat-icon>
           <h3>Podaci o računu</h3>
         </div>
-
         <div class="info-row">
           <mat-icon class="row-icon">badge</mat-icon>
-          <div>
-            <span class="row-label">Korisnički ID</span>
-            <span class="row-value mono">#{{ profile.userId }}</span>
-          </div>
+          <div><span class="row-label">Korisnički ID</span><span class="row-value mono">#{{ profile.userId }}</span></div>
         </div>
-
         <div class="info-row">
           <mat-icon class="row-icon">verified_user</mat-icon>
           <div>
@@ -175,23 +213,21 @@
             </div>
           </div>
         </div>
-
         <div class="info-row">
           <mat-icon class="row-icon">check_circle</mat-icon>
-          <div>
-            <span class="row-label">Status računa</span>
-            <span class="row-value status-active">Aktivan</span>
-          </div>
+          <div><span class="row-label">Status računa</span><span class="row-value status-active">Aktivan</span></div>
         </div>
       </div>
-
     </div>
 
-    <!-- Actions -->
     <div class="profile-actions">
+      <button *ngIf="!editMode" class="action-btn edit" (click)="openEdit()">
+        <mat-icon>edit</mat-icon>
+        Uredi profil
+      </button>
       <button class="action-btn primary" (click)="router.navigate(['/problem-reports/new'])">
         <mat-icon>add_circle</mat-icon>
-        Nova prijava problema
+        Nova prijava
       </button>
       <button class="action-btn secondary" (click)="router.navigate(['/problem-reports'])">
         <mat-icon>list</mat-icon>
@@ -200,5 +236,4 @@
     </div>
 
   </ng-container>
-
 </div>

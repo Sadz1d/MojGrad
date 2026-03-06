@@ -22,10 +22,7 @@ public sealed class RegisterCommandValidator : AbstractValidator<RegisterCommand
 
         RuleFor(x => x.Password)
             .NotEmpty().WithMessage("Lozinka je obavezna.")
-            .MinimumLength(6).WithMessage("Lozinka mora imati najmanje 6 karaktera.")
-            .Matches(@"[A-Z]+").WithMessage("Lozinka mora sadržati barem jedno veliko slovo.")
-            .Matches(@"[a-z]+").WithMessage("Lozinka mora sadržati barem jedno malo slovo.")
-            .Matches(@"[0-9]+").WithMessage("Lozinka mora sadržati barem jednu cifru.");
+            .MinimumLength(3).WithMessage("Lozinka mora imati najmanje 3 karaktera.");
 
         RuleFor(x => x.ConfirmPassword)
             .Equal(x => x.Password).WithMessage("Lozinke se moraju podudarati.");

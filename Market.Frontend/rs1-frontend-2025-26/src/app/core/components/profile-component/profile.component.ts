@@ -1,8 +1,9 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpEvent, HttpEventType } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { AuthFacadeService } from '../../../core/services/auth/auth-facade.service';
@@ -27,7 +28,7 @@ export interface UserProfile {
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatIconModule, MatButtonModule],
+  imports: [CommonModule, RouterModule, FormsModule, MatIconModule, MatButtonModule],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss'
 })
@@ -38,7 +39,20 @@ export class ProfileComponent implements OnInit {
 
   profile: UserProfile | null = null;
   loading = true;
-  error: string | null = null;
+  saving = false;
+  editMode = false;
+  saveSuccess = false;
+  saveError: string | null = null;
+
+  editForm = {
+    phone: '',
+    address: '',
+    biographyText: ''
+  };
+
+  picturePreview: string | null = null;
+  selectedPictureFile: File | null = null;
+  uploadProgress = 0;
 
   readonly apiBase = 'https://localhost:7260';
 
@@ -49,9 +63,7 @@ export class ProfileComponent implements OnInit {
       return;
     }
 
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${user.token}`
-    });
+    const headers = new HttpHeaders({ Authorization: `Bearer ${user.token}` });
 
     this.http.get<UserProfile>(
       `${this.apiBase}/api/Profiles/by-user/${user.id}`,
@@ -62,7 +74,6 @@ export class ProfileComponent implements OnInit {
         this.loading = false;
       },
       error: () => {
-        // Profile might not exist yet — show user data from token
         this.profile = {
           id: 0,
           userId: user.id,
@@ -76,6 +87,120 @@ export class ProfileComponent implements OnInit {
           reportsCount: 0
         };
         this.loading = false;
+      }
+    });
+  }
+
+  openEdit(): void {
+    if (!this.profile) return;
+    this.editForm = {
+      phone: this.profile.phone || '',
+      address: this.profile.address || '',
+      biographyText: this.profile.biographyText || ''
+    };
+    // Show existing picture as preview
+    this.picturePreview = this.getProfilePictureUrl();
+    this.selectedPictureFile = null;
+    this.uploadProgress = 0;
+    this.editMode = true;
+    this.saveError = null;
+    this.saveSuccess = false;
+  }
+
+  cancelEdit(): void {
+    this.editMode = false;
+    this.saveError = null;
+    this.picturePreview = null;
+    this.selectedPictureFile = null;
+    this.uploadProgress = 0;
+  }
+
+  onPictureSelected(event: any): void {
+    const file = event.target.files[0];
+    if (!file) return;
+    this.selectedPictureFile = file;
+    const reader = new FileReader();
+    reader.onload = () => this.picturePreview = reader.result as string;
+    reader.readAsDataURL(file);
+  }
+
+  removePicture(): void {
+    this.selectedPictureFile = null;
+    this.picturePreview = this.getProfilePictureUrl();
+    this.uploadProgress = 0;
+  }
+
+  saveProfile(): void {
+    if (!this.profile) return;
+    const user = this.auth.getCurrentUserValue();
+    if (!user) return;
+
+    this.saving = true;
+    this.saveError = null;
+
+    const headers = new HttpHeaders({ Authorization: `Bearer ${user.token}` });
+    const body = {
+      phone: this.editForm.phone || null,
+      address: this.editForm.address || null,
+      biographyText: this.editForm.biographyText || null,
+      profilePicture: this.profile.profilePicture || null // keep existing
+    };
+
+    this.http.put(
+      `${this.apiBase}/api/Profiles/by-user/${user.id}`,
+      body,
+      { headers }
+    ).subscribe({
+      next: () => {
+        this.profile!.phone = this.editForm.phone || undefined;
+        this.profile!.address = this.editForm.address || undefined;
+        this.profile!.biographyText = this.editForm.biographyText || undefined;
+
+        if (this.selectedPictureFile) {
+          this.uploadPictureAndFinish(this.selectedPictureFile, user.token, user.id);
+        } else {
+          this.saving = false;
+          this.editMode = false;
+          this.saveSuccess = true;
+          setTimeout(() => this.saveSuccess = false, 3000);
+        }
+      },
+      error: (err) => {
+        this.saving = false;
+        this.saveError = err.error?.message || 'Greška pri čuvanju. Pokušajte ponovo.';
+      }
+    });
+  }
+
+  private uploadPictureAndFinish(file: File, token: string, userId: number): void {
+    const formData = new FormData();
+    formData.append('image', file);
+    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+
+    this.http.post(
+      `${this.apiBase}/api/Profiles/by-user/${userId}/upload-picture`,
+      formData,
+      { headers, reportProgress: true, observe: 'events' }
+    ).subscribe({
+      next: (event: HttpEvent<any>) => {
+        if (event.type === HttpEventType.UploadProgress) {
+          this.uploadProgress = Math.round(100 * event.loaded / (event.total ?? 1));
+        }
+        if (event.type === HttpEventType.Response) {
+          const imageUrl = event.body?.imageUrl;
+          if (imageUrl) this.profile!.profilePicture = imageUrl;
+          this.saving = false;
+          this.editMode = false;
+          this.saveSuccess = true;
+          this.uploadProgress = 0;
+          this.selectedPictureFile = null;
+          setTimeout(() => this.saveSuccess = false, 3000);
+        }
+      },
+      error: (err) => {
+        this.saving = false;
+        this.saveError = err.error?.message || 'Greška pri uploadu slike.';
+        this.uploadProgress = 0;
       }
     });
   }
