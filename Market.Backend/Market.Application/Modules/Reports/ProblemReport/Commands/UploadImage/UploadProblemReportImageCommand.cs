@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MediatR;
+using Microsoft.AspNetCore.Http;
 
-namespace Market.Application.Modules.Reports.ProblemReport.Commands.UploadImage
+namespace Market.Application.Modules.Reports.ProblemReport.Commands.UploadImage;
+
+public sealed class UploadProblemReportImageCommand : IRequest<string>
 {
-    internal class UploadProblemReportImageCommand
-    {
-    }
+    public int ReportId { get; init; }
+    public IFormFile Image { get; init; } = null!;
 }

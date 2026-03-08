@@ -21,8 +21,25 @@ public sealed class UpdateProfileCommandHandler : IRequestHandler<UpdateProfileC
 
         if (request.Address != null) profile.Address = request.Address.Trim();
         if (request.Phone != null) profile.Phone = request.Phone.Trim();
-        if (request.ProfilePicture != null) profile.ProfilePicture = request.ProfilePicture;
         if (request.BiographyText != null) profile.BiographyText = request.BiographyText;
+
+        if (request.ClearProfilePicture)
+        {
+            // Delete old file from disk if it exists
+            if (!string.IsNullOrEmpty(profile.ProfilePicture))
+            {
+                var oldPath = Path.Combine(
+                    Directory.GetCurrentDirectory(),
+                    profile.ProfilePicture.TrimStart('/'));
+                if (File.Exists(oldPath))
+                    File.Delete(oldPath);
+            }
+            profile.ProfilePicture = null;
+        }
+        else if (request.ProfilePicture != null)
+        {
+            profile.ProfilePicture = request.ProfilePicture;
+        }
 
         await _ctx.SaveChangesAsync(ct);
         return Unit.Value;

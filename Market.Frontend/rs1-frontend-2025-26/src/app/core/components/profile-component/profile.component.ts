@@ -53,6 +53,7 @@ export class ProfileComponent implements OnInit {
   picturePreview: string | null = null;
   selectedPictureFile: File | null = null;
   uploadProgress = 0;
+  removePictureOnSave = false;
 
   readonly apiBase = 'https://localhost:7260';
 
@@ -98,10 +99,10 @@ export class ProfileComponent implements OnInit {
       address: this.profile.address || '',
       biographyText: this.profile.biographyText || ''
     };
-    // Show existing picture as preview
     this.picturePreview = this.getProfilePictureUrl();
     this.selectedPictureFile = null;
     this.uploadProgress = 0;
+    this.removePictureOnSave = false;
     this.editMode = true;
     this.saveError = null;
     this.saveSuccess = false;
@@ -113,12 +114,14 @@ export class ProfileComponent implements OnInit {
     this.picturePreview = null;
     this.selectedPictureFile = null;
     this.uploadProgress = 0;
+    this.removePictureOnSave = false;
   }
 
   onPictureSelected(event: any): void {
     const file = event.target.files[0];
     if (!file) return;
     this.selectedPictureFile = file;
+    this.removePictureOnSave = false;
     const reader = new FileReader();
     reader.onload = () => this.picturePreview = reader.result as string;
     reader.readAsDataURL(file);
@@ -126,8 +129,9 @@ export class ProfileComponent implements OnInit {
 
   removePicture(): void {
     this.selectedPictureFile = null;
-    this.picturePreview = this.getProfilePictureUrl();
+    this.picturePreview = null;
     this.uploadProgress = 0;
+    this.removePictureOnSave = true;
   }
 
   saveProfile(): void {
@@ -143,7 +147,8 @@ export class ProfileComponent implements OnInit {
       phone: this.editForm.phone || null,
       address: this.editForm.address || null,
       biographyText: this.editForm.biographyText || null,
-      profilePicture: this.profile.profilePicture || null // keep existing
+      profilePicture: this.removePictureOnSave ? null : (this.profile.profilePicture || null),
+      clearProfilePicture: this.removePictureOnSave
     };
 
     this.http.put(
@@ -156,7 +161,14 @@ export class ProfileComponent implements OnInit {
         this.profile!.address = this.editForm.address || undefined;
         this.profile!.biographyText = this.editForm.biographyText || undefined;
 
-        if (this.selectedPictureFile) {
+        if (this.removePictureOnSave) {
+          this.profile!.profilePicture = undefined;
+          this.removePictureOnSave = false;
+          this.saving = false;
+          this.editMode = false;
+          this.saveSuccess = true;
+          setTimeout(() => this.saveSuccess = false, 3000);
+        } else if (this.selectedPictureFile) {
           this.uploadPictureAndFinish(this.selectedPictureFile, user.token, user.id);
         } else {
           this.saving = false;

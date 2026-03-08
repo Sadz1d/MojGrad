@@ -1,12 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MediatR;
 
-namespace Market.Application.Modules.Reports.ProblemReport.Queries.GetImage
+namespace Market.Application.Modules.Reports.ProblemReport.Queries.GetImage;
+
+public sealed class GetProblemReportImageQuery : IRequest<ProblemReportImageResult>
 {
-    internal class GetProblemReportImageQuery
-    {
-    }
+    public int ReportId { get; init; }
+}
+
+public sealed class ProblemReportImageResult
+{
+    public string FilePath { get; init; } = string.Empty;
+    public string MimeType { get; init; } = string.Empty;
 }

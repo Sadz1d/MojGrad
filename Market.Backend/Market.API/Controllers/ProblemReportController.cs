@@ -8,6 +8,7 @@ using Market.Application.Modules.Reports.ProblemReport.Queries.GetImage;
 using Market.Application.Modules.Reports.ProblemReport.Queries.GetPaged;
 using Market.Application.Modules.Reports.ProblemReport.Queries.List;
 using Market.Application.Modules.Reports.ProblemReport.Dtos;
+using Market.API.Models.Requests;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -78,16 +79,14 @@ public sealed class ProblemReportsController : ControllerBase
     [ProducesResponseType(typeof(ImportProblemReportsResult), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Import(
-        [FromForm] IFormFile file,
-        [FromForm] bool skipFirstRow = true,
-        [FromForm] bool dryRun = false,
+        [FromForm] ImportProblemReportsRequest request,
         CancellationToken ct = default)
     {
         var result = await _sender.Send(new ImportProblemReportsCommand
         {
-            File = file,
-            SkipFirstRow = skipFirstRow,
-            DryRun = dryRun
+            File = request.File,
+            SkipFirstRow = request.SkipFirstRow,
+            DryRun = request.DryRun
         }, ct);
         return Ok(result);
     }
