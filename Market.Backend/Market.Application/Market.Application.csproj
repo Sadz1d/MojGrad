@@ -1,65 +1,66 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="Common\NewFolder1\**" />
-    <Compile Remove="Modules\Catalog\ProductCategories\**" />
-    <Compile Remove="Modules\Identity\Commands\**" />
-    <Compile Remove="Modules\Identity\Queries\**" />
-    <Compile Remove="Modules\Reports\Comment\Command\Status\**" />
-    <Compile Remove="Modules\Reports\ProblemReport\Commands\Status\**" />
-    <Compile Remove="Modules\Reports\Rating\Commands\Status\**" />
-    <EmbeddedResource Remove="Common\NewFolder1\**" />
-    <EmbeddedResource Remove="Modules\Catalog\ProductCategories\**" />
-    <EmbeddedResource Remove="Modules\Identity\Commands\**" />
-    <EmbeddedResource Remove="Modules\Identity\Queries\**" />
-    <EmbeddedResource Remove="Modules\Reports\Comment\Command\Status\**" />
-    <EmbeddedResource Remove="Modules\Reports\ProblemReport\Commands\Status\**" />
-    <EmbeddedResource Remove="Modules\Reports\Rating\Commands\Status\**" />
-    <None Remove="Common\NewFolder1\**" />
-    <None Remove="Modules\Catalog\ProductCategories\**" />
-    <None Remove="Modules\Identity\Commands\**" />
-    <None Remove="Modules\Identity\Queries\**" />
-    <None Remove="Modules\Reports\Comment\Command\Status\**" />
-    <None Remove="Modules\Reports\ProblemReport\Commands\Status\**" />
-    <None Remove="Modules\Reports\Rating\Commands\Status\**" />
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Remove="Common\NewFolder1\**" />
+		<Compile Remove="Modules\Catalog\ProductCategories\**" />
+		<Compile Remove="Modules\Identity\Commands\**" />
+		<Compile Remove="Modules\Identity\Queries\**" />
+		<Compile Remove="Modules\Reports\Comment\Command\Status\**" />
+		<Compile Remove="Modules\Reports\ProblemReport\Commands\Status\**" />
+		<Compile Remove="Modules\Reports\Rating\Commands\Status\**" />
+		<EmbeddedResource Remove="Common\NewFolder1\**" />
+		<EmbeddedResource Remove="Modules\Catalog\ProductCategories\**" />
+		<EmbeddedResource Remove="Modules\Identity\Commands\**" />
+		<EmbeddedResource Remove="Modules\Identity\Queries\**" />
+		<EmbeddedResource Remove="Modules\Reports\Comment\Command\Status\**" />
+		<EmbeddedResource Remove="Modules\Reports\ProblemReport\Commands\Status\**" />
+		<EmbeddedResource Remove="Modules\Reports\Rating\Commands\Status\**" />
+		<None Remove="Common\NewFolder1\**" />
+		<None Remove="Modules\Catalog\ProductCategories\**" />
+		<None Remove="Modules\Identity\Commands\**" />
+		<None Remove="Modules\Identity\Queries\**" />
+		<None Remove="Modules\Reports\Comment\Command\Status\**" />
+		<None Remove="Modules\Reports\ProblemReport\Commands\Status\**" />
+		<None Remove="Modules\Reports\Rating\Commands\Status\**" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="CsvHelper" Version="33.1.0" />
-    <PackageReference Include="FluentValidation" Version="12.0.0" />
-    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.0.0" />
-    <PackageReference Include="MediatR" Version="12.5.0" />
+	<ItemGroup>
+		<PackageReference Include="CsvHelper" Version="33.1.0" />
+		<PackageReference Include="SixLabors.ImageSharp" Version="3.1.6" />
+		<PackageReference Include="FluentValidation" Version="12.0.0" />
+		<PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.0.0" />
+		<PackageReference Include="MediatR" Version="12.5.0" />
     <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.3.9" />
     <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.3.9" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.9" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.21" />
-    <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="8.0.21" />
-    <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="8.0.21" />
-  </ItemGroup>
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.21" />
+		<PackageReference Include="Microsoft.Extensions.Identity.Core" Version="8.0.21" />
+		<PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="8.0.21" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Market.Domain\Market.Domain.csproj" />
-    <ProjectReference Include="..\Market.Shared\Market.Shared.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Market.Domain\Market.Domain.csproj" />
+		<ProjectReference Include="..\Market.Shared\Market.Shared.csproj" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Modules\Media\Commands\" />
-    <Folder Include="Modules\Media\MediaAttachment\Commands\Status\" />
-    <Folder Include="Modules\Media\MediaLink\Commands\Status\" />
-    <Folder Include="Modules\Media\Queries\" />
-    <Folder Include="Modules\Reports\Commands\" />
-    <Folder Include="Modules\Reports\ProblemStatus\Commands\Status\" />
-    <Folder Include="Modules\Reports\ProofOfResolution\Commands\Status\" />
-    <Folder Include="Modules\Reports\Task\Commands\Status\" />
-    <Folder Include="Modules\Rewards\Commands\Status\" />
-    <Folder Include="Modules\Surveys\SurveyResponse\Commands\Status\" />
-    <Folder Include="Modules\Volunteering\ActionParticipant\Commands\Status\" />
-  </ItemGroup>
+	<ItemGroup>
+		<Folder Include="Modules\Media\Commands\" />
+		<Folder Include="Modules\Media\MediaAttachment\Commands\Status\" />
+		<Folder Include="Modules\Media\MediaLink\Commands\Status\" />
+		<Folder Include="Modules\Media\Queries\" />
+		<Folder Include="Modules\Reports\Commands\" />
+		<Folder Include="Modules\Reports\ProblemStatus\Commands\Status\" />
+		<Folder Include="Modules\Reports\ProofOfResolution\Commands\Status\" />
+		<Folder Include="Modules\Reports\Task\Commands\Status\" />
+		<Folder Include="Modules\Rewards\Commands\Status\" />
+		<Folder Include="Modules\Surveys\SurveyResponse\Commands\Status\" />
+		<Folder Include="Modules\Volunteering\ActionParticipant\Commands\Status\" />
+	</ItemGroup>
 
 </Project>
