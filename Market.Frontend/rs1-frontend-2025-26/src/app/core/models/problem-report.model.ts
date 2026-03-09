@@ -5,12 +5,14 @@ export interface ProblemReportListItem {
   id: number;
   title: string;
   authorName: string;
-  createdAt: Date;       // Backend vraća CreatedAt
-  creationDate: Date;   // Alias za kompatibilnost
+  createdAt: Date;
+  creationDate: Date;
   location?: string;
+  latitude?: number;
+  longitude?: number;
   categoryName: string;
-  status: string;        // Backend vraća Status
-  statusName: string;   // Alias za kompatibilnost
+  status: string;
+  statusName: string;
   commentsCount: number;
   tasksCount: number;
   ratingsCount: number;
@@ -24,6 +26,8 @@ export interface ProblemReportDetail {
   title: string;
   description: string;
   location?: string;
+  latitude?: number;
+  longitude?: number;
   creationDate: Date;
   userId: number;
   authorName: string;
@@ -43,6 +47,8 @@ export interface CreateProblemReportCommand {
   userId: number;
   description: string;
   location?: string;
+  latitude?: number;
+  longitude?: number;
   categoryId: number;
   statusId: number;
 }
@@ -52,6 +58,8 @@ export interface UpdateProblemReportCommand {
   title?: string;
   description?: string;
   location?: string;
+  latitude?: number;
+  longitude?: number;
   categoryId?: number;
   statusId?: number;
 }

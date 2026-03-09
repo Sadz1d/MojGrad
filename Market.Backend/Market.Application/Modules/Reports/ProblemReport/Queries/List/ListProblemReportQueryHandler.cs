@@ -53,14 +53,16 @@ public sealed class ListProblemReportsQueryHandler
                 : "Anonimno",
             CreationDate = p.CreationDate,
             Location = p.Location,
-            CategoryName = p.Category.Name,
+            Latitude = p.Latitude,
+            Longitude = p.Longitude,
             StatusName = p.Status.Name,
             CommentsCount = p.Comments.Count,
             TasksCount = p.Tasks.Count,
             RatingsCount = p.Ratings.Count,
             ShortDescription = p.Description.Length > 160
                 ? p.Description.Substring(0, 160) + "..."
-                : p.Description
+                : p.Description,
+            CategoryName=p.Category.Name
         });
 
         bool asc = string.Equals(request.SortDirection, "asc", StringComparison.OrdinalIgnoreCase);

@@ -129,22 +129,42 @@
           </div>
         </div>
 
-        <!-- Location -->
+        <!-- Location + Mapa -->
         <div class="form-group">
-          <label for="location" class="form-label">
+          <label class="form-label">
             <mat-icon class="field-icon">location_on</mat-icon>
             Lokacija
           </label>
-          <input type="text" id="location" class="form-control" formControlName="location"
-                 placeholder="Npr. 'Park Zrinjevac, ulaz sa sjeverne strane'"
-                 [class.is-invalid]="getFieldError('location')">
+
+          <!-- Mapa -->
+          <div id="location-map" style="height: 280px; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 10px;"></div>
+
+          <div class="form-hint" style="margin-bottom: 8px;">
+            <mat-icon>info</mat-icon>
+            Kliknite na mapu da odaberete lokaciju. Naziv će se automatski popuniti.
+          </div>
+
+          <!-- Odabrana lokacija (naziv) -->
+          <div style="display: flex; gap: 8px; align-items: center;">
+            <input type="text" id="location" class="form-control" formControlName="location"
+                   placeholder="Kliknite na mapu ili unesite ručno..."
+                   [class.is-invalid]="getFieldError('location')" style="flex: 1;">
+            <button type="button" class="btn-secondary" (click)="clearLocation()"
+                    *ngIf="form.get('latitude')?.value"
+                    title="Ukloni odabranu lokaciju">
+              <mat-icon>clear</mat-icon>
+            </button>
+          </div>
+
+          <!-- Koordinate info -->
+          <div *ngIf="form.get('latitude')?.value" class="form-hint" style="color: #4caf50; margin-top: 6px;">
+            <mat-icon>check_circle</mat-icon>
+            Koordinate: {{ form.get('latitude')?.value | number:'1.4-4' }}, {{ form.get('longitude')?.value | number:'1.4-4' }}
+          </div>
+
           <div class="error-message" *ngIf="getFieldError('location')">
             <mat-icon>error_outline</mat-icon>
             {{ getFieldError('location') }}
-          </div>
-          <div class="form-hint">
-            <mat-icon>info</mat-icon>
-            Maksimalno 200 karaktera.
           </div>
         </div>
 

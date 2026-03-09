@@ -20,6 +20,15 @@ public class ProblemReportConfiguration
             .IsRequired()
             .HasMaxLength(ProblemReportEntity.Constraints.DescriptionMaxLength);
 
+        builder.Property(x => x.Location)
+            .HasMaxLength(ProblemReportEntity.Constraints.LocationMaxLength);
+
+        builder.Property(x => x.Latitude)
+            .HasColumnType("float");
+
+        builder.Property(x => x.Longitude)
+            .HasColumnType("float");
+
         builder.HasOne(x => x.User)
             .WithMany(u => u.Reports)
             .HasForeignKey(x => x.UserId);

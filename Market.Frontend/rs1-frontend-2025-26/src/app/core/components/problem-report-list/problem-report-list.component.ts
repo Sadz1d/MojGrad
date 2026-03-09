@@ -106,7 +106,7 @@ export class ProblemReportListComponent implements OnInit {
     public router: Router
   ) {
 
-      this.form = this.createForm();
+    this.form = this.createForm();
 
     this.filterForm = this.fb.group({
       search: [''],
@@ -128,47 +128,56 @@ export class ProblemReportListComponent implements OnInit {
   }
   loadUsers(): void {
     this.loadingUsers = true;
+    this.filterForm.get('userId')?.disable();
     this.userService.getUsers()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (users) => {
-          this.users = users;
+          this.users = users.filter(u => u.name && u.name.trim() !== '');
           this.loadingUsers = false;
+          this.filterForm.get('userId')?.enable();
         },
         error: (err) => {
           console.error('Greška pri učitavanju korisnika:', err);
           this.loadingUsers = false;
+          this.filterForm.get('userId')?.enable();
         }
       });
   }
   loadCategories(): void {
     this.loadingCategories = true;
+    this.filterForm.get('categoryId')?.disable();
     this.categoryService.getCategories()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (categories) => {
           this.categories = categories;
           this.loadingCategories = false;
+          this.filterForm.get('categoryId')?.enable();
         },
         error: (err) => {
           console.error('Greška pri učitavanju kategorija:', err);
           this.loadingCategories = false;
+          this.filterForm.get('categoryId')?.enable();
         }
       });
   }
 
   loadStatuses(): void {
     this.loadingStatuses = true;
+    this.filterForm.get('statusId')?.disable();
     this.statusService.getStatuses()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (statuses) => {
           this.statuses = statuses;
           this.loadingStatuses = false;
+          this.filterForm.get('statusId')?.enable();
         },
         error: (err) => {
           console.error('Greška pri učitavanju statusa:', err);
           this.loadingStatuses = false;
+          this.filterForm.get('statusId')?.enable();
         }
       });
   }

@@ -12,6 +12,8 @@ public sealed class GetProblemReportByIdQueryDto
     public required string Title { get; init; }
     public required string Description { get; init; }
     public string? Location { get; init; }
+    public double? Latitude { get; init; }
+    public double? Longitude { get; init; }
     public required DateTime CreationDate { get; init; }
 
     public required int UserId { get; init; }
@@ -26,4 +28,3 @@ public sealed class GetProblemReportByIdQueryDto
     public required int RatingsCount { get; init; }
     public string? ImagePath { get; set; }
 }
-

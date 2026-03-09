@@ -14,7 +14,8 @@ public sealed class CreateProblemReportCommand : IRequest<int>
     public required int UserId { get; init; }
     public required string Description { get; init; }
     public string? Location { get; init; }
+    public double? Latitude { get; init; }
+    public double? Longitude { get; init; }
     public required int CategoryId { get; init; }
     public required int StatusId { get; init; }
 }
-

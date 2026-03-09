@@ -58,20 +58,14 @@
               <select
                 id="user"
                 class="form-control select-control"
-                [class.is-invalid]="getFieldError('userId')"
-                (change)="onUserChange($event)"
+                formControlName="userId"
                 [disabled]="loadingUsers">
 
-                <option value="" disabled selected>Odaberite korisnika...</option>
-                <option *ngFor="let user of users" [value]="user.id">
+                <option [ngValue]="null">Svi korisnici</option>
+                <option *ngFor="let user of users" [ngValue]="user.id">
                   {{ user.name }}
-                  <span *ngIf="user.description"> - {{ user.description }}</span>
                 </option>
               </select>
-
-              <!-- Hidden input za userId -->
-              <input type="hidden" formControlName="userId">
-              <input type="hidden" formControlName="userName">
 
               <div class="error-message" *ngIf="getFieldError('userId')">
                 <mat-icon>error_outline</mat-icon>
@@ -103,20 +97,14 @@
               <select
                 id="category"
                 class="form-control select-control"
-                [class.is-invalid]="getFieldError('categoryId')"
-                (change)="onCategoryChange($event)"
+                formControlName="categoryId"
                 [disabled]="loadingCategories">
 
-                <option value="" disabled selected>Odaberite kategoriju...</option>
-                <option *ngFor="let category of categories" [value]="category.id">
+                <option [ngValue]="null">Sve kategorije</option>
+                <option *ngFor="let category of categories" [ngValue]="category.id">
                   {{ category.name }}
-                  <span *ngIf="category.description"> - {{ category.description }}</span>
                 </option>
               </select>
-
-              <!-- Hidden input za categoryId -->
-              <input type="hidden" formControlName="categoryId">
-              <input type="hidden" formControlName="categoryName">
 
               <div class="error-message" *ngIf="getFieldError('categoryId')">
                 <mat-icon>error_outline</mat-icon>
@@ -148,20 +136,14 @@
               <select
                 id="status"
                 class="form-control select-control"
-                [class.is-invalid]="getFieldError('statusId')"
-                (change)="onStatusChange($event)"
+                formControlName="statusId"
                 [disabled]="loadingStatuses">
 
-                <option value="" disabled selected>Odaberite status...</option>
-                <option *ngFor="let status of statuses" [value]="status.id">
+                <option [ngValue]="null">Svi statusi</option>
+                <option *ngFor="let status of statuses" [ngValue]="status.id">
                   {{ status.name }}
-                  <span *ngIf="status.description"> - {{ status.description }}</span>
                 </option>
               </select>
-
-              <!-- Hidden input za statusId -->
-              <input type="hidden" formControlName="statusId">
-              <input type="hidden" formControlName="statusName">
 
               <div class="error-message" *ngIf="getFieldError('statusId')">
                 <mat-icon>error_outline</mat-icon>
@@ -197,20 +179,20 @@
             </button>
           </div>
           <div class="sort-info" *ngIf="sortState.direction !== ''">
-  <div class="sort-label">Sortira se po:</div>
-  <div class="sort-value">
-    {{ getColumnLabel(sortState.column) }}
-    ({{ sortState.direction === 'asc' ? 'A-Z' : 'Z-A' }})
-  </div>
-  <button
-    type="button"
-    class="action-button action-secondary btn-sm"
-    (click)="resetSort()"
-  >
-    <mat-icon>clear</mat-icon>
-    Ukloni sort
-  </button>
-</div>
+            <div class="sort-label">Sortira se po:</div>
+            <div class="sort-value">
+              {{ getColumnLabel(sortState.column) }}
+              ({{ sortState.direction === 'asc' ? 'A-Z' : 'Z-A' }})
+            </div>
+            <button
+              type="button"
+              class="action-button action-secondary btn-sm"
+              (click)="resetSort()"
+            >
+              <mat-icon>clear</mat-icon>
+              Ukloni sort
+            </button>
+          </div>
         </form>
       </div>
     </div>
@@ -299,143 +281,153 @@
         <div class="table-responsive">
           <table class="data-table">
             <!-- components/problem-report-list/problem-report-list.component.html -->
-<!-- Samo zamijenite THEAD dio: -->
-<thead>
-  <tr>
-    <!-- ID - sortabilno -->
-    <th (click)="sortBy('id')" class="sortable-header">
-      <div class="header-content">
-        <span>ID</span>
-        <mat-icon class="sort-icon">{{ getSortIcon('id') }}</mat-icon>
-      </div>
-    </th>
+            <!-- Samo zamijenite THEAD dio: -->
+            <thead>
+            <tr>
+              <!-- ID - sortabilno -->
+              <th (click)="sortBy('id')" class="sortable-header">
+                <div class="header-content">
+                  <span>ID</span>
+                  <mat-icon class="sort-icon">{{ getSortIcon('id') }}</mat-icon>
+                </div>
+              </th>
 
-    <!-- Naslov - sortabilno -->
-    <th (click)="sortBy('title')" class="sortable-header">
-      <div class="header-content">
-        <span>Naslov</span>
-        <mat-icon class="sort-icon">{{ getSortIcon('title') }}</mat-icon>
-      </div>
-    </th>
+              <!-- Naslov - sortabilno -->
+              <th (click)="sortBy('title')" class="sortable-header">
+                <div class="header-content">
+                  <span>Naslov</span>
+                  <mat-icon class="sort-icon">{{ getSortIcon('title') }}</mat-icon>
+                </div>
+              </th>
 
-    <!-- Autor - sortabilno -->
-    <th (click)="sortBy('authorName')" class="sortable-header">
-      <div class="header-content">
-        <span>Autor</span>
-        <mat-icon class="sort-icon">{{ getSortIcon('authorName') }}</mat-icon>
-      </div>
-    </th>
+              <!-- Autor - sortabilno -->
+              <th (click)="sortBy('authorName')" class="sortable-header">
+                <div class="header-content">
+                  <span>Autor</span>
+                  <mat-icon class="sort-icon">{{ getSortIcon('authorName') }}</mat-icon>
+                </div>
+              </th>
 
-    <!-- Kategorija - sortabilno -->
-    <th (click)="sortBy('categoryName')" class="sortable-header">
-      <div class="header-content">
-        <span>Kategorija</span>
-        <mat-icon class="sort-icon">{{ getSortIcon('categoryName') }}</mat-icon>
-      </div>
-    </th>
+              <!-- Kategorija - sortabilno -->
+              <th (click)="sortBy('categoryName')" class="sortable-header">
+                <div class="header-content">
+                  <span>Kategorija</span>
+                  <mat-icon class="sort-icon">{{ getSortIcon('categoryName') }}</mat-icon>
+                </div>
+              </th>
 
-    <!-- Status - sortabilno -->
-    <th (click)="sortBy('statusName')" class="sortable-header">
-      <div class="header-content">
-        <span>Status</span>
-        <mat-icon class="sort-icon">{{ getSortIcon('statusName') }}</mat-icon>
-      </div>
-    </th>
+              <!-- Status - sortabilno -->
+              <th (click)="sortBy('statusName')" class="sortable-header">
+                <div class="header-content">
+                  <span>Status</span>
+                  <mat-icon class="sort-icon">{{ getSortIcon('statusName') }}</mat-icon>
+                </div>
+              </th>
 
-    <!-- Lokacija - sortabilno -->
-    <th (click)="sortBy('location')" class="sortable-header">
-      <div class="header-content">
-        <span>Lokacija</span>
-        <mat-icon class="sort-icon">{{ getSortIcon('location') }}</mat-icon>
-      </div>
-    </th>
+              <!-- Lokacija - sortabilno -->
+              <th (click)="sortBy('location')" class="sortable-header">
+                <div class="header-content">
+                  <span>Lokacija</span>
+                  <mat-icon class="sort-icon">{{ getSortIcon('location') }}</mat-icon>
+                </div>
+              </th>
 
-    <!-- Datum - sortabilno -->
-    <th (click)="sortBy('creationDate')" class="sortable-header">
-      <div class="header-content">
-        <span>Datum</span>
-        <mat-icon class="sort-icon">{{ getSortIcon('creationDate') }}</mat-icon>
-      </div>
-    </th>
+              <!-- Datum - sortabilno -->
+              <th (click)="sortBy('creationDate')" class="sortable-header">
+                <div class="header-content">
+                  <span>Datum</span>
+                  <mat-icon class="sort-icon">{{ getSortIcon('creationDate') }}</mat-icon>
+                </div>
+              </th>
 
-    <!-- Komentari - sortabilno -->
-    <th (click)="sortBy('commentsCount')" class="sortable-header">
-      <div class="header-content">
-        <span>Komentari</span>
-        <mat-icon class="sort-icon">{{ getSortIcon('commentsCount') }}</mat-icon>
-      </div>
-    </th>
+              <!-- Komentari - sortabilno -->
+              <th (click)="sortBy('commentsCount')" class="sortable-header">
+                <div class="header-content">
+                  <span>Komentari</span>
+                  <mat-icon class="sort-icon">{{ getSortIcon('commentsCount') }}</mat-icon>
+                </div>
+              </th>
 
-    <!-- Akcije - nije sortabilno -->
-    <th>
-      <div class="header-content">
-        <span>Akcije</span>
-      </div>
-    </th>
-  </tr>
-</thead>
+              <!-- Akcije - nije sortabilno -->
+              <th>
+                <div class="header-content">
+                  <span>Akcije</span>
+                </div>
+              </th>
+            </tr>
+            </thead>
             <tbody>
-              <tr *ngFor="let report of reports" class="table-row">
-                <td class="report-id">
-                  <span class="id-badge">#{{ report.id }}</span>
-                </td>
-                <td class="report-title">
-                  <h4>{{ report.title }}</h4>
-                  <p class="report-desc">{{ report.shortDescription }}</p>
-                </td>
-                <td class="report-author">
-                  <div class="author-info">
-                    <mat-icon class="author-icon">person</mat-icon>
-                    <span>{{ report.authorName }}</span>
-                  </div>
-                </td>
-                <td class="report-category">
-                  <span class="category-badge">{{ report.categoryName }}</span>
-                </td>
-                <td class="report-status">
+            <tr *ngFor="let report of reports" class="table-row">
+              <td class="report-id">
+                <span class="id-badge">#{{ report.id }}</span>
+              </td>
+              <td class="report-title">
+                <h4>{{ report.title }}</h4>
+                <p class="report-desc">{{ report.shortDescription }}</p>
+              </td>
+              <td class="report-author">
+                <div class="author-info">
+                  <mat-icon class="author-icon">person</mat-icon>
+                  <span>{{ report.authorName }}</span>
+                </div>
+              </td>
+              <td class="report-category">
+                <span class="category-badge">{{ report.categoryName }}</span>
+              </td>
+              <td class="report-status">
                   <span class="status-badge" [ngClass]="getStatusClass(report.statusName)">
                     {{ report.statusName }}
                   </span>
-                </td>
-                <td class="report-location">
-                  <div class="location-info">
-                    <mat-icon class="location-icon">location_on</mat-icon>
+              </td>
+              <td class="report-location">
+                <div class="location-info">
+                  <mat-icon class="location-icon">location_on</mat-icon>
+                  <ng-container *ngIf="report.latitude && report.longitude; else noCoords">
+                    <a [href]="'https://www.google.com/maps?q=' + report.latitude + ',' + report.longitude"
+                       target="_blank" rel="noopener" class="location-link"
+                       title="Otvori na Google Maps">
+                      {{ report.location || (report.latitude + ', ' + report.longitude) }}
+                      <mat-icon style="font-size:14px; vertical-align:middle;">open_in_new</mat-icon>
+                    </a>
+                  </ng-container>
+                  <ng-template #noCoords>
                     <span>{{ report.location || 'N/A' }}</span>
-                  </div>
-                </td>
-                <td class="report-date">
-                  <div class="date-info">
-                    <mat-icon class="date-icon">calendar_today</mat-icon>
-                    <span>{{ report.creationDate | date:'dd.MM.yyyy.' }}</span>
-                  </div>
-                </td>
-                <!--<td class="report-comments">
-                  <div class="comments-info">
-                    <mat-icon class="comments-icon">comment</mat-icon>
-                    <span class="comments-count">{{ report.commentsCount }}</span>
-                  </div>
-                </td>-->
-                <td class="report-comments">
-  <div class="comments-info clickable" (click)="openComments(report.id)"
-       matTooltip="Pogledaj komentare" matTooltipPosition="above">
-    <mat-icon class="comments-icon">comment</mat-icon>
-    <span class="comments-count">{{ report.commentsCount }}</span>
-  </div>
-</td>
-                <td class="report-actions">
-                  <div class="action-buttons">
-                    <button class="action-btn view-btn" (click)="viewReport(report.id)" matTooltip="Pregled">
-                      <mat-icon>visibility</mat-icon>
-                    </button>
-                    <button class="action-btn edit-btn" (click)="editReport(report.id)" matTooltip="Izmjeni">
-                      <mat-icon>edit</mat-icon>
-                    </button>
-                    <button class="action-btn delete-btn" (click)="deleteReport(report.id)" matTooltip="Obriši">
-                      <mat-icon>delete</mat-icon>
-                    </button>
-                  </div>
-                </td>
-              </tr>
+                  </ng-template>
+                </div>
+              </td>
+              <td class="report-date">
+                <div class="date-info">
+                  <mat-icon class="date-icon">calendar_today</mat-icon>
+                  <span>{{ report.creationDate | date:'dd.MM.yyyy.' }}</span>
+                </div>
+              </td>
+              <!--<td class="report-comments">
+                <div class="comments-info">
+                  <mat-icon class="comments-icon">comment</mat-icon>
+                  <span class="comments-count">{{ report.commentsCount }}</span>
+                </div>
+              </td>-->
+              <td class="report-comments">
+                <div class="comments-info clickable" (click)="openComments(report.id)"
+                     matTooltip="Pogledaj komentare" matTooltipPosition="above">
+                  <mat-icon class="comments-icon">comment</mat-icon>
+                  <span class="comments-count">{{ report.commentsCount }}</span>
+                </div>
+              </td>
+              <td class="report-actions">
+                <div class="action-buttons">
+                  <button class="action-btn view-btn" (click)="viewReport(report.id)" matTooltip="Pregled">
+                    <mat-icon>visibility</mat-icon>
+                  </button>
+                  <button class="action-btn edit-btn" (click)="editReport(report.id)" matTooltip="Izmjeni">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button class="action-btn delete-btn" (click)="deleteReport(report.id)" matTooltip="Obriši">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+              </td>
+            </tr>
             </tbody>
           </table>
         </div>

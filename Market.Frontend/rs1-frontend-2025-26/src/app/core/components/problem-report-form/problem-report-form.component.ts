@@ -1,9 +1,9 @@
 // components/problem-report-form/problem-report-form.component.ts
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ProblemReportService } from '../../services/problem-report.service';
-import { AuthFacadeService} from '../../../core/services/auth/auth-facade.service'; // OVO PROMIJENITE
+import { AuthFacadeService} from '../../../core/services/auth/auth-facade.service';
 import { User } from '../../../core/services/auth/models/user.model';
 import { CategoryService } from '../../services/category.service';
 import { StatusService } from '../../services/status.service';
@@ -18,13 +18,15 @@ import { takeUntil } from 'rxjs/operators';
 import { HttpClient, HttpEvent, HttpEventType } from '@angular/common/http';
 import { MatProgressBar } from "@angular/material/progress-bar";
 
+declare const L: any;
+
 @Component({
   selector: 'app-problem-report-form',
   templateUrl: './problem-report-form.component.html',
   styleUrls: ['./problem-report-form.component.scss'],
   imports: [MatIcon, MatProgressSpinner, RouterModule, ReactiveFormsModule, CommonModule, MatProgressBar]
 })
-export class ProblemReportFormComponent implements OnInit, OnDestroy {
+export class ProblemReportFormComponent implements OnInit, OnDestroy, AfterViewInit {
   form: FormGroup;
   loading = false;
   submitting = false;
@@ -44,6 +46,11 @@ export class ProblemReportFormComponent implements OnInit, OnDestroy {
 
   // RxJS unsubscribe subject
   private destroy$ = new Subject<void>();
+
+  // Leaflet mapa
+  private map: any = null;
+  private marker: any = null;
+  mapInitialized = false;
 
   constructor(
     private fb: FormBuilder,
@@ -85,6 +92,10 @@ export class ProblemReportFormComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+    if (this.map) {
+      this.map.remove();
+      this.map = null;
+    }
   }
 
   // Getter za trenutnog korisnika - FIXED
@@ -97,11 +108,96 @@ export class ProblemReportFormComponent implements OnInit, OnDestroy {
       title: ['', [Validators.required, Validators.maxLength(200)]],
       description: ['', [Validators.required, Validators.maxLength(2000)]],
       location: ['', [Validators.maxLength(200)]],
+      latitude: [null],
+      longitude: [null],
       categoryId: ['', [Validators.required, Validators.min(1)]],
       statusId: ['', [Validators.required, Validators.min(1)]],
       categoryName: [''],
       statusName: ['']
     });
+  }
+
+  ngAfterViewInit(): void {
+    // Za new mode loading je odmah false, pa inicijaliziramo mapu odmah
+    if (!this.isEditMode) {
+      setTimeout(() => this.initMap(), 0);
+    }
+    // Za edit mode, initMap() se poziva iz loadReport() nakon što se podaci učitaju
+  }
+
+  private initMap(): void {
+    if (typeof L === 'undefined') return;
+    // Ako mapa već postoji (npr. component reuse), uništi je
+    if (this.map) {
+      this.map.remove();
+      this.map = null;
+      this.marker = null;
+    }
+
+    const defaultLat = 43.8563;
+    const defaultLng = 18.4131;
+
+    this.map = L.map('location-map').setView([defaultLat, defaultLng], 13);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(this.map);
+
+    this.map.on('click', (e: any) => {
+      this.setMarker(e.latlng.lat, e.latlng.lng);
+      this.reverseGeocode(e.latlng.lat, e.latlng.lng);
+    });
+
+    this.mapInitialized = true;
+
+    // Provjeri da li forma već ima koordinate (ako loadReport završio prije initMap)
+    const lat = this.form.get('latitude')?.value;
+    const lng = this.form.get('longitude')?.value;
+    if (lat && lng) {
+      this.setMarker(lat, lng);
+      this.map.setView([lat, lng], 15);
+    }
+  }
+
+  private setMarker(lat: number, lng: number): void {
+    if (this.marker) {
+      this.marker.setLatLng([lat, lng]);
+    } else {
+      this.marker = L.marker([lat, lng], { draggable: true }).addTo(this.map);
+      this.marker.on('dragend', (e: any) => {
+        const pos = e.target.getLatLng();
+        this.form.patchValue({ latitude: pos.lat, longitude: pos.lng });
+        this.reverseGeocode(pos.lat, pos.lng);
+      });
+    }
+    this.form.patchValue({ latitude: lat, longitude: lng });
+  }
+
+  private reverseGeocode(lat: number, lng: number): void {
+    const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`;
+    this.http.get<any>(url).subscribe({
+      next: (result) => {
+        const addr = result.address;
+        // Uzmi najkorisniji dio adrese: ulica + grad ili samo grad
+        const parts = [
+          addr.road || addr.pedestrian || addr.suburb,
+          addr.city || addr.town || addr.village || addr.municipality
+        ].filter(Boolean);
+        const locationName = parts.join(', ') || result.display_name?.split(',').slice(0, 2).join(',');
+        this.form.patchValue({ location: locationName });
+      },
+      error: () => {
+        // Nominatim nije dostupan — ostavi prazno, korisnik može ručno unijeti
+      }
+    });
+  }
+
+  clearLocation(): void {
+    if (this.marker) {
+      this.marker.remove();
+      this.marker = null;
+    }
+    this.form.patchValue({ location: '', latitude: null, longitude: null });
   }
 
   loadCategories(): void {
@@ -162,18 +258,30 @@ export class ProblemReportFormComponent implements OnInit, OnDestroy {
             title: report.title,
             description: report.description,
             location: report.location || '',
+            latitude: report.latitude || null,
+            longitude: report.longitude || null,
             categoryId: report.categoryId,
             statusId: report.statusId,
             categoryName: category ? category.name : '',
             statusName: status ? status.name : ''
           });
 
+          this.loading = false; // Postavi loading=false PRVO da Angular rendira form i location-map div
+
+          // Inicijaliziraj mapu tek nakon što Angular re-rendira DOM (loading=false → *ngIf="!loading" postaje true)
+          setTimeout(() => {
+            this.initMap();
+            if (report.latitude && report.longitude) {
+              this.setMarker(report.latitude, report.longitude);
+              this.map.setView([report.latitude, report.longitude], 15);
+            }
+          }, 50);
+
           // Use imagePath from DTO directly — no extra HTTP call needed
           if (report.imagePath) {
             this.imagePreview = `https://localhost:7260${report.imagePath}`;
           }
 
-          this.loading = false;
         },
         error: (err) => {
           this.error = 'Greška pri učitavanju prijave: ' + err.message;
@@ -258,6 +366,8 @@ export class ProblemReportFormComponent implements OnInit, OnDestroy {
       title: formValue.title,
       description: formValue.description,
       location: formValue.location,
+      latitude: formValue.latitude,
+      longitude: formValue.longitude,
       categoryId: formValue.categoryId,
       statusId: formValue.statusId,
       userId: currentUser.id
@@ -298,6 +408,8 @@ export class ProblemReportFormComponent implements OnInit, OnDestroy {
       title: formValue.title,
       description: formValue.description,
       location: formValue.location,
+      latitude: formValue.latitude,
+      longitude: formValue.longitude,
       categoryId: formValue.categoryId,
       statusId: formValue.statusId
     };

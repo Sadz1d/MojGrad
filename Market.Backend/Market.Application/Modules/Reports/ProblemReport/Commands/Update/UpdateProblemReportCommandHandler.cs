@@ -51,6 +51,12 @@ public sealed class UpdateProblemReportCommandHandler
             entity.Location = loc;
         }
 
+        if (request.Latitude.HasValue)
+            entity.Latitude = request.Latitude.Value;
+
+        if (request.Longitude.HasValue)
+            entity.Longitude = request.Longitude.Value;
+
         if (request.CategoryId.HasValue)
         {
             var exists = await _ctx.ProblemCategories.AnyAsync(x => x.Id == request.CategoryId.Value, ct);
@@ -69,4 +75,3 @@ public sealed class UpdateProblemReportCommandHandler
         return Unit.Value;
     }
 }
-

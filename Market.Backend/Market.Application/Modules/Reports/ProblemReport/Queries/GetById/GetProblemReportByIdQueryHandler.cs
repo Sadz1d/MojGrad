@@ -35,7 +35,8 @@ public sealed class GetProblemReportByIdQueryHandler
                 Title = p.Title,
                 Description = p.Description,
                 Location = p.Location,
-                CreationDate = p.CreationDate,
+                Latitude = p.Latitude,
+                Longitude = p.Longitude,
                 UserId = p.UserId,
                 AuthorName = p.User != null
                     ? (p.User.FirstName + " " + p.User.LastName).Trim()
@@ -47,7 +48,8 @@ public sealed class GetProblemReportByIdQueryHandler
                 CommentsCount = p.Comments.Count,
                 TasksCount = p.Tasks.Count,
                 RatingsCount = p.Ratings.Count,
-                ImagePath = p.ImagePath
+                ImagePath = p.ImagePath,
+                CreationDate = p.CreationDate
 
             })
             .FirstOrDefaultAsync(ct);
@@ -58,4 +60,3 @@ public sealed class GetProblemReportByIdQueryHandler
         return dto;
     }
 }
-

@@ -13,6 +13,8 @@ public sealed class ListProblemReportQueryDto
     public required string AuthorName { get; init; }
     public required DateTime CreationDate { get; init; }
     public string? Location { get; init; }
+    public double? Latitude { get; init; }
+    public double? Longitude { get; init; }
     public required string CategoryName { get; init; }
     public required string StatusName { get; init; }
     public required int CommentsCount { get; init; }
@@ -20,4 +22,3 @@ public sealed class ListProblemReportQueryDto
     public required int RatingsCount { get; init; }
     public string? ShortDescription { get; init; }
 }
-

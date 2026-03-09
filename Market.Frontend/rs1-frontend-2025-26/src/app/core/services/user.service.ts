@@ -19,6 +19,6 @@ export class UserService {
   constructor(private http: HttpClient) {}
 
   getUsers(): Observable<UserDropdown[]> {
-    return this.http.get<UserDropdown[]>(`${this.apiUrl}/reports/users/dropdown`);
+    return this.http.get<UserDropdown[]>(`${this.apiUrl}/users/dropdown`);
   }
 }

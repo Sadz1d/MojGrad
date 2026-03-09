@@ -764,4 +764,23 @@ body {
     width: 18px;
     height: 18px;
   }
+  #location-map {
+    z-index: 0;
+  }
+
+  .btn-secondary {
+    background: none;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 6px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    color: #666;
+
+    &:hover {
+      background: #f5f5f5;
+      color: #c62828;
+    }
+  }
 }

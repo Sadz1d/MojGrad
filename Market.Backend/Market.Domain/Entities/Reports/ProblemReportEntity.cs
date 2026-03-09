@@ -8,6 +8,8 @@ public class ProblemReportEntity : BaseEntity
     public int UserId { get; set; }
     public string Description { get; set; } = default!;
     public string? Location { get; set; }
+    public double? Latitude { get; set; }
+    public double? Longitude { get; set; }
     public int CategoryId { get; set; }
     public int StatusId { get; set; }
     public DateTime CreationDate { get; set; }

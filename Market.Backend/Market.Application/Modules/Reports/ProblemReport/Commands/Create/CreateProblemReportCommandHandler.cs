@@ -42,6 +42,8 @@ public sealed class CreateProblemReportCommandHandler
             UserId = request.UserId,
             Description = desc,
             Location = request.Location?.Trim(),
+            Latitude = request.Latitude,
+            Longitude = request.Longitude,
             CategoryId = request.CategoryId,
             StatusId = request.StatusId,
             CreationDate = DateTime.UtcNow
@@ -52,4 +54,3 @@ public sealed class CreateProblemReportCommandHandler
         return entity.Id;
     }
 }
-
