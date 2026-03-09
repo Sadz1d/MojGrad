@@ -11,7 +11,7 @@ import { MatButton } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { CommentService } from '../../services/comment.service';
 import { ProblemReportService } from '../../services/problem-report.service';
-import { CurrentUserService } from '../../../core/services/auth/current-user.service';
+import { AuthFacadeService } from '../../../core/services/auth/auth-facade.service';
 import { CommentListItem, CreateCommentCommand } from '../../models/comment.model';
 import { ProblemReportDetail } from '../../models/problem-report.model';
 
@@ -61,7 +61,7 @@ export class CommentListComponent implements OnInit {
   constructor(
     private commentService: CommentService,
     private problemReportService: ProblemReportService,
-    private currentUserService: CurrentUserService,
+    private auth: AuthFacadeService,
     private router: Router,
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<CommentListComponent>,
@@ -79,19 +79,17 @@ export class CommentListComponent implements OnInit {
   }
 
   private loadCurrentUser(): void {
-    const user = this.currentUserService.snapshot;
-    this.isAuthenticated = this.currentUserService.isAuthenticated();
-    this.isAdmin = this.currentUserService.isAdmin();
-    this.isManager = this.currentUserService.isManager();
+    const user = this.auth.getCurrentUserValue();
+    this.isAuthenticated = this.auth.isAuthenticated();
+    this.isAdmin = this.auth.isAdmin();
+    this.isManager = this.auth.isManager();
 
     if (user) {
-      // Pretvori string ID u number
-      this.currentUserId = this.currentUserId = user.id || null;
+      this.currentUserId = user.id || null;
 
-      // Odredi rolu
       if (this.isAdmin) this.currentUserRole = 'admin';
       else if (this.isManager) this.currentUserRole = 'manager';
-      else if (this.currentUserService.isEmployee()) this.currentUserRole = 'employee';
+      else if (this.auth.isEmployee()) this.currentUserRole = 'employee';
       else this.currentUserRole = 'user';
     }
   }
@@ -269,25 +267,25 @@ export class CommentListComponent implements OnInit {
 
 
 // Mock metoda - trebalo bi da dobijete podatke sa servera
-public isAdminUser(userId: number): boolean {
-  // Ovdje treba da proverite da li je korisnik admin
-  // Za sada ćemo koristiti trenutnog korisnika
-  return this.isAdmin && this.currentUserId === userId;
-}
-
-public isManagerUser(userId: number): boolean {
-  // Ovdje treba da proverite da li je korisnik menadžer
-  return this.isManager && this.currentUserId === userId;
-}
-
-public getUserRole(userId: number): string {
-  // Ovo bi trebalo da dobijete sa servera
-  // Za sada vraćamo rolu trenutnog korisnika
-  if (userId === this.currentUserId) {
-    return this.currentUserRole;
+  public isAdminUser(userId: number): boolean {
+    // Ovdje treba da proverite da li je korisnik admin
+    // Za sada ćemo koristiti trenutnog korisnika
+    return this.isAdmin && this.currentUserId === userId;
   }
 
-  // Ako nije trenutni korisnik, možete implementirati cache ili API call
-  return 'user';
-}
+  public isManagerUser(userId: number): boolean {
+    // Ovdje treba da proverite da li je korisnik menadžer
+    return this.isManager && this.currentUserId === userId;
+  }
+
+  public getUserRole(userId: number): string {
+    // Ovo bi trebalo da dobijete sa servera
+    // Za sada vraćamo rolu trenutnog korisnika
+    if (userId === this.currentUserId) {
+      return this.currentUserRole;
+    }
+
+    // Ako nije trenutni korisnik, možete implementirati cache ili API call
+    return 'user';
+  }
 }
