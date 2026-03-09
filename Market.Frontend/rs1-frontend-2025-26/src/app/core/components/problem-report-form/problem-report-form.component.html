@@ -185,20 +185,14 @@
           <select
             id="category"
             class="form-control select-control"
-            [class.is-invalid]="getFieldError('categoryId')"
-            (change)="onCategoryChange($event)"
-            [disabled]="loadingCategories">
+            formControlName="categoryId"
+            [class.is-invalid]="getFieldError('categoryId')">
 
-            <option value="" disabled selected>Odaberite kategoriju...</option>
-            <option *ngFor="let category of categories" [value]="category.id">
+            <option [ngValue]="null" disabled>Odaberite kategoriju...</option>
+            <option *ngFor="let category of categories" [ngValue]="category.id">
               {{ category.name }}
-              <span *ngIf="category.description"> - {{ category.description }}</span>
             </option>
           </select>
-
-          <!-- Hidden input za categoryId -->
-          <input type="hidden" formControlName="categoryId">
-          <input type="hidden" formControlName="categoryName">
 
           <div class="error-message" *ngIf="getFieldError('categoryId')">
             <mat-icon>error_outline</mat-icon>
@@ -233,20 +227,14 @@
           <select
             id="status"
             class="form-control select-control"
-            [class.is-invalid]="getFieldError('statusId')"
-            (change)="onStatusChange($event)"
-            [disabled]="loadingStatuses">
+            formControlName="statusId"
+            [class.is-invalid]="getFieldError('statusId')">
 
-            <option value="" disabled selected>Odaberite status...</option>
-            <option *ngFor="let status of statuses" [value]="status.id">
+            <option [ngValue]="null" disabled>Odaberite status...</option>
+            <option *ngFor="let status of statuses" [ngValue]="status.id">
               {{ status.name }}
-              <span *ngIf="status.description"> - {{ status.description }}</span>
             </option>
           </select>
-
-          <!-- Hidden input za statusId -->
-          <input type="hidden" formControlName="statusId">
-          <input type="hidden" formControlName="statusName">
 
           <div class="error-message" *ngIf="getFieldError('statusId')">
             <mat-icon>error_outline</mat-icon>

@@ -13,7 +13,7 @@ import { MatIcon } from "@angular/material/icon";
 import { MatProgressSpinner } from "@angular/material/progress-spinner";
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { Subject } from 'rxjs';
+import { Subject, forkJoin } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { HttpClient, HttpEvent, HttpEventType } from '@angular/common/http';
 import { MatProgressBar } from "@angular/material/progress-bar";
@@ -73,18 +73,42 @@ export class ProblemReportFormComponent implements OnInit, OnDestroy, AfterViewI
       this.currentUserFullName = user.fullName;
     }
 
-    // Dohvati dropdown podatke
-    this.loadCategories();
-    this.loadStatuses();
-
-    // Provjeri edit mode
     this.route.params
       .pipe(takeUntil(this.destroy$))
       .subscribe(params => {
         if (params['id']) {
           this.isEditMode = true;
           this.reportId = +params['id'];
-          this.loadReport();
+          // Učitaj dropdowne paralelno, pa tek onda loadReport
+          this.loadingCategories = true;
+          this.loadingStatuses = true;
+          this.form.get('categoryId')?.disable();
+          this.form.get('statusId')?.disable();
+          forkJoin({
+            categories: this.categoryService.getCategories(),
+            statuses: this.statusService.getStatuses()
+          }).pipe(takeUntil(this.destroy$)).subscribe({
+            next: ({ categories, statuses }) => {
+              this.categories = categories;
+              this.statuses = statuses;
+              this.loadingCategories = false;
+              this.loadingStatuses = false;
+              this.form.get('categoryId')?.enable();
+              this.form.get('statusId')?.enable();
+              this.loadReport();
+            },
+            error: (err) => {
+              console.error('Greška pri učitavanju dropdowna:', err);
+              this.loadingCategories = false;
+              this.loadingStatuses = false;
+              this.form.get('categoryId')?.enable();
+              this.form.get('statusId')?.enable();
+            }
+          });
+        } else {
+          // New mode — učitaj dropdowne normalno
+          this.loadCategories();
+          this.loadStatuses();
         }
       });
   }
@@ -202,32 +226,38 @@ export class ProblemReportFormComponent implements OnInit, OnDestroy, AfterViewI
 
   loadCategories(): void {
     this.loadingCategories = true;
+    this.form.get('categoryId')?.disable();
     this.categoryService.getCategories()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (categories) => {
           this.categories = categories;
           this.loadingCategories = false;
+          this.form.get('categoryId')?.enable();
         },
         error: (err) => {
           console.error('Greška pri učitavanju kategorija:', err);
           this.loadingCategories = false;
+          this.form.get('categoryId')?.enable();
         }
       });
   }
 
   loadStatuses(): void {
     this.loadingStatuses = true;
+    this.form.get('statusId')?.disable();
     this.statusService.getStatuses()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (statuses) => {
           this.statuses = statuses;
           this.loadingStatuses = false;
+          this.form.get('statusId')?.enable();
         },
         error: (err) => {
           console.error('Greška pri učitavanju statusa:', err);
           this.loadingStatuses = false;
+          this.form.get('statusId')?.enable();
         }
       });
   }
