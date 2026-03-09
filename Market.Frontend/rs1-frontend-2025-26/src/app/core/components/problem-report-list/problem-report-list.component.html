@@ -1,7 +1,7 @@
 <div class="list-container">
   <!-- Pozadinska slika sa overlay-em -->
   <div class="list-overlay"></div>
-  
+
   <div class="list-content">
     <!-- Logo & Brand -->
     <div class="list-brand">
@@ -28,7 +28,7 @@
           <mat-icon>filter_list</mat-icon>
           <h3>Filter prijava</h3>
         </div>
-        
+
         <form [formGroup]="filterForm" (ngSubmit)="applyFilter()" class="filter-form">
           <div class="filter-grid">
             <!-- Search -->
@@ -37,38 +37,143 @@
                 <mat-icon>search</mat-icon>
                 Pretraga (naslov/opis)
               </label>
-              <input type="text" id="search" class="filter-input" formControlName="search" 
+              <input type="text" id="search" class="filter-input" formControlName="search"
                      placeholder="Unesite tekst za pretragu...">
             </div>
-            
+
             <!-- User ID -->
-            <div class="filter-group">
-              <label for="userId" class="filter-label">
-                <mat-icon>person</mat-icon>
-                ID korisnika
+            <div class="form-group">
+              <label for="category" class="form-label">
+                <mat-icon class="field-icon">user</mat-icon>
+                Korisnik
               </label>
-              <input type="number" id="userId" class="filter-input" formControlName="userId" 
-                     placeholder="ID autora" min="1">
+
+              <!-- Loading state -->
+              <div *ngIf="loadingUsers" class="loading-dropdown">
+                <mat-spinner diameter="20"></mat-spinner>
+                <span>Učitavanje korisnika...</span>
+              </div>
+
+              <!-- Dropdown za korisnike -->
+              <select
+                id="user"
+                class="form-control select-control"
+                [class.is-invalid]="getFieldError('userId')"
+                (change)="onUserChange($event)"
+                [disabled]="loadingUsers">
+
+                <option value="" disabled selected>Odaberite korisnika...</option>
+                <option *ngFor="let user of users" [value]="user.id">
+                  {{ user.name }}
+                  <span *ngIf="user.description"> - {{ user.description }}</span>
+                </option>
+              </select>
+
+              <!-- Hidden input za userId -->
+              <input type="hidden" formControlName="userId">
+              <input type="hidden" formControlName="userName">
+
+              <div class="error-message" *ngIf="getFieldError('userId')">
+                <mat-icon>error_outline</mat-icon>
+                {{ getFieldError('userId') }}
+              </div>
+
+
+
+              <div class="error-message" *ngIf="users.length === 0 && !loadingUsers">
+
+                Nema dostupnih korisnika. Molimo kontaktirajte administratora.
+              </div>
             </div>
-            
-            <!-- Category ID -->
-            <div class="filter-group">
-              <label for="categoryId" class="filter-label">
-                <mat-icon>category</mat-icon>
-                ID kategorije
+
+            <!-- Category Dropdown -->
+            <div class="form-group">
+              <label for="category" class="form-label">
+                <mat-icon class="field-icon">category</mat-icon>
+                Kategorija
               </label>
-              <input type="number" id="categoryId" class="filter-input" formControlName="categoryId" 
-                     placeholder="ID kategorije" min="1">
+
+              <!-- Loading state -->
+              <div *ngIf="loadingCategories" class="loading-dropdown">
+                <mat-spinner diameter="20"></mat-spinner>
+                <span>Učitavanje kategorija...</span>
+              </div>
+
+              <!-- Dropdown za kategorije -->
+              <select
+                id="category"
+                class="form-control select-control"
+                [class.is-invalid]="getFieldError('categoryId')"
+                (change)="onCategoryChange($event)"
+                [disabled]="loadingCategories">
+
+                <option value="" disabled selected>Odaberite kategoriju...</option>
+                <option *ngFor="let category of categories" [value]="category.id">
+                  {{ category.name }}
+                  <span *ngIf="category.description"> - {{ category.description }}</span>
+                </option>
+              </select>
+
+              <!-- Hidden input za categoryId -->
+              <input type="hidden" formControlName="categoryId">
+              <input type="hidden" formControlName="categoryName">
+
+              <div class="error-message" *ngIf="getFieldError('categoryId')">
+                <mat-icon>error_outline</mat-icon>
+                {{ getFieldError('categoryId') }}
+              </div>
+
+
+
+              <div class="error-message" *ngIf="categories.length === 0 && !loadingCategories">
+
+                Nema dostupnih kategorija. Molimo kontaktirajte administratora.
+              </div>
             </div>
-            
-            <!-- Status ID -->
-            <div class="filter-group">
-              <label for="statusId" class="filter-label">
-                <mat-icon>flag</mat-icon>
-                ID statusa
+
+            <!-- Status Dropdown -->
+            <div class="form-group">
+              <label for="status" class="form-label">
+                <mat-icon class="field-icon">flag</mat-icon>
+                Status
               </label>
-              <input type="number" id="statusId" class="filter-input" formControlName="statusId" 
-                     placeholder="ID statusa" min="1">
+
+              <!-- Loading state -->
+              <div *ngIf="loadingStatuses" class="loading-dropdown">
+                <mat-spinner diameter="20"></mat-spinner>
+                <span>Učitavanje statusa...</span>
+              </div>
+
+              <!-- Dropdown za statuse -->
+              <select
+                id="status"
+                class="form-control select-control"
+                [class.is-invalid]="getFieldError('statusId')"
+                (change)="onStatusChange($event)"
+                [disabled]="loadingStatuses">
+
+                <option value="" disabled selected>Odaberite status...</option>
+                <option *ngFor="let status of statuses" [value]="status.id">
+                  {{ status.name }}
+                  <span *ngIf="status.description"> - {{ status.description }}</span>
+                </option>
+              </select>
+
+              <!-- Hidden input za statusId -->
+              <input type="hidden" formControlName="statusId">
+              <input type="hidden" formControlName="statusName">
+
+              <div class="error-message" *ngIf="getFieldError('statusId')">
+                <mat-icon>error_outline</mat-icon>
+                {{ getFieldError('statusId') }}
+              </div>
+
+
+
+              <div class="error-message" *ngIf="statuses.length === 0 && !loadingStatuses">
+
+                Nema dostupnih statusa. Molimo kontaktirajte administratora.
+              </div>
             </div>
           </div>
 
@@ -79,13 +184,13 @@
               <mat-spinner *ngIf="loading" diameter="20"></mat-spinner>
               {{ loading ? 'Primjenjujem...' : 'Primjeni filtere' }}
             </button>
-            
+
             <button type="button" class="action-button action-secondary" (click)="resetFilter()">
               <mat-icon>restart_alt</mat-icon>
               Resetuj filtere
             </button>
-            
-            <button type="button" class="action-button action-success" 
+
+            <button type="button" class="action-button action-success"
                     [routerLink]="['/problem-reports/new']">
               <mat-icon>add_circle</mat-icon>
               + Nova prijava
@@ -94,11 +199,11 @@
           <div class="sort-info" *ngIf="sortState.direction !== ''">
   <div class="sort-label">Sortira se po:</div>
   <div class="sort-value">
-    {{ getColumnLabel(sortState.column) }} 
+    {{ getColumnLabel(sortState.column) }}
     ({{ sortState.direction === 'asc' ? 'A-Z' : 'Z-A' }})
   </div>
-  <button 
-    type="button" 
+  <button
+    type="button"
     class="action-button action-secondary btn-sm"
     (click)="resetSort()"
   >
@@ -132,7 +237,7 @@
       <div class="empty-icon">📋</div>
       <h3>Nema pronađenih prijava</h3>
       <p>Pokušajte da promjenite filtere ili kreirajte novu prijavu.</p>
-      <button class="action-button action-success" 
+      <button class="action-button action-success"
               [routerLink]="['/problem-reports/new']">
         <mat-icon>add_circle</mat-icon>
         + Kreiraj prvu prijavu
@@ -150,7 +255,7 @@
           <div class="table-actions">
             <!-- Export dropdown menu -->
             <div class="export-dropdown" *ngIf="reports.length > 0">
-              <button class="action-button action-secondary btn-sm" 
+              <button class="action-button action-secondary btn-sm"
                       [matMenuTriggerFor]="exportMenu"
                       [disabled]="exporting">
                 <mat-icon *ngIf="!exporting">download</mat-icon>
@@ -158,12 +263,12 @@
                 {{ exporting ? 'Exportuje se...' : 'Izvezi' }}
               </button>
 
-              <button class="action-button action-success btn-sm" 
+              <button class="action-button action-success btn-sm"
                       [routerLink]="['/problem-reports/import']">
                 <mat-icon>upload</mat-icon>
                 Uvezi
               </button>
-              
+
               <mat-menu #exportMenu="matMenu">
                 <button mat-menu-item (click)="exportData()">
                   <mat-icon>get_app</mat-icon>
@@ -204,7 +309,7 @@
         <mat-icon class="sort-icon">{{ getSortIcon('id') }}</mat-icon>
       </div>
     </th>
-    
+
     <!-- Naslov - sortabilno -->
     <th (click)="sortBy('title')" class="sortable-header">
       <div class="header-content">
@@ -212,7 +317,7 @@
         <mat-icon class="sort-icon">{{ getSortIcon('title') }}</mat-icon>
       </div>
     </th>
-    
+
     <!-- Autor - sortabilno -->
     <th (click)="sortBy('authorName')" class="sortable-header">
       <div class="header-content">
@@ -220,7 +325,7 @@
         <mat-icon class="sort-icon">{{ getSortIcon('authorName') }}</mat-icon>
       </div>
     </th>
-    
+
     <!-- Kategorija - sortabilno -->
     <th (click)="sortBy('categoryName')" class="sortable-header">
       <div class="header-content">
@@ -228,7 +333,7 @@
         <mat-icon class="sort-icon">{{ getSortIcon('categoryName') }}</mat-icon>
       </div>
     </th>
-    
+
     <!-- Status - sortabilno -->
     <th (click)="sortBy('statusName')" class="sortable-header">
       <div class="header-content">
@@ -236,7 +341,7 @@
         <mat-icon class="sort-icon">{{ getSortIcon('statusName') }}</mat-icon>
       </div>
     </th>
-    
+
     <!-- Lokacija - sortabilno -->
     <th (click)="sortBy('location')" class="sortable-header">
       <div class="header-content">
@@ -244,7 +349,7 @@
         <mat-icon class="sort-icon">{{ getSortIcon('location') }}</mat-icon>
       </div>
     </th>
-    
+
     <!-- Datum - sortabilno -->
     <th (click)="sortBy('creationDate')" class="sortable-header">
       <div class="header-content">
@@ -252,7 +357,7 @@
         <mat-icon class="sort-icon">{{ getSortIcon('creationDate') }}</mat-icon>
       </div>
     </th>
-    
+
     <!-- Komentari - sortabilno -->
     <th (click)="sortBy('commentsCount')" class="sortable-header">
       <div class="header-content">
@@ -260,7 +365,7 @@
         <mat-icon class="sort-icon">{{ getSortIcon('commentsCount') }}</mat-icon>
       </div>
     </th>
-    
+
     <!-- Akcije - nije sortabilno -->
     <th>
       <div class="header-content">
@@ -311,7 +416,7 @@
                   </div>
                 </td>-->
                 <td class="report-comments">
-  <div class="comments-info clickable" (click)="openComments(report.id)" 
+  <div class="comments-info clickable" (click)="openComments(report.id)"
        matTooltip="Pogledaj komentare" matTooltipPosition="above">
     <mat-icon class="comments-icon">comment</mat-icon>
     <span class="comments-count">{{ report.commentsCount }}</span>
@@ -341,23 +446,23 @@
             <span>Stranica {{ currentPage }} od {{ totalPages }} • Ukupno {{ totalItems }} prijava</span>
           </div>
           <div class="pagination-controls">
-            <button class="pagination-btn" 
+            <button class="pagination-btn"
                     (click)="onPageChange(currentPage - 1)"
                     [disabled]="currentPage === 1">
               <mat-icon>chevron_left</mat-icon>
               Prethodna
             </button>
-            
+
             <div class="page-numbers">
-              <button *ngFor="let page of getPageNumbers()" 
+              <button *ngFor="let page of getPageNumbers()"
                       class="page-number"
                       [class.active]="currentPage === page"
                       (click)="onPageChange(page)">
                 {{ page }}
               </button>
             </div>
-            
-            <button class="pagination-btn" 
+
+            <button class="pagination-btn"
                     (click)="onPageChange(currentPage + 1)"
                     [disabled]="currentPage === totalPages">
               Sljedeća
@@ -370,7 +475,7 @@
 
     <!-- Footer -->
     <div class="list-footer">
-      
+
       <p class="platform-description">
         Prijavite problem, pomozite svojim sugrađanima<br>
         unaprijedite naš grad.

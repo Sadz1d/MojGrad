@@ -25,7 +25,7 @@ public sealed class ProblemStatusesController : ControllerBase
     public ProblemStatusesController(ISender sender, IAppDbContext context)
     {
         this.sender = sender;
-        this.context = context; // DODAJTE OVO
+        this.context = context;
     }
 
     [HttpGet]
@@ -79,7 +79,7 @@ public sealed class ProblemStatusesController : ControllerBase
     }
 }
 
-// DODAJTE OVAJ DTO
+
 public class StatusDropdownDto
 {
     public int Id { get; set; }

@@ -1,10 +1,12 @@
+using Market.Application.Abstractions;
+using Market.Application.Modules.Identity.Users.Commands.Create;
+using Market.Application.Modules.Identity.Users.Commands.Delete;
+using Market.Application.Modules.Identity.Users.Commands.Update;
+using Market.Application.Modules.Identity.Users.Queries.GetById;
+using Market.Application.Modules.Identity.Users.Queries.List;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Market.Application.Modules.Identity.Users.Commands.Create;
-using Market.Application.Modules.Identity.Users.Commands.Update;
-using Market.Application.Modules.Identity.Users.Commands.Delete;
-using Market.Application.Modules.Identity.Users.Queries.List;
-using Market.Application.Modules.Identity.Users.Queries.GetById;
+using Microsoft.EntityFrameworkCore;
 
 namespace Market.API.Controllers.Identity;
 
@@ -13,10 +15,12 @@ namespace Market.API.Controllers.Identity;
 public class UsersController : ControllerBase
 {
     private readonly IMediator _mediator;
+    private readonly IAppDbContext context;
 
-    public UsersController(IMediator mediator)
+    public UsersController(IMediator mediator, IAppDbContext context)
     {
         _mediator = mediator;
+        this.context = context;
     }
 
     // GET: api/users/list
@@ -72,4 +76,26 @@ public class UsersController : ControllerBase
         await _mediator.Send(new DeleteMarketUserCommand { Id = id });
         return NoContent();
     }
+    [HttpGet("dropdown")]
+    [ProducesResponseType(typeof(List<UserDropdownDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetDropdownOptions(CancellationToken ct)
+    {
+        var statuses = await context.Users
+            .Where(s => !s.IsDeleted) 
+            .OrderBy(s => s.FirstName)
+            .Select(s => new UserDropdownDto
+            {
+                Id = s.Id,
+                Name = s.FirstName
+            })
+            .ToListAsync(ct);
+
+        return Ok(statuses);
+    }
+}
+public class UserDropdownDto
+{
+    public int Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string? Description { get; set; }
 }

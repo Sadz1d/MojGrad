@@ -68,6 +68,12 @@ export interface ProblemReportFilter {
   pageSize?: number;
 }
 
+export interface UserDropdown {
+  id: number;
+  name: string;
+  description?: string;
+}
+
 export interface CategoryDropdown {
   id: number;
   name: string;

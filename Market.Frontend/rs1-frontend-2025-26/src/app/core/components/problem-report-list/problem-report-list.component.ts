@@ -1,9 +1,14 @@
 // components/problem-report-list/problem-report-list.component.ts
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { ProblemReportService } from '../../services/problem-report.service';
-import { ProblemReportListItem, ProblemReportFilter } from '../../models/problem-report.model';
+import {
+  ProblemReportListItem,
+  ProblemReportFilter,
+  CategoryDropdown,
+  StatusDropdown, UserDropdown
+} from '../../models/problem-report.model';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatIcon } from "@angular/material/icon";
@@ -14,6 +19,11 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ModalService } from '../../services/modal.service';
 import { AuthFacadeService } from '../../../core/services/auth/auth-facade.service';
+import {takeUntil} from 'rxjs/operators';
+import {CategoryService} from '../../services/category.service';
+import {UserService} from '../../services/user.service';
+import {StatusService} from '../../services/status.service';
+import {Subject} from 'rxjs';
 // ENUM za sortiranje
 enum SortDirection {
   ASC = 'asc',
@@ -43,6 +53,7 @@ interface SortState {
   ],
 })
 export class ProblemReportListComponent implements OnInit {
+  form: FormGroup;
   reports: ProblemReportListItem[] = [];
   loading = false;
   error = '';
@@ -54,6 +65,14 @@ export class ProblemReportListComponent implements OnInit {
   pageSize = 10;
   totalItems = 0;
   totalPages = 0;
+
+  // Dropdown podaci
+  categories: CategoryDropdown[] = [];
+  statuses: StatusDropdown[] = [];
+  users: UserDropdown[] = [];
+  loadingUsers = false;
+  loadingCategories = false;
+  loadingStatuses = false;
 
   // Sortiranje
   sortState: SortState = {
@@ -74,27 +93,84 @@ export class ProblemReportListComponent implements OnInit {
   ];
   isAuthenticated = false;
   currentUserId: number | null = null;
+  private destroy$ = new Subject<void>();
   constructor(
     private problemReportService: ProblemReportService,
     private exportService: ExportService,
     private modalService: ModalService,
+    private categoryService: CategoryService,
+    private statusService: StatusService,
+    private userService:UserService,
     private auth: AuthFacadeService,
     private fb: FormBuilder,
     public router: Router
   ) {
+
+      this.form = this.createForm();
+
     this.filterForm = this.fb.group({
       search: [''],
       userId: [null],
       categoryId: [null],
       statusId: [null],
       sortBy: ['id'],
-      sortDirection: ['desc']
+      sortDirection: ['desc'],
     });
   }
 
   ngOnInit(): void {
     this.loadCurrentUser();
     this.loadReports();
+    // Dohvati dropdown podatke
+    this.loadCategories();
+    this.loadStatuses();
+    this.loadUsers();
+  }
+  loadUsers(): void {
+    this.loadingUsers = true;
+    this.userService.getUsers()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (users) => {
+          this.users = users;
+          this.loadingUsers = false;
+        },
+        error: (err) => {
+          console.error('Greška pri učitavanju korisnika:', err);
+          this.loadingUsers = false;
+        }
+      });
+  }
+  loadCategories(): void {
+    this.loadingCategories = true;
+    this.categoryService.getCategories()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (categories) => {
+          this.categories = categories;
+          this.loadingCategories = false;
+        },
+        error: (err) => {
+          console.error('Greška pri učitavanju kategorija:', err);
+          this.loadingCategories = false;
+        }
+      });
+  }
+
+  loadStatuses(): void {
+    this.loadingStatuses = true;
+    this.statusService.getStatuses()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (statuses) => {
+          this.statuses = statuses;
+          this.loadingStatuses = false;
+        },
+        error: (err) => {
+          console.error('Greška pri učitavanju statusa:', err);
+          this.loadingStatuses = false;
+        }
+      });
   }
   private loadCurrentUser(): void {
     this.isAuthenticated = this.auth.isAuthenticated();
@@ -282,6 +358,20 @@ export class ProblemReportListComponent implements OnInit {
     this.loadReports();
   }
 
+  createForm(): FormGroup {
+    return this.fb.group({
+      title: ['', [Validators.required, Validators.maxLength(200)]],
+      description: ['', [Validators.required, Validators.maxLength(2000)]],
+      location: ['', [Validators.maxLength(200)]],
+      categoryId: ['', [Validators.required, Validators.min(1)]],
+      statusId: ['', [Validators.required, Validators.min(1)]],
+      userId: ['', [Validators.required, Validators.min(1)]],
+      categoryName: [''],
+      userName: [''],
+      statusName: ['']
+    });
+  }
+
   // === FILTERI ===
 
   applyFilter(): void {
@@ -428,6 +518,55 @@ export class ProblemReportListComponent implements OnInit {
         alert('Greška pri dobijanju podataka za export: ' + err.message);
       }
     });
+  }
+
+  getFieldError(fieldName: string): string | null {
+    const field = this.form.get(fieldName);
+    if (field?.errors && (field?.touched || field?.dirty)) {
+      if (field.errors['required']) return 'Ovo polje je obavezno';
+      if (field.errors['maxlength']) return `Maksimalno ${field.errors['maxlength'].requiredLength} karaktera`;
+      if (field.errors['min']) return `Minimalna vrijednost je ${field.errors['min'].min}`;
+    }
+    return null;
+  }
+
+  onCategoryChange(event: Event): void {
+    const selectElement = event.target as HTMLSelectElement;
+    const selectedId = parseInt(selectElement.value, 10);
+    const selectedCategory = this.categories.find(c => c.id === selectedId);
+
+    if (selectedCategory) {
+      this.form.patchValue({
+        categoryId: selectedCategory.id,
+        categoryName: selectedCategory.name
+      });
+    }
+  }
+
+  onUserChange(event: Event): void {
+    const selectElement = event.target as HTMLSelectElement;
+    const selectedId = parseInt(selectElement.value, 10);
+    const selectedUser = this.users.find(c => c.id === selectedId);
+
+    if (selectedUser) {
+      this.form.patchValue({
+        UserId: selectedUser.id,
+        UserName: selectedUser.name
+      });
+    }
+  }
+
+  onStatusChange(event: Event): void {
+    const selectElement = event.target as HTMLSelectElement;
+    const selectedId = parseInt(selectElement.value, 10);
+    const selectedStatus = this.statuses.find(s => s.id === selectedId);
+
+    if (selectedStatus) {
+      this.form.patchValue({
+        statusId: selectedStatus.id,
+        statusName: selectedStatus.name
+      });
+    }
   }
 
   exportToCSV(): void {
