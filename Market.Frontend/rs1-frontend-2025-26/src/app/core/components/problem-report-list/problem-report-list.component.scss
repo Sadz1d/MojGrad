@@ -1308,3 +1308,33 @@ $card-shadow: 0 6px 28px rgba(0, 0, 0, 0.08);
 #reports-map {
   border-radius: 0 0 12px 12px;
 }
+.location-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  .location-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    color: #666; // Neutralna boja za ikonu lokacije
+  }
+}
+
+.location-link {
+  text-decoration: none; // Uklanja ružnu podvučenu liniju
+  color: #2563eb;       // Profesionalna "soft" plava boja (iz Tailwind palete)
+  font-weight: 500;
+  transition: all 0.2s ease-in-out;
+  border-bottom: 1px solid transparent; // Rezerviše prostor za liniju
+
+  &:hover {
+    color: #1d4ed8;     // Malo tamnija plava na hover
+    border-bottom: 1px solid #1d4ed8; // Suptilno podvlačenje samo na hover
+  }
+}
+
+.no-location {
+  color: #9ca3af;       // Svjetlija siva za slučajeve kad nema lokacije
+  font-style: italic;
+}
