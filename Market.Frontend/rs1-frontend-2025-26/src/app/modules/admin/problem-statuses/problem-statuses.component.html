@@ -1,0 +1,68 @@
+<div class="admin-page">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title"><mat-icon>flag</mat-icon> Statusi problema</h1>
+      <p class="page-subtitle">Upravljajte statusima za prijave problema</p>
+    </div>
+    <button class="btn-primary" (click)="openCreate()">
+      <mat-icon>add</mat-icon> Novi status
+    </button>
+  </div>
+
+  <div *ngIf="success" class="alert alert-success">{{ success }}</div>
+  <div *ngIf="error" class="alert alert-error">{{ error }}</div>
+
+  <div *ngIf="showForm" class="form-card">
+    <h3>{{ editingId ? 'Uredi status' : 'Novi status' }}</h3>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label>Naziv *</label>
+        <input type="text" class="form-control" formControlName="name" placeholder="Npr. U toku">
+        <span class="field-error" *ngIf="form.get('name')?.invalid && form.get('name')?.touched">
+          Naziv je obavezan (max 50 znakova)
+        </span>
+      </div>
+      <div class="form-actions">
+        <button type="button" class="btn-secondary" (click)="cancelForm()">Odustani</button>
+        <button type="submit" class="btn-primary" [disabled]="submitting || form.invalid">
+          {{ submitting ? 'Snima...' : (editingId ? 'Spremi izmjene' : 'Kreiraj') }}
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <div class="table-card">
+    <div *ngIf="loading" class="loading-state">Učitavanje...</div>
+    <table *ngIf="!loading">
+      <thead>
+      <tr>
+        <th>ID</th>
+        <th>Naziv</th>
+        <th>Boja markera</th>
+        <th>Akcije</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let s of statuses">
+        <td class="id-cell">{{ s.id }}</td>
+        <td><strong>{{ s.name }}</strong></td>
+        <td>
+          <span class="color-preview" [style.background]="getStatusColor(s.name)"></span>
+          <span class="color-label">{{ getStatusColorLabel(s.name) }}</span>
+        </td>
+        <td class="actions-cell">
+          <button class="btn-icon" title="Uredi" (click)="openEdit(s)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button class="btn-icon btn-danger" title="Obriši" (click)="delete(s)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </tr>
+      <tr *ngIf="statuses.length === 0">
+        <td colspan="4" class="empty-state">Nema statusa. Kreirajte prvi.</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

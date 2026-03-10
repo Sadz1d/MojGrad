@@ -101,6 +101,8 @@ namespace Market.Application.Modules.Reports.ProblemReport.Queries.GetPaged
                 .Select(pr => new ProblemReportListItemDto
                 {
                     Id = pr.Id,
+                    UserId = pr.UserId,
+                    StatusId = pr.StatusId,
                     Title = pr.Title,
                     AuthorName = pr.User != null ? pr.User.FirstName : "Nepoznato",
                     CreatedAt = pr.CreationDate,

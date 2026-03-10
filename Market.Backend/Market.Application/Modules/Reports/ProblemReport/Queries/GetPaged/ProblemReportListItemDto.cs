@@ -4,6 +4,8 @@ namespace Market.Application.Modules.Reports.ProblemReport.Queries.GetPaged
     public sealed class ProblemReportListItemDto
     {
         public int Id { get; set; }
+        public int UserId { get; set; }
+        public int StatusId { get; set; }
         public string Title { get; set; } = null!;
         public string AuthorName { get; set; } = null!;
         public DateTime CreatedAt { get; set; }

@@ -40,6 +40,30 @@
     <!-- MENU -->
     <nav class="menu">
       <div class="menu-section">
+        <div class="menu-title">Prijave problema</div>
+        <a mat-button routerLink="/admin/problem-categories" routerLinkActive="active" class="menu-item">
+          <mat-icon>category</mat-icon>
+          <span>Kategorije</span>
+        </a>
+        <a mat-button routerLink="/admin/problem-statuses" routerLinkActive="active" class="menu-item">
+          <mat-icon>flag</mat-icon>
+          <span>Statusi</span>
+        </a>
+        <a mat-button routerLink="/problem-reports" class="menu-item menu-secondary">
+          <mat-icon>list_alt</mat-icon>
+          <span>Sve prijave</span>
+        </a>
+      </div>
+
+      <div class="menu-section">
+        <div class="menu-title">Korisnici</div>
+        <a mat-button routerLink="/admin/users" routerLinkActive="active" class="menu-item">
+          <mat-icon>people</mat-icon>
+          <span>Upravljanje korisnicima</span>
+        </a>
+      </div>
+
+      <div class="menu-section">
         <div class="menu-title">Volontiranje</div>
         <a mat-raised-button routerLink="/admin/volunteer-actions/create" routerLinkActive="active" class="menu-item">
           <mat-icon>volunteer_activism</mat-icon>

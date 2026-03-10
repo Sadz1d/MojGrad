@@ -33,6 +33,7 @@ export class ProblemReportFormComponent implements OnInit, OnDestroy, AfterViewI
   error: string | null = null;
   successMessage: string | null = null;
   isEditMode = false;
+  isViewMode = false;
   reportId?: number;
   isAuthenticated = false;
 
@@ -77,7 +78,8 @@ export class ProblemReportFormComponent implements OnInit, OnDestroy, AfterViewI
       .pipe(takeUntil(this.destroy$))
       .subscribe(params => {
         if (params['id']) {
-          this.isEditMode = true;
+          this.isViewMode = !this.router.url.includes('/edit/');
+          this.isEditMode = !this.isViewMode;
           this.reportId = +params['id'];
           // Učitaj dropdowne paralelno, pa tek onda loadReport
           this.loadingCategories = true;
@@ -158,8 +160,8 @@ export class ProblemReportFormComponent implements OnInit, OnDestroy, AfterViewI
       this.marker = null;
     }
 
-    const defaultLat = 43.3438;
-    const defaultLng = 17.8078;
+    const defaultLat = 43.8563;
+    const defaultLng = 18.4131;
 
     this.map = L.map('location-map').setView([defaultLat, defaultLng], 13);
 
@@ -168,6 +170,7 @@ export class ProblemReportFormComponent implements OnInit, OnDestroy, AfterViewI
     }).addTo(this.map);
 
     this.map.on('click', (e: any) => {
+      if (this.isViewMode) return;
       this.setMarker(e.latlng.lat, e.latlng.lng);
       this.reverseGeocode(e.latlng.lat, e.latlng.lng);
     });
@@ -187,12 +190,14 @@ export class ProblemReportFormComponent implements OnInit, OnDestroy, AfterViewI
     if (this.marker) {
       this.marker.setLatLng([lat, lng]);
     } else {
-      this.marker = L.marker([lat, lng], { draggable: true }).addTo(this.map);
-      this.marker.on('dragend', (e: any) => {
-        const pos = e.target.getLatLng();
-        this.form.patchValue({ latitude: pos.lat, longitude: pos.lng });
-        this.reverseGeocode(pos.lat, pos.lng);
-      });
+      this.marker = L.marker([lat, lng], { draggable: !this.isViewMode }).addTo(this.map);
+      if (!this.isViewMode) {
+        this.marker.on('dragend', (e: any) => {
+          const pos = e.target.getLatLng();
+          this.form.patchValue({ latitude: pos.lat, longitude: pos.lng });
+          this.reverseGeocode(pos.lat, pos.lng);
+        });
+      }
     }
     this.form.patchValue({ latitude: lat, longitude: lng });
   }
@@ -297,6 +302,11 @@ export class ProblemReportFormComponent implements OnInit, OnDestroy, AfterViewI
           });
 
           this.loading = false; // Postavi loading=false PRVO da Angular rendira form i location-map div
+
+          // U view modu onemogući cijelu formu
+          if (this.isViewMode) {
+            this.form.disable();
+          }
 
           // Inicijaliziraj mapu tek nakon što Angular re-rendira DOM (loading=false → *ngIf="!loading" postaje true)
           setTimeout(() => {

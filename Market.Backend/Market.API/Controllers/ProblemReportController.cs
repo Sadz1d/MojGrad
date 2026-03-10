@@ -90,4 +90,14 @@ public sealed class ProblemReportsController : ControllerBase
         }, ct);
         return Ok(result);
     }
+
+    [HttpPatch("{id:int}/status")]
+    public async Task<IActionResult> PatchStatus(int id, [FromBody] PatchStatusRequest request, CancellationToken ct)
+    {
+        var command = new UpdateProblemReportCommand { Id = id, StatusId = request.StatusId };
+        await _sender.Send(command, ct);
+        return NoContent();
+    }
+
+    public record PatchStatusRequest(int StatusId);
 }

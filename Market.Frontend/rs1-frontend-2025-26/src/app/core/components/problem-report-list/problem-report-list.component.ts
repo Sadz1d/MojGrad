@@ -93,8 +93,9 @@ export class ProblemReportListComponent implements OnInit, OnDestroy, AfterViewI
     { key: 'creationDate', label: 'Datum' },
     { key: 'commentsCount', label: 'Komentari' }
   ];
-  isAuthenticated = false;
-  currentUserId: number | null = null;
+  get isAuthenticated(): boolean {
+    return this.auth.isAuthenticated();
+  }
   private destroy$ = new Subject<void>();
 
   // Leaflet mapa
@@ -128,7 +129,6 @@ export class ProblemReportListComponent implements OnInit, OnDestroy, AfterViewI
   }
 
   ngOnInit(): void {
-    this.loadCurrentUser();
     this.loadReports();
     // Dohvati dropdown podatke
     this.loadCategories();
@@ -189,13 +189,6 @@ export class ProblemReportListComponent implements OnInit, OnDestroy, AfterViewI
           this.filterForm.get('statusId')?.enable();
         }
       });
-  }
-  private loadCurrentUser(): void {
-    this.isAuthenticated = this.auth.isAuthenticated();
-    const user = this.auth.getCurrentUserValue();
-    if (user) {
-      this.currentUserId = user.id || null;
-    }
   }
   originalReports: ProblemReportListItem[] = [];
   loadReports(): void {
@@ -455,6 +448,47 @@ export class ProblemReportListComponent implements OnInit, OnDestroy, AfterViewI
 
   editReport(id: number): void {
     this.router.navigate(['/problem-reports/edit', id]);
+  }
+
+  // === ROLE HELPERS ===
+
+  get currentUserId(): number {
+    return this.auth.getCurrentUserValue()?.id ?? 0;
+  }
+
+  get isAdmin(): boolean {
+    return this.auth.isAdmin();
+  }
+
+  get isStaff(): boolean {
+    const u = this.auth.getCurrentUserValue();
+    return !!(u?.isAdmin || u?.isManager || u?.isEmployee);
+  }
+
+  canEditReport(report: any): boolean {
+    return report.userId === this.currentUserId || this.isAdmin;
+  }
+
+  canDeleteReport(report: any): boolean {
+    return report.userId === this.currentUserId || this.isAdmin;
+  }
+
+  changeReportStatus(reportId: number, statusId: number): void {
+    this.problemReportService.patchStatus(reportId, statusId).subscribe({
+      next: () => {
+        const report = this.reports.find(r => r.id === reportId);
+        if (report) {
+          const status = this.statuses.find(s => s.id === statusId);
+          if (status) {
+            report.statusId = statusId;
+            report.status = status.name;
+            (report as any).statusName = status.name;
+          }
+        }
+        this.updateMapMarkers();
+      },
+      error: (err) => alert('Greška pri promjeni statusa: ' + err.message)
+    });
   }
 
   getStatusClass(statusName: string): string {
@@ -839,9 +873,9 @@ export class ProblemReportListComponent implements OnInit, OnDestroy, AfterViewI
 
   private getMarkerColor(statusName: string): string {
     const s = (statusName || '').toLowerCase();
-    if (s.includes('nov') || s.includes('new')) return '#f44336';
-    if (s.includes('u toku') || s.includes('progress')) return '#ff9800';
-    if (s.includes('rijesen') || s.includes('re\u0161') || s.includes('done') || s.includes('zatvoren')) return '#4caf50';
+    if (s.includes('nov') || s.includes('new') || s.includes('prijavljen')) return '#f44336';
+    if (s.includes('toku') || s.includes('progress') || s.includes('obrađ')) return '#ff9800';
+    if (s.includes('rije') || s.includes('rešen') || s.includes('done') || s.includes('zatvoren') || s.includes('završen')) return '#4caf50';
     return '#9e9e9e';
   }
 

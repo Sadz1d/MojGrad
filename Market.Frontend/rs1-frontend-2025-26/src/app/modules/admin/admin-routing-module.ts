@@ -10,6 +10,9 @@ import {AdminOrdersComponent} from './orders/admin-orders.component';
 import {AdminSettingsComponent} from './admin-settings/admin-settings.component';
 import { VolunteerActionCreateComponent } from './volunteer-action-create/volunteer-action-create.component';
 import {SurveyCreateComponent} from './surveys/survey-create/survey-create.component';
+import { ProblemCategoriesComponent } from './problem-categories/problem-categories.component';
+import { ProblemStatusesComponent } from './problem-statuses/problem-statuses.component';
+import { AdminUsersComponent } from './users/admin-users.component';
 
 
 const routes: Routes = [
@@ -63,10 +66,15 @@ const routes: Routes = [
         path: 'volunteer-actions/edit/:id',
         component: VolunteerActionCreateComponent
       },
-      // default admin route → /admin/products
+      // PROBLEM REPORTS — ADMIN
+      { path: 'problem-categories', component: ProblemCategoriesComponent },
+      { path: 'problem-statuses',   component: ProblemStatusesComponent },
+      { path: 'users',              component: AdminUsersComponent },
+
+      // default admin route → dashboard
       {
         path: '',
-        redirectTo: 'volunteer-actions/create',
+        redirectTo: 'problem-categories',
         pathMatch: 'full',
       },
     ],

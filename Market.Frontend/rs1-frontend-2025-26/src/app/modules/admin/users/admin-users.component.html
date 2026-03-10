@@ -1,0 +1,92 @@
+<div class="admin-page">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title"><mat-icon>people</mat-icon> Korisnici</h1>
+      <p class="page-subtitle">Upravljajte ulogama i pristupom korisnika</p>
+    </div>
+  </div>
+
+  <div *ngIf="success" class="alert alert-success">{{ success }}</div>
+  <div *ngIf="error" class="alert alert-error">{{ error }}</div>
+
+  <!-- Edit role modal -->
+  <div *ngIf="editingUser" class="modal-backdrop">
+    <div class="modal">
+      <h3>Uredi uloge — {{ editingUser.firstName }} {{ editingUser.lastName }}</h3>
+      <p class="modal-email">{{ editingUser.email }}</p>
+      <form [formGroup]="form">
+        <div class="checkbox-group">
+          <label class="checkbox-item">
+            <input type="checkbox" formControlName="isAdmin">
+            <span class="role-pill role-admin">Admin</span>
+            <span class="role-desc">Pun pristup svemu</span>
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" formControlName="isManager">
+            <span class="role-pill role-manager">Manager</span>
+            <span class="role-desc">Mijenja statuse, kreira taskove</span>
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" formControlName="isEmployee">
+            <span class="role-pill role-employee">Employee</span>
+            <span class="role-desc">Dodaje komentare, kreira taskove</span>
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" formControlName="isEnabled">
+            <span class="role-pill role-citizen">Aktivan nalog</span>
+            <span class="role-desc">Korisnik može da se prijavi</span>
+          </label>
+        </div>
+      </form>
+      <div class="modal-actions">
+        <button class="btn-secondary" (click)="cancelEdit()">Odustani</button>
+        <button class="btn-primary" (click)="saveRoles()">Spremi</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabela -->
+  <div class="table-card">
+    <div *ngIf="loading" class="loading-state">Učitavanje...</div>
+    <table *ngIf="!loading">
+      <thead>
+      <tr>
+        <th>ID</th>
+        <th>Ime i prezime</th>
+        <th>Email</th>
+        <th>Uloge</th>
+        <th>Status</th>
+        <th>Registracija</th>
+        <th>Akcije</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let u of users">
+        <td class="id-cell">{{ u.id }}</td>
+        <td><strong>{{ u.firstName }} {{ u.lastName }}</strong></td>
+        <td>{{ u.email }}</td>
+        <td>
+            <span *ngFor="let role of getRoleBadges(u)"
+                  class="role-pill" [ngClass]="getRoleClass(role)">
+              {{ role }}
+            </span>
+        </td>
+        <td>
+            <span class="badge" [class.badge-active]="u.isEnabled" [class.badge-inactive]="!u.isEnabled">
+              {{ u.isEnabled ? 'Aktivan' : 'Neaktivan' }}
+            </span>
+        </td>
+        <td>{{ u.registrationDate | date:'dd.MM.yyyy' }}</td>
+        <td class="actions-cell">
+          <button class="btn-icon" title="Uredi uloge" (click)="openEdit(u)">
+            <mat-icon>manage_accounts</mat-icon>
+          </button>
+        </td>
+      </tr>
+      <tr *ngIf="users.length === 0">
+        <td colspan="7" class="empty-state">Nema korisnika.</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

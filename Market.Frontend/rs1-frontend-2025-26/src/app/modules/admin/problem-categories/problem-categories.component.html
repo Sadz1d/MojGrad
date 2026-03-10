@@ -1,0 +1,81 @@
+<div class="admin-page">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title"><mat-icon>category</mat-icon> Kategorije problema</h1>
+      <p class="page-subtitle">Upravljajte kategorijama za prijave problema</p>
+    </div>
+    <button class="btn-primary" (click)="openCreate()">
+      <mat-icon>add</mat-icon> Nova kategorija
+    </button>
+  </div>
+
+  <div *ngIf="success" class="alert alert-success">{{ success }}</div>
+  <div *ngIf="error" class="alert alert-error">{{ error }}</div>
+
+  <!-- Forma za kreiranje/editovanje -->
+  <div *ngIf="showForm" class="form-card">
+    <h3>{{ editingId ? 'Uredi kategoriju' : 'Nova kategorija' }}</h3>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label>Naziv *</label>
+        <input type="text" class="form-control" formControlName="name" placeholder="Npr. Ceste i saobraćaj">
+        <span class="field-error" *ngIf="form.get('name')?.invalid && form.get('name')?.touched">
+          Naziv je obavezan (max 100 znakova)
+        </span>
+      </div>
+      <div class="form-group">
+        <label>Opis</label>
+        <textarea class="form-control" formControlName="description" rows="2"
+                  placeholder="Kratak opis kategorije..."></textarea>
+      </div>
+      <div class="form-actions">
+        <button type="button" class="btn-secondary" (click)="cancelForm()">Odustani</button>
+        <button type="submit" class="btn-primary" [disabled]="submitting || form.invalid">
+          {{ submitting ? 'Snima...' : (editingId ? 'Spremi izmjene' : 'Kreiraj') }}
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Tabela -->
+  <div class="table-card">
+    <div *ngIf="loading" class="loading-state">Učitavanje...</div>
+    <table *ngIf="!loading">
+      <thead>
+      <tr>
+        <th>ID</th>
+        <th>Naziv</th>
+        <th>Opis</th>
+        <th>Status</th>
+        <th>Akcije</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let cat of categories">
+        <td class="id-cell">{{ cat.id }}</td>
+        <td><strong>{{ cat.name }}</strong></td>
+        <td class="desc-cell">{{ cat.description || '—' }}</td>
+        <td>
+            <span class="badge" [class.badge-active]="cat.isEnabled" [class.badge-inactive]="!cat.isEnabled">
+              {{ cat.isEnabled ? 'Aktivna' : 'Neaktivna' }}
+            </span>
+        </td>
+        <td class="actions-cell">
+          <button class="btn-icon" title="Uredi" (click)="openEdit(cat)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button class="btn-icon" [title]="cat.isEnabled ? 'Deaktiviraj' : 'Aktiviraj'" (click)="toggleEnabled(cat)">
+            <mat-icon>{{ cat.isEnabled ? 'toggle_on' : 'toggle_off' }}</mat-icon>
+          </button>
+          <button class="btn-icon btn-danger" title="Obriši" (click)="delete(cat)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </tr>
+      <tr *ngIf="categories.length === 0">
+        <td colspan="5" class="empty-state">Nema kategorija. Kreirajte prvu.</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

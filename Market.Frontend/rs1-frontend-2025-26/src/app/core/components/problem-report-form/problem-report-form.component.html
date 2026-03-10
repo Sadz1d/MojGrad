@@ -10,7 +10,7 @@
         <img src="/assets/images/logo1.png" alt="Moj Grad Logo" class="brand-logo">
       </div>
       <h1 class="brand-name">Moj Grad</h1>
-      <p class="brand-tagline">{{ isEditMode ? 'Izmijenite prijavu problema' : 'Prijavite problem i pomozite svom gradu' }}</p>
+      <h2 class="form-title">{{ isViewMode ? 'Detalji prijave' : (isEditMode ? 'Izmijenite prijavu problema' : 'Kreirajte novu prijavu') }}</h2>
     </div>
 
     <!-- Poruka ako korisnik nije prijavljen -->
@@ -45,10 +45,12 @@
       </div>
 
       <!-- Form -->
-      <form [formGroup]="form" (ngSubmit)="onSubmit()" *ngIf="!loading" class="form-card">
+      <form [formGroup]="form"
+            (ngSubmit)="!isViewMode && onSubmit()"
+            *ngIf="!loading" class="form-card">
         <div class="form-header">
-          <div class="form-title-badge">{{ isEditMode ? 'IZMJENA PRIJAVE' : 'NOVA PRIJAVA' }}</div>
-          <h2 class="form-title">{{ isEditMode ? 'Izmijenite prijavu problema' : 'Kreirajte novu prijavu' }}</h2>
+          <div class="form-title-badge">{{ isViewMode ? 'PREGLED PRIJAVE' : (isEditMode ? 'IZMJENA PRIJAVE' : 'NOVA PRIJAVA') }}></div>
+          <h2 class="form-title">{{ isViewMode ? 'Detalji prijave' : (isEditMode ? 'Izmijenite prijavu problema' : 'Kreirajte novu prijavu') }}</h2>
           <p class="form-subtitle">
             {{ isEditMode ?
             'Ažurirajte podatke o postojećoj prijavi.' :
@@ -260,7 +262,9 @@
             Nazad na listu
           </button>
 
-          <button type="submit" class="form-button form-button-primary"
+
+
+          <button *ngIf="!isViewMode" type="submit" class="form-button form-button-primary"
                   [disabled]="submitting || form.invalid || loadingCategories || loadingStatuses">
             <mat-icon *ngIf="!submitting">{{ isEditMode ? 'save' : 'send' }}</mat-icon>
             <mat-spinner *ngIf="submitting" diameter="20"></mat-spinner>

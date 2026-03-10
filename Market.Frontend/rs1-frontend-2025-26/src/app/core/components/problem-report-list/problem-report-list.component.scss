@@ -1338,3 +1338,17 @@ $card-shadow: 0 6px 28px rgba(0, 0, 0, 0.08);
   color: #9ca3af;       // Svjetlija siva za slučajeve kad nema lokacije
   font-style: italic;
 }
+.status-select {
+  border: none;
+  border-radius: 999px;
+  padding: 0.2rem 0.65rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  outline: none;
+  background: inherit;
+
+  &.status-new      { background: #fee2e2; color: #991b1b; }
+  &.status-progress { background: #fff7ed; color: #9a3412; }
+  &.status-done     { background: #d1fae5; color: #065f46; }
+}

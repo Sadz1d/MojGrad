@@ -3,6 +3,8 @@
 // Za listu (ListProblemReportQueryDto)
 export interface ProblemReportListItem {
   id: number;
+  userId: number;
+  statusId: number;
   title: string;
   authorName: string;
   createdAt: Date;
@@ -105,11 +107,15 @@ export interface PageResult<T> {
 export function mapToFrontendModel(backendItem: any): ProblemReportListItem {
   return {
     id: backendItem.id,
+    userId: backendItem.userId,
+    statusId: backendItem.statusId,
     title: backendItem.title,
     authorName: backendItem.authorName,
     createdAt: new Date(backendItem.createdAt),
     creationDate: new Date(backendItem.createdAt), // Alias
     location: backendItem.location,
+    latitude: backendItem.latitude,
+    longitude: backendItem.longitude,
     categoryName: backendItem.categoryName,
     status: backendItem.status,
     statusName: backendItem.status, // Alias
