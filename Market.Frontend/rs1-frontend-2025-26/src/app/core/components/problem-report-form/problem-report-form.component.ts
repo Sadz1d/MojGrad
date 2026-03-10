@@ -158,8 +158,8 @@ export class ProblemReportFormComponent implements OnInit, OnDestroy, AfterViewI
       this.marker = null;
     }
 
-    const defaultLat = 43.8563;
-    const defaultLng = 18.4131;
+    const defaultLat = 43.3438;
+    const defaultLng = 17.8078;
 
     this.map = L.map('location-map').setView([defaultLat, defaultLng], 13);
 

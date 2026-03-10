@@ -766,7 +766,7 @@ export class ProblemReportListComponent implements OnInit, OnDestroy, AfterViewI
     if (typeof L === 'undefined') return;
     if (this.map) return;
 
-    this.map = L.map('reports-map').setView([43.8563, 18.4131], 12);
+    this.map = L.map('reports-map').setView([43.3438, 17.8078], 13);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap contributors'
