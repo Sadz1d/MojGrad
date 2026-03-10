@@ -1,5 +1,5 @@
 // components/problem-report-list/problem-report-list.component.ts
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { ProblemReportService } from '../../services/problem-report.service';
@@ -36,6 +36,8 @@ interface SortState {
   direction: SortDirection;
 }
 
+declare const L: any;
+
 @Component({
   selector: 'app-problem-report-list',
   templateUrl: './problem-report-list.component.html',
@@ -52,7 +54,7 @@ interface SortState {
     MatDivider
   ],
 })
-export class ProblemReportListComponent implements OnInit {
+export class ProblemReportListComponent implements OnInit, OnDestroy, AfterViewInit {
   form: FormGroup;
   reports: ProblemReportListItem[] = [];
   loading = false;
@@ -94,6 +96,13 @@ export class ProblemReportListComponent implements OnInit {
   isAuthenticated = false;
   currentUserId: number | null = null;
   private destroy$ = new Subject<void>();
+
+  // Leaflet mapa
+  private map: any = null;
+  private markerLayer: any = null;
+  get reportsWithCoords(): ProblemReportListItem[] {
+    return this.reports.filter(r => r.latitude && r.longitude);
+  }
   constructor(
     private problemReportService: ProblemReportService,
     private exportService: ExportService,
@@ -221,6 +230,8 @@ export class ProblemReportListComponent implements OnInit {
         });
 
         this.loading = false;
+        // Ažuriraj markere na mapi s novim podacima
+        this.updateMapMarkers();
       },
       error: (err) => {
         this.error = 'Greška pri učitavanju podataka: ' + err.message;
@@ -736,6 +747,102 @@ export class ProblemReportListComponent implements OnInit {
     const minutes = now.getMinutes().toString().padStart(2, '0');
 
     return `${year}-${month}-${day}_${hours}-${minutes}`;
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => this.initMap(), 0);
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+    if (this.map) {
+      this.map.remove();
+      this.map = null;
+    }
+  }
+
+  private initMap(): void {
+    if (typeof L === 'undefined') return;
+    if (this.map) return;
+
+    this.map = L.map('reports-map').setView([43.8563, 18.4131], 12);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(this.map);
+
+    this.markerLayer = L.layerGroup().addTo(this.map);
+    this.updateMapMarkers();
+  }
+
+  updateMapMarkers(): void {
+    if (!this.map || !this.markerLayer) return;
+
+    this.markerLayer.clearLayers();
+    const withCoords = this.reportsWithCoords;
+    if (withCoords.length === 0) return;
+
+    const bounds: [number, number][] = [];
+
+    withCoords.forEach(report => {
+      const color = this.getMarkerColor(report.statusName);
+      const icon = L.divIcon({
+        className: '',
+        html: `<div style="
+          width: 14px; height: 14px;
+          background: ${color};
+          border: 2px solid white;
+          border-radius: 50%;
+          box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+        "></div>`,
+        iconSize: [14, 14],
+        iconAnchor: [7, 7],
+        popupAnchor: [0, -10]
+      });
+
+      const popup = `
+        <div style="min-width:200px; font-family: Roboto, sans-serif;">
+          <strong style="font-size:14px;">${report.title}</strong><br>
+          <span style="color:#666; font-size:12px;">
+            <b>Kategorija:</b> ${report.categoryName}<br>
+            <b>Status:</b> <span style="color:${color}; font-weight:600;">${report.statusName}</span><br>
+            <b>Autor:</b> ${report.authorName}<br>
+            <b>Lokacija:</b> ${report.location || ''}
+          </span><br><br>
+          <a href="/problem-reports/${report.id}"
+             style="color:#1976d2; font-size:12px; text-decoration:none;">
+            ➜ Pogledaj detalje
+          </a>
+        </div>`;
+
+      const marker = L.marker([report.latitude, report.longitude], { icon })
+        .bindPopup(popup)
+        .addTo(this.markerLayer);
+
+      // Naslov iznad markera kao tooltip
+      marker.bindTooltip(report.title, {
+        permanent: false,
+        direction: 'top',
+        offset: [0, -8],
+        className: 'map-tooltip'
+      });
+
+      bounds.push([report.latitude!, report.longitude!]);
+    });
+
+    // Fituj mapu da prikaže sve markere
+    if (bounds.length > 0) {
+      this.map.fitBounds(bounds, { padding: [40, 40], maxZoom: 15 });
+    }
+  }
+
+  private getMarkerColor(statusName: string): string {
+    const s = (statusName || '').toLowerCase();
+    if (s.includes('nov') || s.includes('new')) return '#f44336';
+    if (s.includes('u toku') || s.includes('progress')) return '#ff9800';
+    if (s.includes('rijesen') || s.includes('re\u0161') || s.includes('done') || s.includes('zatvoren')) return '#4caf50';
+    return '#9e9e9e';
   }
 
 }

@@ -465,6 +465,24 @@
       </div>
     </div>
 
+    <!-- MAPA PRIJAVLJENIH PROBLEMA -->
+    <div class="map-section">
+      <div class="map-header">
+        <h2 class="map-title">
+          <mat-icon>map</mat-icon>
+          Karta prijavljenih problema
+        </h2>
+        <div class="map-legend">
+          <span class="legend-item legend-new"><span class="legend-dot"></span>Novo</span>
+          <span class="legend-item legend-progress"><span class="legend-dot"></span>U toku</span>
+          <span class="legend-item legend-done"><span class="legend-dot"></span>Riješeno</span>
+          <span class="legend-item legend-unknown"><span class="legend-dot"></span>Ostalo</span>
+        </div>
+        <span class="map-count">{{ reportsWithCoords.length }} / {{ reports.length }} prijava ima lokaciju</span>
+      </div>
+      <div id="reports-map" style="height: 450px; border-radius: 12px; border: 1px solid #e0e0e0;"></div>
+    </div>
+
     <!-- Footer -->
     <div class="list-footer">
 

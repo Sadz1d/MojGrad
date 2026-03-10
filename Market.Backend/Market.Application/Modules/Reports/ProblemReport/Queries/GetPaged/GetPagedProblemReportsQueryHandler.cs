@@ -105,6 +105,8 @@ namespace Market.Application.Modules.Reports.ProblemReport.Queries.GetPaged
                     AuthorName = pr.User != null ? pr.User.FirstName : "Nepoznato",
                     CreatedAt = pr.CreationDate,
                     Location = pr.Location,
+                    Latitude = pr.Latitude,
+                    Longitude = pr.Longitude,
                     CategoryName = pr.Category != null ? pr.Category.Name : "Nepoznato",
                     Status = pr.Status != null ? pr.Status.Name : "Nepoznato",
                     CommentsCount = pr.Comments.Count,

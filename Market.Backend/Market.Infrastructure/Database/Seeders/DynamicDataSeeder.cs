@@ -85,7 +85,10 @@
 
 //        Console.WriteLine("✅ Dynamic seed: demo users added.");
 //    }
-//}namespace Market.Infrastructure.Database.Seeders;
+//}
+using Market.Domain.Entities.Reports;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Market.Infrastructure.Database.Seeders;
 
@@ -94,9 +97,8 @@ public static class DynamicDataSeeder
     public static async Task SeedAsync(DatabaseContext context)
     {
         await SeedUsersAsync(context);
-        // kasnije:
-        // await SeedReportsAsync(context);
-        // await SeedRewardsAsync(context);
+        await SeedProblemStatusesAsync(context);
+        await SeedProblemCategoriesAsync(context);
     }
 
     public static async Task SeedUsersAsync(DatabaseContext context)
@@ -135,5 +137,46 @@ public static class DynamicDataSeeder
 
         context.Users.AddRange(admin, manager, employee);
         await context.SaveChangesAsync();
+    }
+
+    public static async Task SeedProblemStatusesAsync(DatabaseContext context)
+    {
+        if (await context.ProblemStatuses.AnyAsync())
+            return;
+
+        var statuses = new List<ProblemStatusEntity>
+        {
+            new() { Name = "Novo",     CreatedAtUtc = DateTime.UtcNow },
+            new() { Name = "U toku",   CreatedAtUtc = DateTime.UtcNow },
+            new() { Name = "Riješeno", CreatedAtUtc = DateTime.UtcNow },
+            new() { Name = "Odbijeno", CreatedAtUtc = DateTime.UtcNow },
+            new() { Name = "Na čekanju", CreatedAtUtc = DateTime.UtcNow },
+        };
+
+        context.ProblemStatuses.AddRange(statuses);
+        await context.SaveChangesAsync();
+        Console.WriteLine("✅ Seed: problem statusi dodani.");
+    }
+
+    public static async Task SeedProblemCategoriesAsync(DatabaseContext context)
+    {
+        if (await context.ProblemCategories.AnyAsync())
+            return;
+
+        var categories = new List<ProblemCategoryEntity>
+        {
+            new() { Name = "Ceste i saobraćaj",    Description = "Rupe, oštećenja, semafori",         IsEnabled = true, CreatedAtUtc = DateTime.UtcNow },
+            new() { Name = "Javna rasvjeta",        Description = "Pokvarene lampe, mrežni kvarovi",   IsEnabled = true, CreatedAtUtc = DateTime.UtcNow },
+            new() { Name = "Komunalni otpad",       Description = "Divlje deponije, pretrpane kante",  IsEnabled = true, CreatedAtUtc = DateTime.UtcNow },
+            new() { Name = "Parkovi i zelene površine", Description = "Neodržani parkovi, stabla",    IsEnabled = true, CreatedAtUtc = DateTime.UtcNow },
+            new() { Name = "Vodovod i kanalizacija",Description = "Kvarovi, curenja, začepljenja",     IsEnabled = true, CreatedAtUtc = DateTime.UtcNow },
+            new() { Name = "Javni prijevoz",        Description = "Autobusi, stajališta, vozni red",   IsEnabled = true, CreatedAtUtc = DateTime.UtcNow },
+            new() { Name = "Vandalizem",            Description = "Grafiti, oštećena imovina",         IsEnabled = true, CreatedAtUtc = DateTime.UtcNow },
+            new() { Name = "Ostalo",                Description = "Sve ostalo što ne spada u gore",    IsEnabled = true, CreatedAtUtc = DateTime.UtcNow },
+        };
+
+        context.ProblemCategories.AddRange(categories);
+        await context.SaveChangesAsync();
+        Console.WriteLine("✅ Seed: kategorije problema dodane.");
     }
 }

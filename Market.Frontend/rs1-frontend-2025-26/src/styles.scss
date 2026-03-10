@@ -621,21 +621,21 @@ router-outlet {
   .crud-section {
     padding: 40px 16px;
   }
-  
+
   .crud-title {
     font-size: 28px;
   }
-  
+
   .data-table {
     display: block;
     overflow-x: auto;
   }
-  
+
   .form-actions {
     flex-direction: column;
     gap: 16px;
   }
-  
+
   .form-actions button {
     width: 100%;
   }
@@ -645,10 +645,27 @@ router-outlet {
   .filter-form .row {
     flex-direction: column;
   }
-  
+
   .pagination-container {
     flex-direction: column;
     gap: 16px;
     text-align: center;
   }
 }
+
+/* Leaflet custom tooltip */
+.map-tooltip {
+  background: rgba(0,0,0,0.75) !important;
+  border: none !important;
+  border-radius: 4px !important;
+  color: white !important;
+  font-size: 12px !important;
+  font-family: Roboto, sans-serif !important;
+  padding: 4px 8px !important;
+  box-shadow: none !important;
+  white-space: nowrap;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.map-tooltip::before { display: none !important; }

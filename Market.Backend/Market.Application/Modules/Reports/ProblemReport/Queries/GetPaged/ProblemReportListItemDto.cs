@@ -9,6 +9,8 @@ namespace Market.Application.Modules.Reports.ProblemReport.Queries.GetPaged
         public DateTime CreatedAt { get; set; }
         public DateTime CreationDate => CreatedAt; // Alias za frontend
         public string? Location { get; set; }
+        public double? Latitude { get; set; }
+        public double? Longitude { get; set; }
         public string CategoryName { get; set; } = null!;
         public string Status { get; set; } = null!;
         public string StatusName => Status; // Alias za frontend
