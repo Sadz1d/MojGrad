@@ -1,0 +1,122 @@
+<!-- HERO SEKCIJA -->
+<section class="stats-hero">
+  <div class="overlay"></div>
+  <div class="hero-content">
+    <img src="/src/assets/images/logo1.png" alt="MojGrad" class="hero-logo" />
+    <span class="hero-badge">REZULTATI ANKETE</span>
+    <h1 *ngIf="stats">{{ stats.question }}</h1>
+    <h1 *ngIf="!stats && !loading">Rezultati ankete</h1>
+  </div>
+</section>
+
+<!-- LOADING -->
+<div class="loading-wrap" *ngIf="loading">
+  <div class="spinner"></div>
+  <p>Učitavanje rezultata...</p>
+</div>
+
+<!-- ERROR -->
+<div class="error-wrap" *ngIf="error && !loading">
+  <span class="error-icon">⚠️</span>
+  <p>Greška pri učitavanju podataka.</p>
+  <button class="back-btn" (click)="goBack()">← Nazad na ankete</button>
+</div>
+
+<!-- SADRŽAJ -->
+<div class="stats-wrapper" *ngIf="stats && !loading">
+
+  <!-- INFO KARTICE -->
+  <div class="info-row">
+    <div class="info-card">
+      <div class="info-icon">🗳️</div>
+      <div class="info-value">{{ stats.totalResponses }}</div>
+      <div class="info-label">Ukupno odgovora</div>
+    </div>
+    <div class="info-card">
+      <div class="info-icon">📅</div>
+      <div class="info-value">{{ stats.startDate | date:'dd.MM.yyyy' }}</div>
+      <div class="info-label">Datum početka</div>
+    </div>
+    <div class="info-card">
+      <div class="info-icon">🏁</div>
+      <div class="info-value">{{ stats.endDate | date:'dd.MM.yyyy' }}</div>
+      <div class="info-label">Datum završetka</div>
+    </div>
+    <div class="info-card">
+      <div class="info-icon">{{ stats.isActive ? '🟢' : '🔴' }}</div>
+      <div class="info-value">{{ stats.isActive ? 'Aktivna' : 'Završena' }}</div>
+      <div class="info-label">Status</div>
+    </div>
+  </div>
+
+  <!-- GRAFIKONI -->
+  <div class="charts-grid">
+
+    <!-- BAR CHART -->
+    <div class="chart-card">
+      <div class="chart-header">
+        <h3>Raspodjela odgovora</h3>
+        <p>Broj odgovora po kategoriji</p>
+      </div>
+      <div class="chart-area">
+        <canvas #barCanvas></canvas>
+      </div>
+    </div>
+
+    <!-- DOUGHNUT CHART -->
+    <div class="chart-card">
+      <div class="chart-header">
+        <h3>Udio odgovora</h3>
+        <p>Procentualni prikaz</p>
+      </div>
+      <div class="chart-area doughnut-area">
+        <canvas #doughnutCanvas></canvas>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- TABELA REZULTATA -->
+  <div class="results-table-card">
+    <div class="table-header">
+      <h3>Detaljan pregled</h3>
+      <p>Pregled svakog odgovora s postotkom</p>
+    </div>
+    <table class="results-table">
+      <thead>
+        <tr>
+          <th>Odgovor</th>
+          <th>Broj glasova</th>
+          <th>Udio</th>
+          <th>Vizualni prikaz</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let opt of stats.options; let i = index">
+          <td>
+            <span class="dot" [style.background]="getDotColor(i)"></span>
+            {{ opt.label }}
+          </td>
+          <td><strong>{{ opt.count }}</strong></td>
+          <td><strong>{{ opt.percentage }}%</strong></td>
+          <td>
+            <div class="progress-bar-wrap">
+              <div class="progress-bar-fill"
+                   [style.width.%]="opt.percentage"
+                   [style.background]="getDotColor(i)">
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- NAZAD BUTTON -->
+  <div class="actions-row">
+    <button class="back-btn" (click)="goBack()">
+      ← Nazad na ankete
+    </button>
+  </div>
+
+</div>

@@ -2,16 +2,20 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SurveysRoutingModule } from './surveys-routing.module';
 import { SurveyListComponent } from './survey-list/survey-list.component';
+import { SurveyStatsComponent } from './survey-stats/survey-stats.component';
 import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
   declarations: [
-    SurveyListComponent
+    SurveyListComponent,
+    SurveyStatsComponent
   ],
   imports: [
     CommonModule,
     SurveysRoutingModule,
-    FormsModule
+    FormsModule,
+    RouterModule
   ]
 })
 export class SurveysModule {}

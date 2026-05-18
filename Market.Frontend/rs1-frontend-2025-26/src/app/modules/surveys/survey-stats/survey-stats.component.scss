@@ -1,0 +1,326 @@
+/* ============================================
+   SURVEY STATS – Lijepi CSS u stilu projekta
+   ============================================ */
+
+/* ── HERO ── */
+.stats-hero {
+  position: relative;
+  height: 300px;
+  background: url('/src/assets/images/pocetna_slika.png') center / cover no-repeat;
+  border-radius: 0 0 40px 40px;
+  overflow: hidden;
+  margin-bottom: 0;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(13, 71, 161, 0.62);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 20px;
+}
+
+.hero-logo {
+  width: 64px;
+  margin-bottom: 12px;
+}
+
+.hero-badge {
+  background: #fff;
+  color: #1e88e5;
+  padding: 5px 16px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  margin-bottom: 12px;
+}
+
+.hero-content h1 {
+  font-size: 26px;
+  font-weight: 700;
+  margin: 0;
+  max-width: 700px;
+  line-height: 1.3;
+}
+
+/* ── LOADING ── */
+.loading-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 80px 20px;
+  color: #546e7a;
+  gap: 16px;
+}
+
+.spinner {
+  width: 46px;
+  height: 46px;
+  border: 4px solid #e3f2fd;
+  border-top-color: #1e88e5;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── ERROR ── */
+.error-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 80px 20px;
+  gap: 12px;
+  color: #c62828;
+}
+
+.error-icon { font-size: 40px; }
+
+/* ── WRAPPER ── */
+.stats-wrapper {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 20px 60px;
+}
+
+/* ── INFO ROW ── */
+.info-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+  margin-top: -36px;
+  margin-bottom: 32px;
+  position: relative;
+  z-index: 5;
+}
+
+.info-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 22px 18px;
+  text-align: center;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.13);
+  transition: transform 0.2s;
+
+  &:hover {
+    transform: translateY(-4px);
+  }
+}
+
+.info-icon {
+  font-size: 28px;
+  margin-bottom: 8px;
+}
+
+.info-value {
+  font-size: 22px;
+  font-weight: 800;
+  color: #0d47a1;
+  margin-bottom: 4px;
+}
+
+.info-label {
+  font-size: 13px;
+  color: #78909c;
+  font-weight: 500;
+}
+
+/* ── GRAFIKONI ── */
+.charts-grid {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 22px;
+  margin-bottom: 24px;
+}
+
+.chart-card {
+  background: #fff;
+  border-radius: 24px;
+  padding: 28px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.10);
+}
+
+.chart-header {
+  margin-bottom: 20px;
+
+  h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #0d47a1;
+    margin: 0 0 4px;
+  }
+
+  p {
+    font-size: 13px;
+    color: #78909c;
+    margin: 0;
+  }
+}
+
+.chart-area {
+  height: 280px;
+  position: relative;
+
+  canvas {
+    width: 100% !important;
+    height: 100% !important;
+  }
+}
+
+.doughnut-area {
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── TABELA ── */
+.results-table-card {
+  background: #fff;
+  border-radius: 24px;
+  padding: 28px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.10);
+  margin-bottom: 28px;
+}
+
+.table-header {
+  margin-bottom: 20px;
+
+  h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #0d47a1;
+    margin: 0 0 4px;
+  }
+
+  p {
+    font-size: 13px;
+    color: #78909c;
+    margin: 0;
+  }
+}
+
+.results-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  thead tr {
+    background: linear-gradient(135deg, #e3f2fd, #f5f9ff);
+    border-radius: 12px;
+  }
+
+  th {
+    padding: 14px 18px;
+    text-align: left;
+    font-size: 13px;
+    font-weight: 700;
+    color: #1565c0;
+    border-bottom: 2px solid #e3f2fd;
+  }
+
+  td {
+    padding: 14px 18px;
+    font-size: 15px;
+    color: #1f2937;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: middle;
+  }
+
+  tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  tbody tr:hover td {
+    background: #f5f9ff;
+  }
+}
+
+.dot {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 10px;
+  vertical-align: middle;
+}
+
+/* PROGRESS BAR */
+.progress-bar-wrap {
+  height: 10px;
+  background: #e3f2fd;
+  border-radius: 999px;
+  overflow: hidden;
+  min-width: 120px;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.8s ease;
+}
+
+/* ── ACTIONS ── */
+.actions-row {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.back-btn {
+  height: 46px;
+  padding: 0 28px;
+  border-radius: 24px;
+  border: 2px solid #1e88e5;
+  background: transparent;
+  color: #1e88e5;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: #1e88e5;
+    color: #fff;
+    transform: translateY(-2px);
+  }
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  .info-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .charts-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .info-row {
+    grid-template-columns: 1fr 1fr;
+    margin-top: -20px;
+  }
+
+  .hero-content h1 {
+    font-size: 20px;
+  }
+
+  .results-table th:last-child,
+  .results-table td:last-child {
+    display: none;
+  }
+}
