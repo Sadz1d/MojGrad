@@ -1,11 +1,14 @@
-using Market.Application.Modules.Volunteering.Commands.Status.Disable;
+﻿using Market.Application.Modules.Volunteering.Commands.Status.Disable;
 using Market.Application.Modules.Volunteering.Commands.Status.Enable;
 using Market.Application.Modules.Volunteering.VolunteerActions.Commands.Create;
 using Market.Application.Modules.Volunteering.VolunteerActions.Commands.Delete;
 using Market.Application.Modules.Volunteering.VolunteerActions.Commands.Update;
 using Market.Application.Modules.Volunteering.VolunteerActions.Queries.GetById;
 using Market.Application.Modules.Volunteering.VolunteerActions.Queries.List;
+using Market.Application.Modules.Volunteering.ActionParticipants.Commands.Create;
+using Microsoft.AspNetCore.Authorization;
 using MediatR;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Market.API.Controllers;
@@ -27,6 +30,30 @@ public sealed class VolunteerActionsController : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<GetVolunteerActionByIdQueryDto> GetById(int id, CancellationToken ct)
     => await _sender.Send(new GetVolunteerActionByIdQuery { Id = id }, ct);
+
+    [HttpPost("{id:int}/join")]
+    [Authorize]
+    public async Task<int> Join(int id, CancellationToken ct)
+    {
+        var userIdClaim =
+            User.FindFirst("UserId")?.Value
+            ?? User.FindFirst("userId")?.Value
+            ?? User.FindFirst("id")?.Value
+            ?? User.FindFirst("nameid")?.Value
+            ?? User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+        if (string.IsNullOrWhiteSpace(userIdClaim))
+            throw new UnauthorizedAccessException("User ID nije pronađen u tokenu.");
+
+        if (!int.TryParse(userIdClaim, out var userId))
+            throw new UnauthorizedAccessException($"User ID iz tokena nije broj: {userIdClaim}");
+
+        return await _sender.Send(new CreateActionParticipantCommand
+        {
+            ActionId = id,
+            UserId = userId
+        }, ct);
+    }
 
     [HttpPost]
     public async Task<int> Create([FromBody] CreateVolunteerActionCommand command, CancellationToken ct)

@@ -55,4 +55,12 @@ export class SurveyService {
     return this.http.get<any>(`${this.apiUrl}/${id}`);
   }
 
+  createResponse(payload: {
+    surveyId: number;
+    userId: number;
+    responseText: string;
+  }) {
+    return this.http.post(`${environment.apiUrl}/survey-responses`, payload);
+  }
+
 }

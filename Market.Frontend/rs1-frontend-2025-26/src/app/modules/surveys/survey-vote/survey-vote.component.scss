@@ -1,0 +1,300 @@
+/* ── HERO ── */
+.vote-hero {
+  position: relative;
+  height: 280px;
+  background: url('/assets/images/pocetna_slika.png') center / cover no-repeat;
+  border-radius: 0 0 40px 40px;
+  overflow: hidden;
+  margin-bottom: 0;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(13, 71, 161, 0.60);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 20px;
+}
+
+.hero-logo {
+  width: 60px;
+  margin-bottom: 12px;
+}
+
+.hero-badge {
+  background: #fff;
+  color: #1e88e5;
+  padding: 5px 16px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  margin-bottom: 12px;
+}
+
+.hero-content h1 {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0;
+  max-width: 680px;
+  line-height: 1.4;
+}
+
+/* ── CENTER WRAP (loading/error) ── */
+.center-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 80px 20px;
+  gap: 16px;
+  color: #546e7a;
+
+  &.error { color: #c62828; }
+}
+
+.spinner {
+  width: 44px;
+  height: 44px;
+  border: 4px solid #e3f2fd;
+  border-top-color: #1e88e5;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── SUCCESS ── */
+.success-wrap {
+  display: flex;
+  justify-content: center;
+  padding: 60px 20px;
+}
+
+.success-card {
+  background: #fff;
+  border-radius: 28px;
+  padding: 56px 48px;
+  text-align: center;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12);
+  max-width: 420px;
+  width: 100%;
+  animation: popIn 0.4s ease;
+}
+
+@keyframes popIn {
+  from { transform: scale(0.8); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+
+.success-icon {
+  font-size: 60px;
+  margin-bottom: 16px;
+}
+
+.success-card h2 {
+  font-size: 24px;
+  font-weight: 800;
+  color: #0d47a1;
+  margin: 0 0 10px;
+}
+
+.success-card p {
+  color: #546e7a;
+  margin: 0 0 6px;
+}
+
+.redirect-note {
+  font-size: 13px;
+  color: #90a4ae !important;
+  margin-top: 16px !important;
+}
+
+.success-spinner {
+  width: 28px;
+  height: 28px;
+  border: 3px solid #e3f2fd;
+  border-top-color: #1e88e5;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 16px auto 0;
+}
+
+/* ── VOTE WRAPPER ── */
+.vote-wrapper {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 40px 20px 60px;
+}
+
+.vote-card {
+  background: #fff;
+  border-radius: 28px;
+  padding: 40px 36px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.11);
+  margin-bottom: 20px;
+}
+
+.card-header {
+  margin-bottom: 32px;
+  text-align: center;
+
+  h2 {
+    font-size: 20px;
+    font-weight: 800;
+    color: #0d47a1;
+    margin: 0 0 8px;
+  }
+
+  p {
+    color: #78909c;
+    font-size: 14px;
+    margin: 0;
+  }
+}
+
+/* ── OPCIJE ── */
+.options-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.option-btn {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  padding: 18px 22px;
+  border-radius: 18px;
+  border: 2px solid #e3f2fd;
+  background: #f8fbff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  text-align: left;
+
+  &:hover {
+    border-color: var(--opt-color, #1e88e5);
+    background: #f0f7ff;
+    transform: translateX(4px);
+  }
+
+  &.selected {
+    border-color: var(--opt-color, #1e88e5);
+    background: linear-gradient(135deg, #e3f2fd, #f0f7ff);
+    box-shadow: 0 6px 18px rgba(30, 136, 229, 0.18);
+    transform: translateX(4px);
+  }
+}
+
+.opt-icon {
+  font-size: 28px;
+  line-height: 1;
+}
+
+.opt-label {
+  font-size: 17px;
+  font-weight: 600;
+  color: #1e3a5f;
+  flex: 1;
+}
+
+.check-mark {
+  font-size: 18px;
+  font-weight: 800;
+  color: #1e88e5;
+  animation: popIn 0.2s ease;
+}
+
+/* ── SELECTED INFO ── */
+.selected-info {
+  background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+  border-radius: 14px;
+  padding: 14px 20px;
+  color: #0d47a1;
+  font-size: 15px;
+  margin-bottom: 24px;
+  text-align: center;
+
+  strong { font-weight: 800; }
+}
+
+/* ── AKCIJE ── */
+.actions-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.back-btn {
+  height: 46px;
+  padding: 0 24px;
+  border-radius: 24px;
+  border: 2px solid #1e88e5;
+  background: transparent;
+  color: #1e88e5;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: #1e88e5;
+    color: #fff;
+  }
+}
+
+.submit-btn {
+  height: 50px;
+  padding: 0 36px;
+  border-radius: 28px;
+  border: none;
+  background: linear-gradient(135deg, #1e88e5, #1565c0);
+  color: #fff;
+  font-weight: 800;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(30, 136, 229, 0.40);
+  transition: all 0.2s ease;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(30, 136, 229, 0.50);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+}
+
+/* ── INFO BAR ── */
+.info-bar {
+  display: flex;
+  justify-content: center;
+  gap: 28px;
+  color: #78909c;
+  font-size: 14px;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 600px) {
+  .vote-card { padding: 28px 20px; }
+  .hero-content h1 { font-size: 19px; }
+  .actions-row { flex-direction: column; }
+  .submit-btn, .back-btn { width: 100%; }
+}

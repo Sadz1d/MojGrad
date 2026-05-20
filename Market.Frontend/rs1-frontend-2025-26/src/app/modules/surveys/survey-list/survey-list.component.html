@@ -1,145 +1,88 @@
 <!-- HERO SEKCIJA -->
 <section class="survey-hero">
   <div class="overlay"></div>
-
   <div class="hero-content">
-    <img
-      src="/assets/images/logo1.png"
-      alt="MojGrad"
-      class="hero-logo"
-    />
-
+    <img src="/assets/images/logo1.png" alt="MojGrad" class="hero-logo" />
     <span class="hero-badge">ANKETE</span>
-
     <h1>Ankete za građane</h1>
     <p>Vaše mišljenje pomaže unapređenju grada Mostara.</p>
   </div>
 </section>
+
 <!-- FILTERI -->
 <div class="survey-filters">
-
   <input
     type="text"
     placeholder="Pretraži pitanje (min. 3 znaka)"
     [(ngModel)]="filters.search"
   />
-
-  <input
-    type="date"
-    [(ngModel)]="filters.activeOn"
-    title="Aktivna na datum"
-  />
-
+  <input type="date" [(ngModel)]="filters.activeOn" title="Aktivna na datum" />
   <label class="checkbox">
-    <input
-      type="checkbox"
-      [(ngModel)]="filters.onlyActive"
-      (change)="onOnlyActiveChange()"
-    />
-
+    <input type="checkbox" [(ngModel)]="filters.onlyActive" (change)="onOnlyActiveChange()" />
     Samo aktivne
   </label>
-
-  <input
-    type="date"
-    [(ngModel)]="filters.fromDate"
-    title="Od datuma"
-  />
-
-  <input
-    type="date"
-    [(ngModel)]="filters.toDate"
-    title="Do datuma"
-  />
-
-  <button (click)="load()">
-    Filtriraj
-  </button>
-
-
+  <input type="date" [(ngModel)]="filters.fromDate" title="Od datuma" />
+  <input type="date" [(ngModel)]="filters.toDate" title="Do datuma" />
+  <button (click)="load()">Filtriraj</button>
 </div>
 
 <!-- LISTA ANKETA -->
 <section class="survey-wrapper">
 
-  <p class="loading" *ngIf="loading">
-    Učitavanje anketa...
-  </p>
+  <p class="loading" *ngIf="loading">Učitavanje anketa...</p>
 
   <div class="survey-grid" *ngIf="!loading">
 
     <div class="survey-card" *ngFor="let s of surveys">
 
-      <!-- LEFT -->
+      <!-- IKONICA -->
       <div class="card-left">
         <div class="icon">🗳️</div>
       </div>
 
-      <!-- BODY -->
+      <!-- TIJELO -->
       <div class="card-body">
         <h3>{{ s.question }}</h3>
-        <span
-          class="status"
-          [class.active]="s.isActive"
-          [class.inactive]="!s.isActive">
-  {{ s.isActive ? 'Aktivna' : 'Neaktivna' }}
-</span>
-
-
+        <span class="status" [class.active]="s.isActive" [class.inactive]="!s.isActive">
+          {{ s.isActive ? 'Aktivna' : 'Neaktivna' }}
+        </span>
         <div class="meta">
           <span>📅 Aktivna do {{ s.endDate | date:'dd.MM.yyyy' }}</span>
           <span>👥 {{ s.responsesCount }} odgovora</span>
         </div>
       </div>
-      <!-- ✅ OVDJE DODAJEŠ -->
-      <div class="admin-actions">
-        <button
-          mat-stroked-button
-          color="primary"
-          [routerLink]="['/admin/surveys/edit', s.id]"
-        >
-          Uredi
-        </button>
 
-        <button
-          mat-stroked-button
-          color="warn"
-          (click)="delete(s.id)"
-        >
-          Obriši
-        </button>
-      </div>
-      <!-- ✅ KRAJ -->
-      <!-- RIGHT -->
+      <!-- DESNA STRANA – DUGMAD -->
       <div class="card-right">
 
-        <div class="admin-actions">
-          <button
-            class="icon-btn edit"
-            [routerLink]="['/admin/surveys/edit', s.id]"
-            title="Uredi anketu"
-          >
+        <!-- SAMO ADMIN vidi Uredi/Obriši -->
+        <ng-container *ngIf="auth.isAdmin()">
+          <button class="icon-btn edit" [routerLink]="['/admin/surveys/edit', s.id]" title="Uredi anketu">
             ✏️
           </button>
-
-          <button
-            class="icon-btn delete"
-            (click)="delete(s.id)"
-            title="Obriši anketu"
-          >
+          <button class="icon-btn delete" (click)="delete(s.id)" title="Obriši anketu">
             🗑
           </button>
-        </div>
+          <a class="results-btn" [routerLink]="['/surveys', s.id, 'stats']">
+            📊 Rezultati
+          </a>
+        </ng-container>
 
-        <a class="results-btn" [routerLink]="['/surveys', s.id, 'stats']">
-          📊 Rezultati
-        </a>
-        <button class="start-btn">
-          Započni
-        </button>
+        <!-- SAMO GRAĐANIN vidi Započni (samo ako je anketa aktivna) -->
+        <ng-container *ngIf="!auth.isAdmin()">
+          <a class="results-btn" [routerLink]="['/surveys', s.id, 'stats']">
+            📊 Rezultati
+          </a>
+          <a
+            class="start-btn"
+            [class.disabled]="!s.isActive"
+            [routerLink]="s.isActive ? ['/surveys', s.id, 'vote'] : null"
+            [title]="s.isActive ? 'Glasaj' : 'Anketa nije aktivna'">
+            🗳️ {{ s.isActive ? 'Započni' : 'Zatvorena' }}
+          </a>
+        </ng-container>
 
       </div>
-
 
     </div>
 

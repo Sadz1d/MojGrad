@@ -1,0 +1,165 @@
+<!-- HERO -->
+<section class="vol-hero">
+  <div class="overlay"></div>
+  <div class="hero-content">
+    <img src="/assets/images/logo1.png" alt="MojGrad" class="hero-logo" />
+    <span class="hero-badge">VOLONTIRANJE</span>
+    <h1>Volonterske akcije</h1>
+    <p>Pridružite se i pomozite svom gradu.</p>
+  </div>
+</section>
+
+<!-- FILTERI -->
+<div class="filter-box">
+  <input
+    type="text"
+    placeholder="Pretraži akcije..."
+    [(ngModel)]="searchText"
+    (input)="applyFilters()"
+  />
+
+  <input
+    type="text"
+    placeholder="Lokacija"
+    [(ngModel)]="locationText"
+    (input)="applyFilters()"
+  />
+
+  <input
+    type="date"
+    [(ngModel)]="dateFrom"
+    (change)="applyFilters()"
+  />
+
+  <input
+    type="date"
+    [(ngModel)]="dateTo"
+    (change)="applyFilters()"
+  />
+
+  <label>
+    <input
+      type="checkbox"
+      [(ngModel)]="onlyAvailable"
+      (change)="applyFilters()"
+    />
+    Samo dostupne akcije
+  </label>
+
+  <button type="button" (click)="clearFilters()">
+    Očisti filtere
+  </button>
+</div>
+
+<!-- TOOLBAR -->
+<div class="toolbar">
+  <div class="toolbar-left">
+    <span class="total-label">
+      {{ loading ? 'Učitavanje...' : filteredActions.length + ' akcija' }}
+    </span>
+  </div>
+
+  <!-- EXPORT vidi samo admin -->
+  <div class="export-group" *ngIf="auth.isAdmin()">
+    <span class="export-label">Izvezi:</span>
+
+    <button class="export-btn csv" (click)="exportCSV()" title="Izvezi kao CSV">
+      📄 CSV
+    </button>
+
+    <button class="export-btn excel" (click)="exportExcel()" title="Izvezi kao Excel">
+      📊 Excel
+    </button>
+
+    <button class="export-btn json" (click)="exportJSON()" title="Izvezi kao JSON">
+      🔧 JSON
+    </button>
+  </div>
+</div>
+
+<!-- LOADING -->
+<div class="center-wrap" *ngIf="loading">
+  <div class="spinner"></div>
+  <p>Učitavanje akcija...</p>
+</div>
+
+<!-- PRAZNA LISTA -->
+<div class="center-wrap" *ngIf="!loading && filteredActions.length === 0">
+  <span style="font-size:48px">🌱</span>
+  <p>Nema dostupnih akcija trenutno.</p>
+</div>
+
+<!-- LISTA -->
+<div class="vol-grid" *ngIf="!loading && filteredActions.length > 0">
+
+  <div class="vol-card" *ngFor="let a of filteredActions">
+
+    <div class="card-header">
+      <div class="card-icon">🤝</div>
+
+      <div class="card-title-wrap">
+        <h3>{{ a.name }}</h3>
+        <span class="location">📍 {{ a.location }}</span>
+      </div>
+
+      <span class="date-badge">{{ a.eventDate | date:'dd.MM.yyyy' }}</span>
+    </div>
+
+    <p class="description">{{ a.description }}</p>
+
+    <div class="capacity-section">
+      <div class="capacity-info">
+        <span>👥 {{ a.participantsCount }} / {{ a.maxParticipants }} volontera</span>
+
+        <span class="free-slots" [class.full]="a.freeSlots === 0">
+          {{ a.freeSlots === 0 ? '🔴 Popunjeno' : '🟢 ' + a.freeSlots + ' slobodnih' }}
+        </span>
+      </div>
+
+      <div class="progress-wrap">
+        <div
+          class="progress-fill"
+          [style.width.%]="freePercent(a)"
+          [class.almost-full]="freePercent(a) >= 80">
+        </div>
+      </div>
+    </div>
+
+    <div class="card-footer">
+
+      <!-- Samo admin vidi uredi -->
+      <button
+        *ngIf="auth.isAdmin()"
+        class="btn-edit"
+        [routerLink]="['/admin/volunteer-actions/edit', a.id]">
+        ✏️ Uredi
+      </button>
+
+      <!-- Obični prijavljen korisnik vidi prijavu -->
+      <button
+        *ngIf="auth.isLoggedIn() && !auth.isAdmin()"
+        class="btn-join"
+        [class.joined]="a.isUserJoined"
+        [class.full]="a.freeSlots === 0 && !a.isUserJoined"
+        [disabled]="a.isUserJoined || a.freeSlots === 0 || joiningId === a.id"
+        (click)="join(a)">
+
+        <span *ngIf="joiningId === a.id">⏳ Prijava...</span>
+        <span *ngIf="a.isUserJoined && joiningId !== a.id">✅ Prijavljen/a</span>
+        <span *ngIf="!a.isUserJoined && a.freeSlots === 0 && joiningId !== a.id">🔴 Popunjeno</span>
+        <span *ngIf="!a.isUserJoined && a.freeSlots > 0 && joiningId !== a.id">🙋 Prijavi se</span>
+      </button>
+
+      <p *ngIf="auth.isAdmin()" class="admin-note">
+        Admin uređuje akcije.
+      </p>
+
+      <p *ngIf="!auth.isLoggedIn()" class="admin-note">
+        Prijavite se da biste se prijavili na akciju.
+      </p>
+
+    </div>
+
+  </div>
+
+</div>

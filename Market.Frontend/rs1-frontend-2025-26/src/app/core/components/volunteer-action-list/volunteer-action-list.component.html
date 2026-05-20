@@ -1,21 +1,14 @@
 <div class="volunteer-actions-page">
 
-  <!-- HEADER -->
   <!-- HERO HEADER -->
   <div class="hero-section">
-
     <img src="assets/images/logo1.png" class="hero-logo" alt="Moj Grad logo" />
-
     <span class="title-badge">VOLONTIRANJE</span>
-
     <h2 class="section-title">Volonterske akcije</h2>
-
     <p class="section-subtitle">
       Prijavite se i pomozite svojoj zajednici kroz aktivne volonterske akcije.
     </p>
-
   </div>
-
 
   <!-- LOADING -->
   <div *ngIf="loading" class="loading">
@@ -29,8 +22,6 @@
 
   <!-- FILTERI -->
   <div class="filters-bar">
-
-    <!-- SEARCH -->
     <input
       type="text"
       placeholder="Pretraži akcije..."
@@ -43,12 +34,8 @@
       placeholder="Lokacija"
       [(ngModel)]="filterLocation"
       (ngModelChange)="applyFilters()" />
-
-
     <input type="date" [(ngModel)]="dateFrom" (change)="applyFilters()" />
     <input type="date" [(ngModel)]="dateTo" (change)="applyFilters()" />
-
-    <!-- SAMO DOSTUPNE -->
     <label class="checkbox">
       <input
         type="checkbox"
@@ -57,18 +44,17 @@
       />
       Samo dostupne akcije
     </label>
-
-    <!-- SORT -->
-    <button
-      mat-stroked-button
-      (click)="sortByDateAsc = !sortByDateAsc; applyFilters()"
-    >
+    <button mat-stroked-button (click)="sortByDateAsc = !sortByDateAsc; applyFilters()">
       Sortiraj po datumu {{ sortByDateAsc ? '⬆️' : '⬇️' }}
     </button>
+  </div>
 
-
-
-
+  <!-- EXPORT DUGMAD – SAMO ADMIN -->
+  <div class="export-bar" *ngIf="isAdmin">
+    <span class="export-label">Izvezi listu:</span>
+    <button class="export-btn csv" (click)="exportCSV()">📄 CSV</button>
+    <button class="export-btn excel" (click)="exportExcel()">📊 Excel</button>
+    <button class="export-btn json" (click)="exportJSON()">🔧 JSON</button>
   </div>
 
   <!-- LISTA AKCIJA -->
@@ -78,20 +64,14 @@
 
       <!-- HEADER -->
       <div class="action-header">
-
         <h3>{{ action.name }}</h3>
-        <span class="date">
-          📅 {{ action.eventDate | date:'dd.MM.yyyy' }}
-        </span>
+        <span class="date">📅 {{ action.eventDate | date:'dd.MM.yyyy' }}</span>
         <span class="status available" *ngIf="action.freeSlots > 0">AKTIVNA</span>
         <span class="status full" *ngIf="action.freeSlots === 0">POPUNJENA</span>
-
       </div>
 
       <!-- BODY -->
-      <p class="description">
-        {{ action.description }}
-      </p>
+      <p class="description">{{ action.description }}</p>
 
       <div class="meta">
         <span>📍 {{ action.location }}</span>
@@ -100,51 +80,33 @@
 
       <!-- FOOTER -->
       <div class="action-footer">
-  <span class="slots" [class.full]="action.freeSlots === 0">
-    Slobodna mjesta: {{ action.freeSlots }}
-  </span>
+        <span class="slots" [class.full]="action.freeSlots === 0">
+          Slobodna mjesta: {{ action.freeSlots }}
+        </span>
 
-        <!-- USER BUTTON -->
         <button
           mat-raised-button
           color="primary"
           (click)="joinAction(action)"
-          [disabled]="
-      action.freeSlots === 0 ||
-      joiningActionId === action.id ||
-      action.isUserJoined
-    "
-        >
+          [disabled]="action.freeSlots === 0 || joiningActionId === action.id || action.isUserJoined">
           <span *ngIf="action.isUserJoined">✔️ Prijavljeni ste</span>
-          <span *ngIf="!action.isUserJoined && joiningActionId !== action.id">
-      Prijavi se
-    </span>
-          <span *ngIf="joiningActionId === action.id">
-      ⏳ Prijava...
-    </span>
+          <span *ngIf="!action.isUserJoined && joiningActionId !== action.id">Prijavi se</span>
+          <span *ngIf="joiningActionId === action.id">⏳ Prijava...</span>
         </button>
       </div>
 
-      <!-- ✅ ADMIN ACTIONS – IDE ODMAH ISPOD FOOTERA -->
+      <!-- ADMIN ACTIONS -->
       <div *ngIf="isAdmin" class="admin-actions">
-        <button
-          mat-stroked-button
-          color="primary"
-          (click)="editAction(action)"
-        >
+        <button mat-stroked-button color="primary" (click)="editAction(action)">
           ✏️ Uredi
         </button>
-
-        <button
-          mat-stroked-button
-          color="warn"
-          (click)="deleteAction(action.id)"
-        >
+        <button mat-stroked-button color="warn" (click)="deleteAction(action.id)">
           🗑 Obriši
         </button>
       </div>
 
     </div>
+  </div>
 
   <!-- PRAZNO STANJE -->
   <div *ngIf="!loading && !filteredActions.length" class="empty">
@@ -154,12 +116,5 @@
   <button class="back-home" (click)="goHome()">
     🏠 Početna
   </button>
-
-</div>
-
-
-
-
-
 
 </div>

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { SurveyService } from '../../../core/services/survey.service';
 import { SurveyListItem } from '../../../core/models/survey.model';
+import { AuthFacadeService } from '../../../core/services/auth/auth-facade.service';
 
 @Component({
   selector: 'app-survey-list',
@@ -21,19 +22,17 @@ export class SurveyListComponent implements OnInit {
     toDate: ''
   };
 
-  constructor(private surveyService: SurveyService) {}
+  constructor(
+    private surveyService: SurveyService,
+    public auth: AuthFacadeService
+  ) {}
 
   ngOnInit(): void {
     this.load();
-
   }
 
   load(): void {
-
-    // ✅ FE VALIDACIJA
-    if (this.filters.search && this.filters.search.length < 3) {
-      return;
-    }
+    if (this.filters.search && this.filters.search.length < 3) return;
 
     this.loading = true;
 
@@ -54,19 +53,13 @@ export class SurveyListComponent implements OnInit {
     }
     this.load();
   }
+
   delete(id: number): void {
-    if (!confirm('Jeste li sigurni da želite obrisati anketu?')) {
-      return;
-    }
+    if (!confirm('Jeste li sigurni da želite obrisati anketu?')) return;
 
     this.surveyService.delete(id).subscribe({
-      next: () => {
-        this.load(); // refresh liste
-      },
-      error: () => {
-        alert('Greška prilikom brisanja ankete');
-      }
+      next: () => this.load(),
+      error: () => alert('Greška prilikom brisanja ankete')
     });
   }
-
 }

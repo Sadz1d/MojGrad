@@ -1,0 +1,87 @@
+<!-- HERO -->
+<section class="vote-hero">
+  <div class="overlay"></div>
+  <div class="hero-content">
+    <img src="/assets/images/logo1.png" alt="MojGrad" class="hero-logo" />
+    <span class="hero-badge">GLASANJE</span>
+    <h1 *ngIf="survey">{{ survey.question }}</h1>
+    <h1 *ngIf="!survey && !loading">Anketa</h1>
+  </div>
+</section>
+
+<!-- LOADING -->
+<div class="center-wrap" *ngIf="loading">
+  <div class="spinner"></div>
+  <p>Učitavanje ankete...</p>
+</div>
+
+<!-- ERROR --><div class="center-wrap error" *ngIf="error && !loading">
+  <span style="font-size:40px">🔒</span>
+  <p>{{ errorMessage || 'Greška pri učitavanju ankete.' }}</p>
+  <button class="back-btn" (click)="goBack()">← Nazad</button>
+</div>
+
+<!-- USPJEŠNO GLASANJE -->
+<div class="success-wrap" *ngIf="submitted">
+  <div class="success-card">
+    <div class="success-icon">✅</div>
+    <h2>Hvala na glasanju!</h2>
+    <p>Vaš odgovor je uspješno zabilježen.</p>
+    <p class="redirect-note">Preusmjeravamo vas na rezultate...</p>
+    <div class="success-spinner"></div>
+  </div>
+</div>
+
+<!-- FORMA ZA GLASANJE -->
+<div class="vote-wrapper" *ngIf="survey && !loading && !submitted">
+
+  <div class="vote-card">
+
+    <div class="card-header">
+      <h2>Odaberite vaš odgovor</h2>
+      <p>Vaše mišljenje je važno za unapređenje grada.</p>
+    </div>
+
+    <!-- OPCIJE -->
+    <div class="options-grid">
+      <button
+        *ngFor="let opt of options"
+        class="option-btn"
+        [class.selected]="selectedOption === opt.value"
+        [style.--opt-color]="opt.color"
+        (click)="select(opt.value)">
+
+        <span class="opt-icon">{{ opt.icon }}</span>
+        <span class="opt-label">{{ opt.value }}</span>
+
+        <span class="check-mark" *ngIf="selectedOption === opt.value">✓</span>
+      </button>
+    </div>
+
+    <!-- SELECTED INFO -->
+    <div class="selected-info" *ngIf="selectedOption">
+      <span>Odabrali ste: <strong>{{ selectedOption }}</strong></span>
+    </div>
+
+    <!-- AKCIJE -->
+    <div class="actions-row">
+      <button class="back-btn" (click)="goBack()">
+        ← Nazad
+      </button>
+      <button
+        class="submit-btn"
+        [disabled]="!selectedOption || submitting"
+        (click)="submit()">
+        {{ submitting ? 'Slanje...' : '🗳️ Pošalji glas' }}
+      </button>
+    </div>
+
+  </div>
+
+  <!-- INFO -->
+  <div class="info-bar" *ngIf="survey">
+    <span>📅 Aktivna do {{ survey.endDate | date:'dd.MM.yyyy' }}</span>
+    <span>👥 {{ survey.responsesCount }} odgovora do sada</span>
+  </div>
+
+</div>

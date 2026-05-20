@@ -5,7 +5,6 @@ import { TestAuthComponent } from './pages/test-auth/test-auth.component';
 import { ProblemReportListComponent } from './core/components/problem-report-list/problem-report-list.component';
 import { ProblemReportFormComponent } from './core/components/problem-report-form/problem-report-form.component';
 import { ProblemReportImportComponent } from './core/components/problem-report-import/problem-report-import.component';
-import { VolunteerActionListComponent } from './core/components/volunteer-action-list/volunteer-action-list.component';
 import { SupportTechIssueComponent } from './pages/support-tech-issue/support-tech-issue.component';
 import { SupportComponent } from './pages/support/support.component';
 import { SupportFaqComponent } from './pages/support-faq/support-faq.component';
@@ -34,10 +33,7 @@ const routes: Routes = [
   { path: 'support/faq', component: SupportFaqComponent },
 
 
-  {
-    path: 'volunteering',
-    component: VolunteerActionListComponent
-  },
+
 
   // 🔓 test ruta (javna)
   {
@@ -77,6 +73,12 @@ const routes: Routes = [
     loadChildren: () =>
       import('./modules/surveys/surveys.module')
         .then(m => m.SurveysModule)
+  },
+  {
+    path: 'volunteering',
+    loadChildren: () =>
+      import('./modules/volunteering/volunteering.module')
+        .then(m => m.VolunteeringModule)
   },
 
   {

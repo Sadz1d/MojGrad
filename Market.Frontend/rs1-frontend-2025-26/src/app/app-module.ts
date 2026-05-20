@@ -1,19 +1,19 @@
 import { NgModule, provideBrowserGlobalErrorListeners, provideZoneChangeDetection } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { provideAnimations} from '@angular/platform-browser/animations';
-import {HTTP_INTERCEPTORS, HttpClient, provideHttpClient, withInterceptors} from '@angular/common/http';
+import { provideAnimations } from '@angular/platform-browser/animations';
+import { HTTP_INTERCEPTORS, HttpClient, provideHttpClient, withInterceptors } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing-module';
 import { AppComponent } from './app.component';
 import { AuthInterceptor } from './core/interceptors/auth.interceptor';
-import {loadingBarInterceptor} from './core/interceptors/loading-bar-interceptor.service';
-import {errorLoggingInterceptor} from './core/interceptors/error-logging-interceptor.service';
-import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
-import {CustomTranslateLoader} from './core/services/custom-translate-loader';
-import {materialModules} from './modules/shared/material-modules';
-import {SharedModule} from './modules/shared/shared-module';
+import { loadingBarInterceptor } from './core/interceptors/loading-bar-interceptor.service';
+import { errorLoggingInterceptor } from './core/interceptors/error-logging-interceptor.service';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { CustomTranslateLoader } from './core/services/custom-translate-loader';
+import { materialModules } from './modules/shared/material-modules';
+import { SharedModule } from './modules/shared/shared-module';
 import { TestAuthComponent } from './pages/test-auth/test-auth.component';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -21,29 +21,26 @@ import { ProblemReportService } from './core/services/problem-report.service';
 import { ProblemReportListComponent } from './core/components/problem-report-list/problem-report-list.component';
 import { ProblemReportFormComponent } from './core/components/problem-report-form/problem-report-form.component';
 import { RouterModule } from '@angular/router';
-import { VolunteerActionListComponent } from './core/components/volunteer-action-list/volunteer-action-list.component';
-import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
-import { SupportComponent } from './pages/support/support.component';
 
 @NgModule({
   declarations: [
-    AppComponent,
-
+    AppComponent
   ],
   imports: [
+    BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,
-    TestAuthComponent,
-    VolunteerActionListComponent,
-    CommonModule,        // ⬅️ OVO RJEŠAVA ngIf, ngFor, date pipe
-    MatButtonModule,
-    BrowserModule,
     AppRoutingModule,
     ReactiveFormsModule,
     FormsModule,
-    HttpClientModule,
     RouterModule,
+    MatButtonModule,
+
+    TestAuthComponent,
+    ProblemReportListComponent,
+    ProblemReportFormComponent,
+
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -51,14 +48,16 @@ import { SupportComponent } from './pages/support/support.component';
         deps: [HttpClient]
       }
     }),
+
     SharedModule,
-    materialModules,
-    ProblemReportListComponent,
-    ProblemReportFormComponent
+    materialModules
   ],
-  providers: [{provide: HTTP_INTERCEPTORS,
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
-      multi: true},
+      multi: true
+    },
     provideAnimations(),
     ProblemReportService,
     provideBrowserGlobalErrorListeners(),
@@ -66,12 +65,9 @@ import { SupportComponent } from './pages/support/support.component';
     provideHttpClient(
       withInterceptors([
         loadingBarInterceptor,
-
         errorLoggingInterceptor
       ])
     )
-  ],
-  exports: [
   ],
   bootstrap: [AppComponent]
 })
