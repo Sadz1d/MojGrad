@@ -383,3 +383,24 @@
   font-weight: 600;
   margin: 0;
 }
+
+
+.calendar-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 24px auto 0;
+  padding: 12px 22px;
+  border-radius: 999px;
+  background: #1e88e5;
+  color: #fff;
+  font-weight: 800;
+  text-decoration: none;
+  box-shadow: 0 8px 22px rgba(30, 136, 229, 0.28);
+  transition: all 0.2s ease;
+}
+
+.calendar-link:hover {
+  background: #1565c0;
+  transform: translateY(-2px);
+}

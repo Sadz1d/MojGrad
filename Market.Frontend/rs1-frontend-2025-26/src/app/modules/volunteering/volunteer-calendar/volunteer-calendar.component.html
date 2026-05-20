@@ -1,0 +1,75 @@
+<section class="calendar-page">
+
+  <div class="calendar-header">
+    <div>
+      <span class="badge">KALENDAR</span>
+      <h1>Volonterski kalendar</h1>
+      <p>Pregled volonterskih akcija po datumima.</p>
+    </div>
+
+    <div class="month-controls">
+      <button type="button" (click)="previousMonth()">‹</button>
+
+      <strong>
+        {{ monthNames[currentDate.getMonth()] }} {{ currentDate.getFullYear() }}
+      </strong>
+
+      <button type="button" (click)="nextMonth()">›</button>
+    </div>
+  </div>
+
+  <div class="calendar-layout">
+
+    <div class="calendar-card">
+
+      <div class="week-row">
+        <div class="week-day" *ngFor="let day of weekDays">
+          {{ day }}
+        </div>
+      </div>
+
+      <div class="days-grid">
+        <button
+          type="button"
+          class="day-cell"
+          *ngFor="let day of calendarDays"
+          [class.muted]="!day.isCurrentMonth"
+          [class.today]="day.isToday"
+          [class.has-actions]="day.actions.length > 0"
+          [class.selected]="isSelected(day)"
+          (click)="selectDay(day)">
+
+          <span class="day-number">{{ day.dayNumber }}</span>
+
+          <span class="action-dot" *ngIf="day.actions.length > 0">
+            {{ day.actions.length }}
+          </span>
+        </button>
+      </div>
+
+    </div>
+
+    <div class="details-card">
+      <h2>Akcije za odabrani datum</h2>
+
+      <p class="empty" *ngIf="!selectedDate">
+        Klikni na datum u kalendaru.
+      </p>
+
+      <p class="empty" *ngIf="selectedDate && selectedActions.length === 0">
+        Nema akcija za ovaj datum.
+      </p>
+
+      <div class="selected-list" *ngIf="selectedActions.length > 0">
+        <div class="selected-action" *ngFor="let action of selectedActions">
+          <h3>{{ action.name }}</h3>
+          <p>📍 {{ action.location }}</p>
+          <p>👥 {{ action.participantsCount }} / {{ action.maxParticipants }} volontera</p>
+          <p class="free">🟢 {{ action.freeSlots }} slobodnih mjesta</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</section>
