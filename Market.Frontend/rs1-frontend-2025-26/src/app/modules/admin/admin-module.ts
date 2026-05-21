@@ -25,6 +25,9 @@ import { VolunteerActionCreateComponent } from './volunteer-action-create/volunt
 import { SurveyCreateComponent } from './surveys/survey-create/survey-create.component';
 import { FormsModule } from '@angular/forms';
 
+import { StatisticsDashboardComponent } from './statistics-dashboard/statistics-dashboard.component';
+
+
 @NgModule({
   declarations: [
     ProductsComponent,
@@ -39,6 +42,8 @@ import { FormsModule } from '@angular/forms';
     ChangeStatusDialogComponent,
     VolunteerActionCreateComponent,
     SurveyCreateComponent,
+    StatisticsDashboardComponent
+
 
 
   ],
@@ -51,6 +56,9 @@ import { FormsModule } from '@angular/forms';
     MatButtonModule,
     ReactiveFormsModule,
     FormsModule,
-  ]
+
+
+  ],
+
 })
 export class AdminModule { }

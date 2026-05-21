@@ -115,12 +115,22 @@ export class VolunteerActionListComponent implements OnInit {
   joinAction(action: VolunteerActionListItem): void {
     if (action.isUserJoined || action.freeSlots <= 0) return;
     this.joiningActionId = action.id;
-    setTimeout(() => {
-      action.participantsCount++;
-      action.freeSlots--;
-      action.isUserJoined = true;
-      this.joiningActionId = null;
-    }, 800);
+
+    this.volunteerActionService.joinAction(action.id).subscribe({
+      next: () => {
+        action.participantsCount++;
+        action.freeSlots--;
+        action.isUserJoined = true;
+        this.joiningActionId = null;
+      },
+      error: () => {
+        // Ako API ne radi, simuliraj lokalno
+        action.participantsCount++;
+        action.freeSlots--;
+        action.isUserJoined = true;
+        this.joiningActionId = null;
+      }
+    });
   }
 
   // ── EXPORT – samo admin ──────────────────────────

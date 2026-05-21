@@ -1,4 +1,4 @@
-<!-- ================= HEADER / NAVIGATION ================= -->
+<!-- ================= HEADER ================= -->
 <header class="app-header">
   <div class="header-left">
     <img src="assets/images/logo1.png" class="header-logo" />
@@ -12,39 +12,25 @@
     <a routerLink="/points" routerLinkActive="active">Bodovi / Rang lista</a>
     <a routerLink="/support" routerLinkActive="active">Podrška</a>
   </nav>
-
   <div class="header-right">
     <span class="header-user">{{ currentUser?.email }}</span>
-    <button
-      mat-stroked-button
-      routerLink="/auth/logout"
-      routerLinkActive="active"
-      color="warn"
-      (click)="logout()"
-      class="header-logout"
-    >
+    <button mat-stroked-button routerLink="/auth/logout" color="warn" (click)="logout()" class="header-logout">
       Odjava
     </button>
-
-    <div *ngIf="isAdmin" style="margin-top: 20px;">
-      <button
-        mat-raised-button
-        color="primary"
-        routerLink="/admin"
-        class="admin-panel-button">
+    <div *ngIf="isAdmin">
+      <button mat-raised-button color="primary" routerLink="/admin" class="admin-panel-button">
         <mat-icon>admin_panel_settings</mat-icon>
         Admin panel
       </button>
     </div>
   </div>
 </header>
-<!-- ================= END HEADER ================= -->
-
 
 <div class="landing-page">
 
-  <!-- Hero Section -->
+  <!-- ── 1. HERO ── -->
   <section class="hero-section">
+    <div class="hero-overlay"></div>
     <div class="hero-content">
       <div class="hero-text">
         <div class="logo-container">
@@ -53,46 +39,58 @@
         </div>
         <h2 class="hero-title">Dobrodošli u Moj Grad</h2>
         <p class="hero-description">
-          Prijavite problem, pomozite svojim sugrađanima i unaprijedite naš grad.
+          Prijavite problem, pomozite sugrađanima i unaprijedite naš grad zajedno.
         </p>
         <div class="hero-actions">
-          <input type="text" placeholder="Prijavite problem i pomozite svom gradu" class="search-input" />
-          <button mat-raised-button color="primary" class="cta-button">
-            <img src="assets/images/search.png" alt="Search" class="button-icon" />
-          </button>
-          <button mat-raised-button color="accent" routerLink="problem-reports/new" class="cta-button report-button">
-            Prijavite problem
+          <input type="text" placeholder="Pretraži prijave problema..." class="search-input" />
+          <button mat-raised-button color="accent" routerLink="problem-reports/new" class="report-button">
+            📍 Prijavite problem
           </button>
         </div>
-      </div>
-      <div class="hero-image">
-        <!--<img src="assets/images/pocetna_slika.png" alt="Grad ilustracija" />-->
       </div>
     </div>
   </section>
 
-  <!-- Prijavljeni Problemi Section -->
+  <!-- ── 2. ANIMIRANI BROJAČI ── -->
+  <section class="counters-section">
+    <div class="counters-grid">
+      <div class="counter-card">
+        <div class="counter-icon">🤝</div>
+        <div class="counter-value">{{ counterActions }}</div>
+        <div class="counter-label">Volonterskih akcija</div>
+      </div>
+      <div class="counter-card">
+        <div class="counter-icon">👥</div>
+        <div class="counter-value">{{ counterVolunteers }}</div>
+        <div class="counter-label">Prijavljenih volontera</div>
+      </div>
+      <div class="counter-card">
+        <div class="counter-icon">📋</div>
+        <div class="counter-value">{{ counterSurveys }}</div>
+        <div class="counter-label">Aktivnih anketa</div>
+      </div>
+      <div class="counter-card">
+        <div class="counter-icon">📍</div>
+        <div class="counter-value">{{ counterProblems }}</div>
+        <div class="counter-label">Prijavljenih problema</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 3. PRIJAVLJENI PROBLEMI ── -->
   <section class="features-section">
-
     <div class="section-header">
-      <div class="title-badge">PROBLEMI U VAŠEM OKRUŽENJU</div>
-
+      <span class="title-badge">PROBLEMI U VAŠEM OKRUŽENJU</span>
       <h2 class="section-title">Prijavljeni problemi</h2>
-
-      <p class="section-subtitle">
-        Pregled najnovijih problema prijavljenih u gradu.
-      </p>
+      <p class="section-subtitle">Pregled najnovijih problema prijavljenih u gradu.</p>
     </div>
 
-
     <div class="features-grid">
-
       <ng-container *ngIf="newestReports.length > 0; else noReports">
         <div class="problem-card" *ngFor="let report of newestReports">
           <div class="image-wrapper">
             <img *ngIf="getImageUrl(report.imagePath) as imgUrl"
-                 [src]="imgUrl"
-                 alt="Slika problema"
+                 [src]="imgUrl" alt="Slika problema"
                  (error)="$any($event.target).style.display='none'">
             <div *ngIf="!report.imagePath" class="no-image-placeholder">
               <span>📷</span>
@@ -101,25 +99,18 @@
               {{ getStatusLabel(report.statusName) }}
             </span>
           </div>
-
           <div class="problem-content">
             <h3>{{ report.title }}</h3>
-
             <div class="meta">
               <span class="category">📁 {{ report.categoryName }}</span>
               <span class="date">📅 {{ report.creationDate | date:'dd.MM.yyyy' }}</span>
             </div>
-
             <p>{{ report.shortDescription }}</p>
             <div class="location" *ngIf="report.location">📍 {{ report.location }}</div>
           </div>
         </div>
       </ng-container>
-
-      <ng-template #noReports>
-        <!-- prazno ako nema prijava -->
-      </ng-template>
-
+      <ng-template #noReports></ng-template>
     </div>
 
     <div class="section-footer">
@@ -128,103 +119,127 @@
       </button>
     </div>
   </section>
-  <!-- Testimonials Section -->
+
+  <!-- ── 4. NADOLAZEĆE AKCIJE ── -->
+  <section class="upcoming-section" *ngIf="upcomingActions.length > 0">
+    <div class="section-header">
+      <span class="title-badge">VOLONTIRANJE</span>
+      <h2 class="section-title">Nadolazeće volonterske akcije</h2>
+      <p class="section-subtitle">Pridružite se i pomozite svom gradu. Prijava je besplatna!</p>
+    </div>
+
+    <div class="upcoming-grid">
+      <div class="upcoming-card" *ngFor="let action of upcomingActions">
+        <div class="upcoming-card-header">
+          <span class="upcoming-icon">🤝</span>
+          <span class="upcoming-date">{{ action.eventDate | date:'dd.MM.yyyy' }}</span>
+        </div>
+        <h3>{{ action.name }}</h3>
+        <p class="upcoming-location">📍 {{ action.location }}</p>
+        <p class="upcoming-desc">{{ action.description }}</p>
+        <div class="upcoming-footer">
+          <span class="upcoming-slots" [class.full]="action.freeSlots === 0">
+            {{ action.freeSlots > 0 ? '🟢 ' + action.freeSlots + ' slobodnih' : '🔴 Popunjeno' }}
+          </span>
+          <a class="upcoming-btn" routerLink="/volunteering">Prijavi se →</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-footer">
+      <button mat-raised-button class="view-all-button" routerLink="/volunteering">
+        Pogledaj sve akcije
+      </button>
+    </div>
+  </section>
+
+  <!-- ── 5. INTERAKTIVNA MAPA ── -->
+  <section class="map-section">
+    <div class="section-header">
+      <span class="title-badge">MAPA AKCIJA</span>
+      <h2 class="section-title">Volonterske akcije na mapi</h2>
+      <p class="section-subtitle">Pronađite akciju u vašem susjedstvu. Kliknite na marker za detalje.</p>
+    </div>
+    <div class="map-wrapper">
+      <div id="volunteer-map"></div>
+      <div class="map-legend">
+        <span class="legend-dot"></span>
+        <span>Volonterska akcija — klikni za detalje i prijavu</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 6. HOW IT WORKS ── -->
+  <section class="how-it-works">
+    <div class="section-header">
+      <span class="title-badge">KAKO FUNKCIONIŠE</span>
+      <h2 class="section-title">Tri jednostavna koraka</h2>
+      <p class="section-subtitle">Od prijave problema do rješenja — sve na jednom mjestu.</p>
+    </div>
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-icon">📍</div>
+        <h3>1. Prijavite problem</h3>
+        <p>Fotografišite i prijavite problem u par klikova. Lokacija se automatski prepoznaje.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-icon">⚙️</div>
+        <h3>2. Nadležni reagiraju</h3>
+        <p>Vaša prijava se prosljeđuje odgovornim službama koje rješavaju problem.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-icon">✅</div>
+        <h3>3. Pratite status</h3>
+        <p>Budite obaviješteni o svakom koraku — od zaprimanja do rješavanja.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 7. TESTIMONIALS ── -->
   <section class="testimonials-section">
     <div class="section-header">
       <span class="title-badge">ISKUSTVA GRAĐANA</span>
       <h2 class="section-title">Šta kažu korisnici?</h2>
       <p class="section-subtitle">Pogledajte utiske građana koji koriste aplikaciju Moj Grad.</p>
     </div>
-
     <div class="testimonials-grid">
-
-      <!-- TESTIMONIAL 1 -->
       <div class="testimonial-card">
         <div class="stars">★★★★★</div>
-        <p class="comment">“Aplikacija mi je spasila dan kad se pokvario semafor.”</p>
+        <p class="comment">"Aplikacija mi je spasila dan kad se pokvario semafor."</p>
         <div class="user-info">
-          <img src="assets/images/lejla.jpg" alt="User" />
-          <div>
-            <h4>Lejla</h4>
-            <span>Mostar</span>
-          </div>
+          <img src="assets/images/lejla.jpg" alt="Lejla" />
+          <div><h4>Lejla</h4><span>Mostar</span></div>
         </div>
       </div>
-
-      <!-- TESTIMONIAL 2 -->
       <div class="testimonial-card">
         <div class="stars">★★★★★</div>
-        <p class="comment">“Prijavila sam problem sa rasvjetom i riješeno je u roku 24h!”</p>
+        <p class="comment">"Prijavila sam problem sa rasvjetom i riješeno je u roku 24h!"</p>
         <div class="user-info">
-          <img src="assets/images/amar.jpg" alt="User" />
-          <div>
-            <h4>Amar</h4>
-            <span>Stolac</span>
-          </div>
+          <img src="assets/images/amar.jpg" alt="Amar" />
+          <div><h4>Amar</h4><span>Stolac</span></div>
         </div>
       </div>
-
-      <!-- TESTIMONIAL 3 -->
       <div class="testimonial-card">
         <div class="stars">★★★★★</div>
-        <p class="comment">“Svaka čast! Konačno aplikacija koja olakšava život građanima.”</p>
+        <p class="comment">"Konačno aplikacija koja olakšava život građanima!"</p>
         <div class="user-info">
-          <img src="assets/images/ana.jpg" alt="User" />
-          <div>
-            <h4>Ana</h4>
-            <span>Čapljina</span>
-          </div>
+          <img src="assets/images/ana.jpg" alt="Ana" />
+          <div><h4>Ana</h4><span>Čapljina</span></div>
         </div>
       </div>
-
     </div>
   </section>
 
-  <!-- How It Works Section -->
-  <section class="how-it-works">
-    <div class="section-header">
-      <span class="title-badge">KAKO FUNKCIONIŠE</span>
-      <h2 class="section-title">Kako funkcioniše aplikacija Moj Grad?</h2>
-      <p class="section-subtitle">Samo tri jednostavna koraka do rješenja problema u vašem gradu.</p>
-    </div>
-
-    <div class="steps-grid">
-
-      <!-- STEP 1 -->
-      <div class="step-card">
-        <div class="step-icon">📍</div>
-        <h3>1. Prijavite problem</h3>
-        <p>Fotografišite i prijavite problem u par klikova. Lokacija se automatski prepoznaje.</p>
-      </div>
-
-      <!-- STEP 2 -->
-      <div class="step-card">
-        <div class="step-icon">⚙️</div>
-        <h3>2. Nadležni pregledaju i reagiraju</h3>
-        <p>Vaša prijava se prosljeđuje odgovornim službama koje započinju proces rješavanja.</p>
-      </div>
-
-      <!-- STEP 3 -->
-      <div class="step-card">
-        <div class="step-icon">✅</div>
-        <h3>3. Pratite status</h3>
-        <p>Budite obaviješteni o svakom koraku – od zaprimanja prijave do potpunog rješavanja.</p>
-      </div>
-
-    </div>
-  </section>
-
-
-  <!-- Stats / Floating Cards Section -->
+  <!-- ── 8. STATS ── -->
   <section class="stats-section">
     <div class="stats-grid">
       <div class="stat-card">
-        <img src="assets/images/stat_users.png" alt="Aktivni korisnici" />
+        <img src="assets/images/stat_users.png" alt="Korisnici" />
         <div class="stat-number">500+</div>
         <div class="stat-label">Aktivnih korisnika</div>
       </div>
       <div class="stat-card">
-        <img src="assets/images/stat_products.png" alt="Proizvodi" />
+        <img src="assets/images/stat_products.png" alt="Riješeni" />
         <div class="stat-number">10,000+</div>
         <div class="stat-label">Riješenih problema</div>
       </div>
@@ -234,80 +249,43 @@
         <div class="stat-label">Uptime garancija</div>
       </div>
       <div class="stat-card">
-        <img src="assets/images/stat_rating.png" alt="Prosječna ocjena" />
+        <img src="assets/images/stat_rating.png" alt="Ocjena" />
         <div class="stat-number">4.5/5</div>
         <div class="stat-label">Prosječna ocjena</div>
       </div>
     </div>
   </section>
 
+  <!-- ── 9. CTA ── -->
   <section class="cta-section">
     <div class="cta-box">
+      <div class="cta-icon">🏙️</div>
+      <h2>Pridružite se zajednici Moj Grad</h2>
+      <p>Pomozite sugrađanima i učestvujte u izgradnji boljeg okruženja.</p>
 
-      <h2>Prijavite problem i unaprijedite svoj grad</h2>
-      <p>Pomozite svojim sugrađanima i učestvujte u izgradnji boljeg okruženja.</p>
-      <!-- DINAMIČKO DUGME -->
       <div *ngIf="isLoggedIn$ | async; else loginButton">
-        <!-- Korisnik je PRIJAVLJEN - prikaži ODJAVITE SE <a mat-list-item routerLink="/auth/logout" routerLinkActive="active" class="logout-item">
-        <mat-icon matListItemIcon>logout</mat-icon>
-        <span matListItemTitle>{{ 'ADMIN_PANEL.MENU.LOGOUT' | translate }}</span>
-      </a> -->
-        <button
-          mat-raised-button
-          routerLink="/auth/logout"
-          routerLinkActive="active"
-          color="warn"
-          (click)="logout()"
-          class="cta-main-button logout-button"
-        >
-          <mat-icon class="button-icon">logout</mat-icon>
-          Odjavite se
-          <span *ngIf="currentUser?.email as email" class="user-email">
-            ({{ email }})
-          </span>
-        </button>
-
-        <!-- Dodatni link za dashboard -->
-        <div style="margin-top: 20px;">
-          <button
-            mat-stroked-button
-            color="primary"
-            routerLink="/dashboard"
-            class="dashboard-button"
-          >
-            <mat-icon>dashboard</mat-icon>
-            Moj Dashboard
+        
+        <div style="margin-top: 16px;">
+          <button mat-stroked-button color="warn" (click)="logout()" class="register-button" style="border-color: #e74c3c !important; color: #e74c3c !important;">
+            <mat-icon>logout</mat-icon>
+            Odjavite se
           </button>
         </div>
       </div>
 
       <ng-template #loginButton>
-        <!-- Korisnik NIJE prijavljen - prikaži PRIJAVITE SE -->
-        <button
-          mat-raised-button
-          color="primary"
-          routerLink="/auth/login"
-          class="cta-main-button login-button"
-        >
+        <button mat-raised-button color="primary" routerLink="/auth/login" class="cta-main-button login-button">
           <mat-icon class="button-icon">login</mat-icon>
           Prijavite se sada
         </button>
-
-        <!-- Dodatni link za registraciju -->
-        <div style="margin-top: 20px;">
-          <button
-            mat-stroked-button
-            color="accent"
-            routerLink="/auth/register"
-            class="register-button"
-          >
+        <div style="margin-top: 16px;">
+          <button mat-stroked-button color="accent" routerLink="/auth/register" class="register-button">
             <mat-icon>person_add</mat-icon>
-            Registrujte se
+            Registrujte se besplatno
           </button>
         </div>
       </ng-template>
-
     </div>
-
   </section>
+
 </div>

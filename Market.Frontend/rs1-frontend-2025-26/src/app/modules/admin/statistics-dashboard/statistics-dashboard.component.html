@@ -1,0 +1,156 @@
+<!-- HERO -->
+<section class="dash-hero">
+  <div class="overlay"></div>
+  <div class="hero-content">
+    <span class="hero-badge">ADMIN</span>
+    <h1>Statistike sistema</h1>
+    <p>Pregled volontiranja i anketa u realnom vremenu</p>
+  </div>
+</section>
+
+<!-- LOADING -->
+<div class="center-wrap" *ngIf="loading">
+  <div class="spinner"></div>
+  <p>Učitavanje statistika...</p>
+</div>
+
+<div class="dash-wrapper" *ngIf="!loading">
+
+  <!-- ── FILTERI + EXPORT ── -->
+  <div class="filter-bar">
+    <div class="filter-group">
+      <label>Od datuma</label>
+      <input type="date" [(ngModel)]="dateFrom" (change)="applyFilters()" />
+    </div>
+    <div class="filter-group">
+      <label>Do datuma</label>
+      <input type="date" [(ngModel)]="dateTo" (change)="applyFilters()" />
+    </div>
+    <button class="btn-clear" (click)="clearFilters()" *ngIf="dateFrom || dateTo">
+      ✕ Resetuj
+    </button>
+    <div class="export-group">
+      <span class="export-label">Izvezi:</span>
+      <button class="export-btn excel" (click)="exportExcel()" [disabled]="exporting">
+        📊 Excel (3 sheeta)
+      </button>
+      <button class="export-btn csv" (click)="exportCSV()">
+        📄 CSV
+      </button>
+    </div>
+  </div>
+
+  <!-- ── VOLONTIRANJE KARTICE ── -->
+  <div class="section-title">
+    <span class="dot blue"></span>
+    Volonterske akcije
+    <span class="period-note" *ngIf="dateFrom || dateTo">
+      ({{ dateFrom || '...' }} → {{ dateTo || '...' }})
+    </span>
+  </div>
+
+  <div class="cards-row">
+    <div class="stat-card blue">
+      <div class="card-icon">🤝</div>
+      <div class="card-value">{{ totalActions }}</div>
+      <div class="card-label">Ukupno akcija</div>
+    </div>
+    <div class="stat-card teal">
+      <div class="card-icon">👥</div>
+      <div class="card-value">{{ totalParticipants }}</div>
+      <div class="card-label">Ukupno prijava</div>
+    </div>
+    <div class="stat-card green">
+      <div class="card-icon">🟢</div>
+      <div class="card-value">{{ availableSlots }}</div>
+      <div class="card-label">Slobodnih mjesta</div>
+    </div>
+    <div class="stat-card red">
+      <div class="card-icon">🔴</div>
+      <div class="card-value">{{ fullActions }}</div>
+      <div class="card-label">Popunjenih akcija</div>
+    </div>
+  </div>
+
+  <!-- ── GRAFIKONI – VOLONTIRANJE ── -->
+  <div class="charts-row">
+    <div class="chart-card wide">
+      <div class="chart-header">
+        <h3>Prijave po akcijama</h3>
+        <p>Top 10 akcija po broju prijavljenih volontera</p>
+      </div>
+      <div class="chart-area">
+        <canvas id="barChart"></canvas>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-header">
+        <h3>Popunjenost mjesta</h3>
+        <p>Zauzeto vs slobodno</p>
+      </div>
+      <div class="chart-area doughnut-wrap">
+        <canvas id="doughnutChart"></canvas>
+        <div class="center-stat">
+          <span class="big-num">{{ totalParticipants + availableSlots }}</span>
+          <span class="big-label">ukupno mjesta</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TREND GRAFIKON ── -->
+  <div class="chart-card full">
+    <div class="chart-header">
+      <h3>📈 Trend prijava po mjesecima</h3>
+      <p>Rast broja prijava kroz vrijeme</p>
+    </div>
+    <div class="chart-area">
+      <canvas id="trendChart"></canvas>
+    </div>
+  </div>
+
+  <!-- ── ANKETE KARTICE ── -->
+  <div class="section-title" style="margin-top: 36px">
+    <span class="dot orange"></span>
+    Ankete
+    <span class="period-note" *ngIf="dateFrom || dateTo">
+      ({{ dateFrom || '...' }} → {{ dateTo || '...' }})
+    </span>
+  </div>
+
+  <div class="cards-row">
+    <div class="stat-card orange">
+      <div class="card-icon">📋</div>
+      <div class="card-value">{{ totalSurveys }}</div>
+      <div class="card-label">Ukupno anketa</div>
+    </div>
+    <div class="stat-card green">
+      <div class="card-icon">✅</div>
+      <div class="card-value">{{ activeSurveys }}</div>
+      <div class="card-label">Aktivnih anketa</div>
+    </div>
+    <div class="stat-card blue">
+      <div class="card-icon">🗳️</div>
+      <div class="card-value">{{ totalResponses }}</div>
+      <div class="card-label">Ukupno odgovora</div>
+    </div>
+    <div class="stat-card teal">
+      <div class="card-icon">📊</div>
+      <div class="card-value">{{ avgResponses }}</div>
+      <div class="card-label">Prosj. odgovora/anketi</div>
+    </div>
+  </div>
+
+  <!-- ── ANKETE GRAFIKON ── -->
+  <div class="chart-card full">
+    <div class="chart-header">
+      <h3>Odgovori po anketama</h3>
+      <p>Broj odgovora za svaku anketu</p>
+    </div>
+    <div class="chart-area tall">
+      <canvas id="surveyChart"></canvas>
+    </div>
+  </div>
+
+</div>

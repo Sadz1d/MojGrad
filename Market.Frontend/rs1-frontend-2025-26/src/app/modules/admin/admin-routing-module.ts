@@ -13,7 +13,7 @@ import {SurveyCreateComponent} from './surveys/survey-create/survey-create.compo
 import { ProblemCategoriesComponent } from './problem-categories/problem-categories.component';
 import { ProblemStatusesComponent } from './problem-statuses/problem-statuses.component';
 import { AdminUsersComponent } from './users/admin-users.component';
-
+import { StatisticsDashboardComponent } from './statistics-dashboard/statistics-dashboard.component';
 
 const routes: Routes = [
   {
@@ -77,6 +77,11 @@ const routes: Routes = [
         redirectTo: 'problem-categories',
         pathMatch: 'full',
       },
+      {
+        path: 'statistics',
+        component: StatisticsDashboardComponent
+      },
+
     ],
   },
 ];

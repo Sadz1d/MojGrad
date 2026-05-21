@@ -1,172 +1,203 @@
+/* ── KALENDAR STRANICA ── */
 .calendar-page {
-  max-width: 1180px;
-  margin: 40px auto;
-  padding: 0 20px;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 32px 20px 60px;
 }
 
+/* ── HEADER ── */
 .calendar-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  gap: 24px;
-  margin-bottom: 24px;
+  justify-content: space-between;
+  margin-bottom: 28px;
   flex-wrap: wrap;
+  gap: 16px;
 }
 
 .badge {
   display: inline-block;
-  background: #e3f2fd;
-  color: #1565c0;
-  padding: 7px 16px;
-  border-radius: 999px;
-  font-size: 12px;
+  background: linear-gradient(135deg, #1e88e5, #1565c0);
+  color: #fff;
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-size: 11px;
   font-weight: 800;
-  letter-spacing: 1px;
-  margin-bottom: 10px;
+  letter-spacing: 1.5px;
+  margin-bottom: 8px;
 }
 
 .calendar-header h1 {
-  margin: 0;
+  font-size: 26px;
+  font-weight: 800;
   color: #0d47a1;
-  font-size: 30px;
-  font-weight: 900;
+  margin: 0 0 4px;
 }
 
 .calendar-header p {
-  margin: 8px 0 0;
-  color: #607d8b;
+  color: #78909c;
+  margin: 0;
+  font-size: 14px;
 }
 
+/* ── NAVIGACIJA ── */
 .month-controls {
   display: flex;
   align-items: center;
   gap: 16px;
-  background: #fff;
-  padding: 12px 16px;
-  border-radius: 18px;
-  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.08);
+
+  strong {
+    font-size: 18px;
+    font-weight: 800;
+    color: #0d47a1;
+    min-width: 180px;
+    text-align: center;
+  }
+
+  button {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid #e3f2fd;
+    background: #fff;
+    font-size: 22px;
+    color: #1e88e5;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+      background: #1e88e5;
+      color: #fff;
+      border-color: #1e88e5;
+    }
+  }
 }
 
-.month-controls strong {
-  min-width: 180px;
-  text-align: center;
-  color: #0d47a1;
-}
-
-.month-controls button {
-  width: 38px;
-  height: 38px;
-  border: none;
-  border-radius: 50%;
-  background: #1e88e5;
-  color: #fff;
-  font-size: 26px;
-  cursor: pointer;
-  line-height: 1;
-}
-
+/* ── LAYOUT ── */
 .calendar-layout {
   display: grid;
-  grid-template-columns: 2fr 1fr;
+  grid-template-columns: 1.4fr 1fr;
   gap: 24px;
 }
 
-.calendar-card,
-.details-card {
+/* ── KALENDAR KARTICA ── */
+.calendar-card {
   background: #fff;
-  border-radius: 26px;
-  padding: 24px;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.09);
+  border-radius: 24px;
+  padding: 28px;
+  box-shadow: 0 12px 32px rgba(0,0,0,0.10);
 }
 
+/* ── DANI U TJEDNU ── */
 .week-row {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 .week-day {
   text-align: center;
-  color: #607d8b;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 800;
-  padding: 10px 0;
+  color: #90a4ae;
+  padding: 8px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
+/* ── GRID DANA ── */
 .days-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 10px;
+  gap: 4px;
 }
 
 .day-cell {
-  min-height: 86px;
-  border: 2px solid #e3f2fd;
-  background: #f8fcff;
-  border-radius: 18px;
-  padding: 10px;
+  aspect-ratio: 1;
+  border: none;
+  background: transparent;
+  border-radius: 12px;
   cursor: pointer;
-  position: relative;
-  text-align: left;
-  transition: all 0.2s ease;
-}
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  transition: all 0.15s ease;
+  padding: 4px;
 
-.day-cell:hover {
-  transform: translateY(-2px);
-  border-color: #64b5f6;
-  box-shadow: 0 8px 18px rgba(30, 136, 229, 0.14);
-}
+  &:hover {
+    background: #e3f2fd;
+  }
 
-.day-cell.muted {
-  opacity: 0.35;
-}
+  &.muted .day-number {
+    color: #cfd8dc;
+  }
 
-.day-cell.today {
-  border-color: #1e88e5;
-  background: #e3f2fd;
-}
+  &.today {
+    background: linear-gradient(135deg, #1e88e5, #1565c0);
+    .day-number { color: #fff; font-weight: 800; }
+    .action-dot { background: #fff; color: #1e88e5; }
+  }
 
-.day-cell.has-actions {
-  background: #ffffff;
-  border-color: #90caf9;
-}
+  &.has-actions:not(.today) {
+    background: #e3f2fd;
+    .day-number { color: #0d47a1; font-weight: 700; }
+  }
 
-.day-cell.selected {
-  background: #1e88e5;
-  border-color: #1565c0;
-  color: #fff;
+  &.selected:not(.today) {
+    background: linear-gradient(135deg, #bbdefb, #90caf9);
+    border: 2px solid #1e88e5;
+    .day-number { color: #0d47a1; font-weight: 800; }
+  }
 }
 
 .day-number {
-  font-size: 15px;
-  font-weight: 900;
+  font-size: 14px;
+  font-weight: 500;
+  color: #37474f;
+  line-height: 1;
 }
 
 .action-dot {
-  position: absolute;
-  right: 10px;
-  bottom: 10px;
-  min-width: 26px;
-  height: 26px;
-  border-radius: 999px;
-  background: #00c853;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #1e88e5;
   color: #fff;
-  display: inline-flex;
+  font-size: 10px;
+  font-weight: 800;
+  display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
-  font-weight: 900;
 }
 
-.details-card h2 {
-  margin: 0 0 18px;
-  color: #0d47a1;
-  font-size: 20px;
+/* ── DETALJI KARTICA ── */
+.details-card {
+  background: #fff;
+  border-radius: 24px;
+  padding: 28px;
+  box-shadow: 0 12px 32px rgba(0,0,0,0.10);
+
+  h2 {
+    font-size: 17px;
+    font-weight: 800;
+    color: #0d47a1;
+    margin: 0 0 20px;
+    padding-bottom: 14px;
+    border-bottom: 2px solid #e3f2fd;
+  }
 }
 
 .empty {
-  color: #78909c;
-  font-weight: 600;
+  color: #90a4ae;
+  font-size: 14px;
+  text-align: center;
+  padding: 40px 20px;
 }
 
 .selected-list {
@@ -176,82 +207,38 @@
 }
 
 .selected-action {
-  border: 1.5px solid #e3f2fd;
-  border-radius: 18px;
-  padding: 16px;
-  background: #f8fcff;
+  background: linear-gradient(135deg, #f0f7ff, #e3f2fd);
+  border-radius: 16px;
+  padding: 18px;
+  border-left: 4px solid #1e88e5;
+
+  h3 {
+    font-size: 15px;
+    font-weight: 800;
+    color: #0d47a1;
+    margin: 0 0 10px;
+  }
+
+  p {
+    font-size: 13px;
+    color: #546e7a;
+    margin: 0 0 6px;
+  }
 }
 
-.selected-action h3 {
-  margin: 0 0 8px;
-  color: #0d47a1;
-  font-size: 17px;
+.free {
+  font-weight: 700;
+  color: #2e7d32 !important;
 }
 
-.selected-action p {
-  margin: 5px 0;
-  color: #546e7a;
-  font-size: 14px;
-}
-
-.selected-action .free {
-  color: #008c3a;
-  font-weight: 800;
-}
-
-@media (max-width: 900px) {
+/* ── RESPONSIVE ── */
+@media (max-width: 800px) {
   .calendar-layout {
     grid-template-columns: 1fr;
   }
 
-  .day-cell {
-    min-height: 70px;
-  }
-}
-
-@media (max-width: 600px) {
-  .calendar-page {
-    margin: 24px auto;
-  }
-
-  .calendar-header h1 {
-    font-size: 24px;
-  }
-
-  .month-controls {
-    width: 100%;
-    justify-content: space-between;
-  }
-
-  .month-controls strong {
-    min-width: auto;
-  }
-
-  .calendar-card,
-  .details-card {
-    padding: 16px;
-    border-radius: 20px;
-  }
-
-  .days-grid {
-    gap: 6px;
-  }
-
-  .day-cell {
-    min-height: 58px;
-    border-radius: 12px;
-    padding: 7px;
-  }
-
-  .week-day {
-    font-size: 11px;
-  }
-
-  .action-dot {
-    width: 22px;
-    height: 22px;
-    font-size: 11px;
-    right: 6px;
-    bottom: 6px;
+  .calendar-header {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
