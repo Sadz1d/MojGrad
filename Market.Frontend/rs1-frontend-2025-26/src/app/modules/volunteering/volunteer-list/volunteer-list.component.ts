@@ -4,7 +4,7 @@ import { VolunteerActionListItem } from '../../../core/models/volunteer-action.m
 import { AuthFacadeService } from '../../../core/services/auth/auth-facade.service';
 import * as XLSX from 'xlsx';
 import QRCode from 'qrcode';
-
+import { NotificationService } from '../../../core/services/notification.service';
 @Component({
   selector: 'app-volunteer-list',
   standalone: false,
@@ -32,7 +32,8 @@ export class VolunteerListComponent implements OnInit {
 
   constructor(
     private volunteerService: VolunteerActionService,
-    public auth: AuthFacadeService
+    public auth: AuthFacadeService,
+    private notifService: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -110,6 +111,13 @@ export class VolunteerListComponent implements OnInit {
         action.participantsCount++;
         this.joiningId = null;
         this.applyFilters();
+        this.notifService.add(
+          'Prijava uspješna! 🎉',
+          `Uspješno ste se prijavili na akciju "${action.name}".`,
+          '🤝',
+          'success',
+          '/volunteering'
+        );
       },
       error: (err) => {
         alert(err?.error?.message || err?.error || 'Greška prilikom prijave.');

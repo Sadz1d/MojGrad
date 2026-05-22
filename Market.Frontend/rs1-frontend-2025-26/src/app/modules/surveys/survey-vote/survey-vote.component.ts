@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SurveyService } from '../../../core/services/survey.service';
 import { AuthFacadeService } from '../../../core/services/auth/auth-facade.service';
-
+import { NotificationService } from '../../../core/services/notification.service';
 @Component({
   selector: 'app-survey-vote',
   standalone: false,
@@ -33,7 +33,8 @@ export class SurveyVoteComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private surveyService: SurveyService,
-    private auth: AuthFacadeService
+    private auth: AuthFacadeService,
+    private notifService: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -107,6 +108,14 @@ export class SurveyVoteComponent implements OnInit {
         setTimeout(() => {
           this.router.navigate(['/surveys', this.surveyId, 'stats']);
         }, 2000);
+
+        this.notifService.add(
+          'Glasanje zabilježeno! 🗳️',
+          `Vaš odgovor na anketu je uspješno sačuvan.`,
+          '🗳️',
+          'success',
+          '/surveys'
+        );
       },
       error: () => {
         this.submitting = false;

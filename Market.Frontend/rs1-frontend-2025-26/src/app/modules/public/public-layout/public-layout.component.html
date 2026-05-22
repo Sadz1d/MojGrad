@@ -14,6 +14,48 @@
   </nav>
   <div class="header-right">
     <span class="header-user">{{ currentUser?.email }}</span>
+
+    <!-- 🔔 NOTIFIKACIJE -->
+    <div class="notif-wrap" *ngIf="currentUser">
+      <button class="notif-bell" (click)="toggleNotif()">
+        🔔
+        <span class="notif-badge" *ngIf="notifService.unreadCount > 0">
+          {{ notifService.unreadCount }}
+        </span>
+      </button>
+
+      <!-- DROPDOWN -->
+      <div class="notif-dropdown" *ngIf="notifOpen">
+        <div class="notif-dropdown-header">
+          <span>Obavijesti</span>
+          <div class="notif-actions">
+            <button (click)="markAllRead()" *ngIf="notifService.unreadCount > 0">Označi sve</button>
+            <button (click)="clearAll()" *ngIf="notifications.length > 0" class="clear-btn">Obriši sve</button>
+          </div>
+        </div>
+
+        <div class="notif-empty" *ngIf="notifications.length === 0">
+          <span>🔕</span>
+          <p>Nema obavijesti</p>
+        </div>
+
+        <div class="notif-list">
+          <div class="notif-item"
+               *ngFor="let n of notifications"
+               [class.unread]="!n.read"
+               (click)="navigateNotif(n)">
+            <div class="notif-icon">{{ n.icon }}</div>
+            <div class="notif-body">
+              <div class="notif-title">{{ n.title }}</div>
+              <div class="notif-msg">{{ n.message }}</div>
+              <div class="notif-time">{{ timeAgo(n.createdAt) }}</div>
+            </div>
+            <button class="notif-del" (click)="deleteNotif(n.id, $event)">✕</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <button mat-stroked-button routerLink="/auth/logout" color="warn" (click)="logout()" class="header-logout">
       Odjava
     </button>
@@ -84,17 +126,13 @@
       <h2 class="section-title">Prijavljeni problemi</h2>
       <p class="section-subtitle">Pregled najnovijih problema prijavljenih u gradu.</p>
     </div>
-
     <div class="features-grid">
       <ng-container *ngIf="newestReports.length > 0; else noReports">
         <div class="problem-card" *ngFor="let report of newestReports">
           <div class="image-wrapper">
-            <img *ngIf="getImageUrl(report.imagePath) as imgUrl"
-                 [src]="imgUrl" alt="Slika problema"
+            <img *ngIf="getImageUrl(report.imagePath) as imgUrl" [src]="imgUrl" alt="Slika problema"
                  (error)="$any($event.target).style.display='none'">
-            <div *ngIf="!report.imagePath" class="no-image-placeholder">
-              <span>📷</span>
-            </div>
+            <div *ngIf="!report.imagePath" class="no-image-placeholder"><span>📷</span></div>
             <span class="status-badge" [ngClass]="getStatusClass(report.statusName)">
               {{ getStatusLabel(report.statusName) }}
             </span>
@@ -112,7 +150,6 @@
       </ng-container>
       <ng-template #noReports></ng-template>
     </div>
-
     <div class="section-footer">
       <button mat-raised-button class="view-all-button" routerLink="/problem-reports">
         Pogledajte sve probleme
@@ -127,7 +164,6 @@
       <h2 class="section-title">Nadolazeće volonterske akcije</h2>
       <p class="section-subtitle">Pridružite se i pomozite svom gradu. Prijava je besplatna!</p>
     </div>
-
     <div class="upcoming-grid">
       <div class="upcoming-card" *ngFor="let action of upcomingActions">
         <div class="upcoming-card-header">
@@ -145,7 +181,6 @@
         </div>
       </div>
     </div>
-
     <div class="section-footer">
       <button mat-raised-button class="view-all-button" routerLink="/volunteering">
         Pogledaj sve akcije
@@ -180,17 +215,17 @@
       <div class="step-card">
         <div class="step-icon">📍</div>
         <h3>1. Prijavite problem</h3>
-        <p>Fotografišite i prijavite problem u par klikova. Lokacija se automatski prepoznaje.</p>
+        <p>Fotografišite i prijavite problem u par klikova.</p>
       </div>
       <div class="step-card">
         <div class="step-icon">⚙️</div>
         <h3>2. Nadležni reagiraju</h3>
-        <p>Vaša prijava se prosljeđuje odgovornim službama koje rješavaju problem.</p>
+        <p>Vaša prijava se prosljeđuje odgovornim službama.</p>
       </div>
       <div class="step-card">
         <div class="step-icon">✅</div>
         <h3>3. Pratite status</h3>
-        <p>Budite obaviješteni o svakom koraku — od zaprimanja do rješavanja.</p>
+        <p>Budite obaviješteni o svakom koraku rješavanja.</p>
       </div>
     </div>
   </section>
@@ -262,17 +297,15 @@
       <div class="cta-icon">🏙️</div>
       <h2>Pridružite se zajednici Moj Grad</h2>
       <p>Pomozite sugrađanima i učestvujte u izgradnji boljeg okruženja.</p>
-
       <div *ngIf="isLoggedIn$ | async; else loginButton">
-
         <div style="margin-top: 16px;">
-          <button mat-stroked-button color="warn" (click)="logout()" class="register-button" style="border-color: #e74c3c !important; color: #e74c3c !important;">
+          <button mat-stroked-button color="warn" (click)="logout()" class="register-button"
+            style="border-color: #e74c3c !important; color: #e74c3c !important;">
             <mat-icon>logout</mat-icon>
             Odjavite se
           </button>
         </div>
       </div>
-
       <ng-template #loginButton>
         <button mat-raised-button color="primary" routerLink="/auth/login" class="cta-main-button login-button">
           <mat-icon class="button-icon">login</mat-icon>
