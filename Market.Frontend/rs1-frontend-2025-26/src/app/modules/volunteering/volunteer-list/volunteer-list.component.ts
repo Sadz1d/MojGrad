@@ -3,6 +3,7 @@ import { VolunteerActionService } from '../../../core/services/volunteer-action.
 import { VolunteerActionListItem } from '../../../core/models/volunteer-action.model';
 import { AuthFacadeService } from '../../../core/services/auth/auth-facade.service';
 import * as XLSX from 'xlsx';
+import QRCode from 'qrcode';
 
 @Component({
   selector: 'app-volunteer-list',
@@ -24,6 +25,11 @@ export class VolunteerListComponent implements OnInit {
   dateTo = '';
   onlyAvailable = false;
 
+  // ── QR KOD ──
+  qrModalVisible = false;
+  qrImageUrl = '';
+  qrActionName = '';
+
   constructor(
     private volunteerService: VolunteerActionService,
     public auth: AuthFacadeService
@@ -35,16 +41,13 @@ export class VolunteerListComponent implements OnInit {
 
   load(): void {
     this.loading = true;
-
     this.volunteerService.getActions(1, 50).subscribe({
       next: (res) => {
         this.actions = res.items;
         this.applyFilters();
         this.loading = false;
       },
-      error: () => {
-        this.loading = false;
-      }
+      error: () => { this.loading = false; }
     });
   }
 
@@ -97,11 +100,9 @@ export class VolunteerListComponent implements OnInit {
       alert('Morate biti prijavljeni da biste se prijavili na akciju.');
       return;
     }
-
     if (action.freeSlots <= 0) return;
 
     this.joiningId = action.id;
-
     this.volunteerService.joinAction(action.id).subscribe({
       next: () => {
         action.isUserJoined = true;
@@ -111,90 +112,89 @@ export class VolunteerListComponent implements OnInit {
         this.applyFilters();
       },
       error: (err) => {
-        console.log('DETALJNA GREŠKA PRIJAVE:', err);
         alert(err?.error?.message || err?.error || 'Greška prilikom prijave.');
         this.joiningId = null;
       }
     });
   }
 
+  // ── QR KOD METODE ──────────────────────────
+
+  async showQR(action: VolunteerActionListItem): Promise<void> {
+    const url = `${window.location.origin}/volunteering?action=${action.id}`;
+
+    try {
+      this.qrImageUrl = await QRCode.toDataURL(url, {
+        width: 280,
+        margin: 2,
+        color: {
+          dark: '#1f4e79',
+          light: '#ffffff'
+        }
+      });
+      this.qrActionName = action.name;
+      this.qrModalVisible = true;
+    } catch (err) {
+      console.error('QR greška:', err);
+    }
+  }
+
+  closeQR(): void {
+    this.qrModalVisible = false;
+    this.qrImageUrl = '';
+    this.qrActionName = '';
+  }
+
+  downloadQR(): void {
+    if (!this.qrImageUrl) return;
+    const a = document.createElement('a');
+    a.href = this.qrImageUrl;
+    a.download = `qr-${this.qrActionName.replace(/\s+/g, '-').toLowerCase()}.png`;
+    a.click();
+  }
+
+  // ── EXPORT ──────────────────────────────────
+
   exportCSV(): void {
     const headers = ['Naziv', 'Opis', 'Lokacija', 'Datum', 'Maks. volontera', 'Prijavljenih', 'Slobodnih mjesta'];
-
     const rows = this.filteredActions.map(a => [
-      a.name,
-      a.description,
-      a.location,
+      a.name, a.description, a.location,
       new Date(a.eventDate).toLocaleDateString('bs-BA'),
-      a.maxParticipants,
-      a.participantsCount,
-      a.freeSlots
+      a.maxParticipants, a.participantsCount, a.freeSlots
     ]);
-
-    const csvContent = [headers, ...rows]
-      .map(row => row.map(cell => `"${cell}"`).join(','))
-      .join('\n');
-
-    this.downloadFile(
-      '\uFEFF' + csvContent,
-      'volonterske-akcije.csv',
-      'text/csv;charset=utf-8;'
-    );
+    const csvContent = [headers, ...rows].map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
+    this.downloadFile('\uFEFF' + csvContent, 'volonterske-akcije.csv', 'text/csv;charset=utf-8;');
   }
 
   exportExcel(): void {
     const data = this.filteredActions.map(a => ({
-      'Naziv': a.name,
-      'Opis': a.description,
-      'Lokacija': a.location,
+      'Naziv': a.name, 'Opis': a.description, 'Lokacija': a.location,
       'Datum': new Date(a.eventDate).toLocaleDateString('bs-BA'),
-      'Maks. volontera': a.maxParticipants,
-      'Prijavljenih': a.participantsCount,
-      'Slobodnih mjesta': a.freeSlots
+      'Maks. volontera': a.maxParticipants, 'Prijavljenih': a.participantsCount, 'Slobodnih mjesta': a.freeSlots
     }));
-
     const ws = XLSX.utils.json_to_sheet(data);
+    ws['!cols'] = [{ wch: 30 }, { wch: 40 }, { wch: 25 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 18 }];
     const wb = XLSX.utils.book_new();
-
-    ws['!cols'] = [
-      { wch: 30 },
-      { wch: 40 },
-      { wch: 25 },
-      { wch: 15 },
-      { wch: 15 },
-      { wch: 15 },
-      { wch: 18 }
-    ];
-
     XLSX.utils.book_append_sheet(wb, ws, 'Volonterske akcije');
     XLSX.writeFile(wb, 'volonterske-akcije.xlsx');
   }
 
   exportJSON(): void {
     const data = this.filteredActions.map(a => ({
-      id: a.id,
-      naziv: a.name,
-      opis: a.description,
-      lokacija: a.location,
+      id: a.id, naziv: a.name, opis: a.description, lokacija: a.location,
       datum: new Date(a.eventDate).toISOString().split('T')[0],
-      maksVolontera: a.maxParticipants,
-      prijavljenih: a.participantsCount,
-      slobodnihMjesta: a.freeSlots
+      maksVolontera: a.maxParticipants, prijavljenih: a.participantsCount, slobodnihMjesta: a.freeSlots
     }));
-
-    const json = JSON.stringify(data, null, 2);
-    this.downloadFile(json, 'volonterske-akcije.json', 'application/json');
+    this.downloadFile(JSON.stringify(data, null, 2), 'volonterske-akcije.json', 'application/json');
   }
 
   private downloadFile(content: string, filename: string, mimeType: string): void {
     const blob = new Blob([content], { type: mimeType });
     const url = URL.createObjectURL(blob);
-
     const a = document.createElement('a');
     a.href = url;
     a.download = filename;
     a.click();
-
     URL.revokeObjectURL(url);
   }
 

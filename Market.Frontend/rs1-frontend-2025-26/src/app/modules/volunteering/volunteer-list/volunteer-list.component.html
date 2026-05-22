@@ -9,7 +9,7 @@
   </div>
 </section>
 
-<div style="text-align:center">
+<div style="text-align:center; margin-top: 16px;">
   <a class="calendar-link" routerLink="/volunteering/calendar">
     📅 Kalendar akcija
   </a>
@@ -17,44 +17,17 @@
 
 <!-- FILTERI -->
 <div class="filter-box">
-  <input
-    type="text"
-    placeholder="Pretraži akcije..."
-    [(ngModel)]="searchText"
-    (input)="applyFilters()"
-  />
-
-  <input
-    type="text"
-    placeholder="Lokacija"
-    [(ngModel)]="locationText"
-    (input)="applyFilters()"
-  />
-
-  <input
-    type="date"
-    [(ngModel)]="dateFrom"
-    (change)="applyFilters()"
-  />
-
-  <input
-    type="date"
-    [(ngModel)]="dateTo"
-    (change)="applyFilters()"
-  />
-
+  <input type="text" placeholder="Pretraži akcije..."
+    [(ngModel)]="searchText" (input)="applyFilters()" />
+  <input type="text" placeholder="Lokacija"
+    [(ngModel)]="locationText" (input)="applyFilters()" />
+  <input type="date" [(ngModel)]="dateFrom" (change)="applyFilters()" />
+  <input type="date" [(ngModel)]="dateTo" (change)="applyFilters()" />
   <label>
-    <input
-      type="checkbox"
-      [(ngModel)]="onlyAvailable"
-      (change)="applyFilters()"
-    />
+    <input type="checkbox" [(ngModel)]="onlyAvailable" (change)="applyFilters()" />
     Samo dostupne akcije
   </label>
-
-  <button type="button" (click)="clearFilters()">
-    Očisti filtere
-  </button>
+  <button type="button" (click)="clearFilters()">Očisti filtere</button>
 </div>
 
 <!-- TOOLBAR -->
@@ -64,22 +37,11 @@
       {{ loading ? 'Učitavanje...' : filteredActions.length + ' akcija' }}
     </span>
   </div>
-
-  <!-- EXPORT vidi samo admin -->
   <div class="export-group" *ngIf="auth.isAdmin()">
     <span class="export-label">Izvezi:</span>
-
-    <button class="export-btn csv" (click)="exportCSV()" title="Izvezi kao CSV">
-      📄 CSV
-    </button>
-
-    <button class="export-btn excel" (click)="exportExcel()" title="Izvezi kao Excel">
-      📊 Excel
-    </button>
-
-    <button class="export-btn json" (click)="exportJSON()" title="Izvezi kao JSON">
-      🔧 JSON
-    </button>
+    <button class="export-btn csv" (click)="exportCSV()">📄 CSV</button>
+    <button class="export-btn excel" (click)="exportExcel()">📊 Excel</button>
+    <button class="export-btn json" (click)="exportJSON()">🔧 JSON</button>
   </div>
 </div>
 
@@ -102,12 +64,10 @@
 
     <div class="card-header">
       <div class="card-icon">🤝</div>
-
       <div class="card-title-wrap">
         <h3>{{ a.name }}</h3>
         <span class="location">📍 {{ a.location }}</span>
       </div>
-
       <span class="date-badge">{{ a.eventDate | date:'dd.MM.yyyy' }}</span>
     </div>
 
@@ -116,56 +76,73 @@
     <div class="capacity-section">
       <div class="capacity-info">
         <span>👥 {{ a.participantsCount }} / {{ a.maxParticipants }} volontera</span>
-
         <span class="free-slots" [class.full]="a.freeSlots === 0">
           {{ a.freeSlots === 0 ? '🔴 Popunjeno' : '🟢 ' + a.freeSlots + ' slobodnih' }}
         </span>
       </div>
-
       <div class="progress-wrap">
-        <div
-          class="progress-fill"
-          [style.width.%]="freePercent(a)"
-          [class.almost-full]="freePercent(a) >= 80">
+        <div class="progress-fill"
+             [style.width.%]="freePercent(a)"
+             [class.almost-full]="freePercent(a) >= 80">
         </div>
       </div>
     </div>
 
     <div class="card-footer">
 
-      <!-- Samo admin vidi uredi -->
-      <button
-        *ngIf="auth.isAdmin()"
-        class="btn-edit"
+      <!-- QR dugme — svi vide -->
+      <button class="btn-qr" (click)="showQR(a)" title="Generiši QR kod">
+        📱 QR kod
+      </button>
+
+      <!-- Admin -->
+      <button *ngIf="auth.isAdmin()" class="btn-edit"
         [routerLink]="['/admin/volunteer-actions/edit', a.id]">
         ✏️ Uredi
       </button>
 
-      <!-- Obični prijavljen korisnik vidi prijavu -->
-      <button
-        *ngIf="auth.isLoggedIn() && !auth.isAdmin()"
+      <!-- Građanin -->
+      <button *ngIf="auth.isLoggedIn() && !auth.isAdmin()"
         class="btn-join"
         [class.joined]="a.isUserJoined"
         [class.full]="a.freeSlots === 0 && !a.isUserJoined"
         [disabled]="a.isUserJoined || a.freeSlots === 0 || joiningId === a.id"
         (click)="join(a)">
-
         <span *ngIf="joiningId === a.id">⏳ Prijava...</span>
         <span *ngIf="a.isUserJoined && joiningId !== a.id">✅ Prijavljen/a</span>
         <span *ngIf="!a.isUserJoined && a.freeSlots === 0 && joiningId !== a.id">🔴 Popunjeno</span>
         <span *ngIf="!a.isUserJoined && a.freeSlots > 0 && joiningId !== a.id">🙋 Prijavi se</span>
       </button>
 
-      <p *ngIf="auth.isAdmin()" class="admin-note">
-        Admin uređuje akcije.
-      </p>
-
       <p *ngIf="!auth.isLoggedIn()" class="admin-note">
         Prijavite se da biste se prijavili na akciju.
       </p>
-
     </div>
 
   </div>
+</div>
 
+<!-- ── QR KOD MODAL ── -->
+<div class="qr-overlay" *ngIf="qrModalVisible" (click)="closeQR()">
+  <div class="qr-modal" (click)="$event.stopPropagation()">
+
+    <button class="qr-close" (click)="closeQR()">✕</button>
+
+    <div class="qr-header">
+      <span class="qr-icon">📱</span>
+      <h3>QR kod za akciju</h3>
+      <p>{{ qrActionName }}</p>
+    </div>
+
+    <div class="qr-image-wrap">
+      <img [src]="qrImageUrl" alt="QR kod" class="qr-image" />
+    </div>
+
+    <p class="qr-hint">Skenirajte QR kod da biste direktno otvorili ovu volontersku akciju.</p>
+
+    <button class="qr-download-btn" (click)="downloadQR()">
+      ⬇️ Preuzmi QR kod
+    </button>
+
+  </div>
 </div>
