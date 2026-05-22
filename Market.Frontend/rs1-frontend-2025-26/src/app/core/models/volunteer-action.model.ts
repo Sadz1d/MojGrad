@@ -4,6 +4,8 @@ export interface VolunteerActionListItem {
   name: string;
   description: string;
   location: string;
+  latitude?: number | null;
+  longitude?: number | null;
   eventDate: Date;
   maxParticipants: number;
   participantsCount: number;
@@ -18,6 +20,8 @@ export interface CreateVolunteerActionCommand {
   name: string;
   description: string;
   location: string;
+  latitude?: number | null;
+  longitude?: number | null;
   eventDate: Date;
   maxParticipants: number;
 }
@@ -27,6 +31,8 @@ export interface UpdateVolunteerActionCommand {
   name?: string;
   description?: string;
   location?: string;
+  latitude?: number | null;
+  longitude?: number | null;
   eventDate?: Date;
   maxParticipants?: number;
 }

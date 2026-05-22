@@ -45,6 +45,8 @@ public sealed class ListVolunteerActionsQueryHandler
                 Name = a.Name,
                 Description = a.Description,
                 Location = a.Location,
+                Latitude = a.Latitude,
+                Longitude = a.Longitude,
                 EventDate = a.EventDate,
                 MaxParticipants = a.MaxParticipants,
                 ParticipantsCount = _ctx.ActionParticipants.Count(p => p.ActionId == a.Id)

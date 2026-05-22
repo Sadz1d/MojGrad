@@ -1,7 +1,9 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { VolunteerActionService } from '../../../core/services/volunteer-action.service';
 import { ActivatedRoute, Router } from '@angular/router';
+
+declare let L: any;
 
 @Component({
   standalone: false,
@@ -9,15 +11,18 @@ import { ActivatedRoute, Router } from '@angular/router';
   templateUrl: './volunteer-action-create.component.html',
   styleUrl: './volunteer-action-create.component.scss',
 })
-export class VolunteerActionCreateComponent implements OnInit, OnDestroy {
+export class VolunteerActionCreateComponent implements OnInit, OnDestroy, AfterViewInit {
 
   stepBasic!: FormGroup;
   stepDetails!: FormGroup;
   stepCapacity!: FormGroup;
+
   actionId: number | null = null;
   isEditMode = false;
 
-  // ── AUTOSAVE ──
+  map: any;
+  marker: any;
+
   autosaveStatus: 'idle' | 'saving' | 'saved' | 'error' = 'idle';
   private readonly autosaveKey = 'autosave_volunteer_action';
   private autosaveTimer: any = null;
@@ -37,7 +42,9 @@ export class VolunteerActionCreateComponent implements OnInit, OnDestroy {
 
     this.stepDetails = this.fb.group({
       location: ['', Validators.required],
-      eventDate: ['', Validators.required]
+      eventDate: ['', Validators.required],
+      latitude: [null, Validators.required],
+      longitude: [null, Validators.required]
     });
 
     this.stepCapacity = this.fb.group({
@@ -50,17 +57,79 @@ export class VolunteerActionCreateComponent implements OnInit, OnDestroy {
       this.isEditMode = true;
 
       this.volunteerActionService.getAction(this.actionId).subscribe(action => {
-        this.stepBasic.patchValue({ name: action.name, description: action.description });
-        this.stepDetails.patchValue({ location: action.location, eventDate: action.eventDate });
-        this.stepCapacity.patchValue({ maxParticipants: action.maxParticipants });
+        this.stepBasic.patchValue({
+          name: action.name,
+          description: action.description
+        });
+
+        this.stepDetails.patchValue({
+          location: action.location,
+          eventDate: action.eventDate,
+          latitude: action.latitude,
+          longitude: action.longitude
+        });
+
+        this.stepCapacity.patchValue({
+          maxParticipants: action.maxParticipants
+        });
+
+        if (action.latitude != null && action.longitude != null) {
+          const lat = action.latitude;
+          const lng = action.longitude;
+
+          setTimeout(() => {
+            this.setMarker(lat, lng);
+          }, 500);
+        }
       });
     } else {
-      // Učitaj autosave samo za novu akciju
       this.loadAutosave();
     }
 
-    // Prati promjene na svim formama
     this.watchForms();
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      this.initMap();
+    }, 500);
+  }
+
+  initMap(): void {
+    if (this.map) return;
+
+    this.map = L.map('volunteer-map').setView([43.3438, 17.8078], 13);
+
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(this.map);
+
+    this.map.on('click', (e: any) => {
+      const lat = e.latlng.lat;
+      const lng = e.latlng.lng;
+
+      this.stepDetails.patchValue({
+        latitude: lat,
+        longitude: lng
+      });
+
+      this.setMarker(lat, lng);
+    });
+  }
+
+  setMarker(lat: number, lng: number): void {
+    if (!this.map) return;
+
+    if (this.marker) {
+      this.map.removeLayer(this.marker);
+    }
+
+    this.marker = L.marker([lat, lng])
+      .addTo(this.map)
+      .bindPopup('Lokacija volontiranja')
+      .openPopup();
+
+    this.map.setView([lat, lng], 15);
   }
 
   private watchForms(): void {
@@ -88,6 +157,7 @@ export class VolunteerActionCreateComponent implements OnInit, OnDestroy {
     try {
       localStorage.setItem(this.autosaveKey, JSON.stringify(data));
       this.autosaveStatus = 'saved';
+
       setTimeout(() => {
         if (this.autosaveStatus === 'saved') this.autosaveStatus = 'idle';
       }, 3000);
@@ -103,8 +173,16 @@ export class VolunteerActionCreateComponent implements OnInit, OnDestroy {
 
       const parsed = JSON.parse(saved);
 
-      if (parsed.basic)    this.stepBasic.patchValue(parsed.basic);
-      if (parsed.details)  this.stepDetails.patchValue(parsed.details);
+      if (parsed.basic) this.stepBasic.patchValue(parsed.basic);
+      if (parsed.details) {
+        this.stepDetails.patchValue(parsed.details);
+
+        if (parsed.details.latitude && parsed.details.longitude) {
+          setTimeout(() => {
+            this.setMarker(parsed.details.latitude, parsed.details.longitude);
+          }, 700);
+        }
+      }
       if (parsed.capacity) this.stepCapacity.patchValue(parsed.capacity);
 
       this.autosaveStatus = 'saved';
@@ -119,14 +197,19 @@ export class VolunteerActionCreateComponent implements OnInit, OnDestroy {
     this.stepDetails.reset();
     this.stepCapacity.reset({ maxParticipants: 1 });
     this.autosaveStatus = 'idle';
+
+    if (this.marker) {
+      this.map.removeLayer(this.marker);
+      this.marker = null;
+    }
   }
 
   get autosaveLabel(): string {
     switch (this.autosaveStatus) {
       case 'saving': return '💾 Snima se...';
-      case 'saved':  return '✅ Automatski sačuvano';
-      case 'error':  return '⚠️ Greška pri autosave';
-      default:       return '';
+      case 'saved': return '✅ Automatski sačuvano';
+      case 'error': return '⚠️ Greška pri autosave';
+      default: return '';
     }
   }
 
@@ -138,6 +221,8 @@ export class VolunteerActionCreateComponent implements OnInit, OnDestroy {
       description: this.stepBasic.value.description,
       location: this.stepDetails.value.location,
       eventDate: this.stepDetails.value.eventDate,
+      latitude: this.stepDetails.value.latitude,
+      longitude: this.stepDetails.value.longitude,
       maxParticipants: this.stepCapacity.value.maxParticipants
     };
 
@@ -158,5 +243,9 @@ export class VolunteerActionCreateComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     clearTimeout(this.autosaveTimer);
+
+    if (this.map) {
+      this.map.remove();
+    }
   }
 }

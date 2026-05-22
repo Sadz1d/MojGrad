@@ -65,6 +65,12 @@ public sealed class UpdateVolunteerActionCommandHandler
             entity.Location = loc;
         }
 
+        if (request.Latitude.HasValue)
+            entity.Latitude = request.Latitude.Value;
+
+        if (request.Longitude.HasValue)
+            entity.Longitude = request.Longitude.Value;
+
         // EventDate
         if (request.EventDate.HasValue)
         {

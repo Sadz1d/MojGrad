@@ -44,6 +44,8 @@ public sealed class CreateVolunteerActionCommandHandler
             Name = name,
             Description = request.Description?.Trim(),
             Location = request.Location?.Trim(),
+            Latitude = request.Latitude,
+            Longitude = request.Longitude,
             EventDate = request.EventDate,
             MaxParticipants = request.MaxParticipants
         };

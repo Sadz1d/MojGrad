@@ -9,6 +9,8 @@ public class VolunteerActionEntity : BaseEntity
     public string Name { get; set; } = default!;
     public string? Description { get; set; }
     public string? Location { get; set; }
+    public double? Latitude { get; set; }
+    public double? Longitude { get; set; }
     public DateTime EventDate { get; set; }
     public int MaxParticipants { get; set; }
     public bool IsEnabled { get; set; } = true;

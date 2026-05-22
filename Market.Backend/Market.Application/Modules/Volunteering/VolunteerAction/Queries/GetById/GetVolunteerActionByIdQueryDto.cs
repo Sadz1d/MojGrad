@@ -6,6 +6,8 @@ public sealed class GetVolunteerActionByIdQueryDto
     public required string Name { get; init; }
     public string? Description { get; init; }
     public string? Location { get; init; }
+    public double? Latitude { get; init; }
+    public double? Longitude { get; init; }
     public required DateTime EventDate { get; init; }
     public required int MaxParticipants { get; init; }
 

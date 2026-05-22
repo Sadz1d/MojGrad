@@ -86,7 +86,24 @@
               Lokacija je obavezna
             </mat-error>
           </mat-form-field>
+          <div class="map-box">
+            <label class="map-label">Odaberi lokaciju na mapi *</label>
 
+            <div id="volunteer-map"></div>
+
+            <div class="map-info" *ngIf="stepDetails.get('latitude')?.value">
+              <mat-icon>place</mat-icon>
+              <span>
+      Odabrana lokacija:
+                {{ stepDetails.get('latitude')?.value | number:'1.5-5' }},
+                {{ stepDetails.get('longitude')?.value | number:'1.5-5' }}
+    </span>
+            </div>
+
+            <mat-error *ngIf="stepDetails.get('latitude')?.invalid && stepDetails.touched">
+              Morate kliknuti lokaciju na mapi.
+            </mat-error>
+          </div>
           <mat-form-field appearance="outline" class="form-field">
             <mat-label>Datum održavanja *</mat-label>
             <input matInput type="date" formControlName="eventDate" />

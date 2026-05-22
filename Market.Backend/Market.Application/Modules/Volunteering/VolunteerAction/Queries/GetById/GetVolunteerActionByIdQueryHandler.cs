@@ -23,6 +23,8 @@ public sealed class GetVolunteerActionByIdQueryHandler
                 Name = a.Name,
                 Description = a.Description,
                 Location = a.Location,
+                Latitude = a.Latitude,
+                Longitude = a.Longitude,
                 EventDate = a.EventDate,
                 MaxParticipants = a.MaxParticipants,
                 OrganizerId = a.VolunteerId,
