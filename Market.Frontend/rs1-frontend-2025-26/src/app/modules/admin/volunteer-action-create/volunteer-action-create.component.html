@@ -44,6 +44,19 @@
           </mat-error>
         </mat-form-field>
 
+        <!-- AUTOSAVE STATUS -->
+        <div class="autosave-bar" *ngIf="autosaveStatus !== 'idle'">
+  <span [class.saving]="autosaveStatus === 'saving'"
+        [class.saved]="autosaveStatus === 'saved'"
+        [class.error]="autosaveStatus === 'error'">
+    {{ autosaveLabel }}
+  </span>
+          <button type="button" class="clear-btn" *ngIf="autosaveStatus === 'saved'" (click)="clearAutosave()">
+            ✕ Obriši nacrt
+          </button>
+        </div>
+
+
         <div class="step-actions">
           <button mat-raised-button color="primary" matStepperNext [disabled]="stepBasic.invalid">
             Dalje

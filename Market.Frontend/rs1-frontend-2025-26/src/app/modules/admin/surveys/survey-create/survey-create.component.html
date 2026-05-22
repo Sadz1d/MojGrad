@@ -15,6 +15,7 @@
           matInput
           placeholder="Unesite pitanje ankete"
           [(ngModel)]="model.question"
+          (ngModelChange)="onFieldChange()"
           name="question"
           required
         />
@@ -28,6 +29,7 @@
             matInput
             type="date"
             [(ngModel)]="model.startDate"
+            (ngModelChange)="onFieldChange()"
             name="startDate"
           />
         </mat-form-field>
@@ -38,6 +40,7 @@
             matInput
             type="date"
             [(ngModel)]="model.endDate"
+            (ngModelChange)="onFieldChange()"
             name="endDate"
           />
         </mat-form-field>
@@ -52,6 +55,20 @@
         >
           Odustani
         </button>
+
+
+        <!-- AUTOSAVE STATUS -->
+        <div class="autosave-bar" *ngIf="autosaveStatus !== 'idle'">
+  <span [class.saving]="autosaveStatus === 'saving'"
+        [class.saved]="autosaveStatus === 'saved'"
+        [class.error]="autosaveStatus === 'error'">
+    {{ autosaveLabel }}
+  </span>
+          <button type="button" class="clear-btn" *ngIf="autosaveStatus === 'saved'" (click)="clearAutosave()">
+            ✕ Obriši nacrt
+          </button>
+        </div>
+
 
         <button
           mat-raised-button
