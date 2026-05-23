@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthFacadeService } from '../../../core/services/auth/auth-facade.service';
-
+import { ThemeService } from '../../../core/services/theme.service';
 @Component({
   selector: 'app-admin-layout',
   standalone: false,
@@ -11,6 +11,7 @@ import { AuthFacadeService } from '../../../core/services/auth/auth-facade.servi
 export class AdminLayoutComponent {
   private translate = inject(TranslateService);
   auth = inject(AuthFacadeService);
+  public themeService = inject(ThemeService);
 
   currentLang: string;
 

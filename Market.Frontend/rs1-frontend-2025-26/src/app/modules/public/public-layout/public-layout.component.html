@@ -14,7 +14,12 @@
   </nav>
   <div class="header-right">
     <span class="header-user">{{ currentUser?.email }}</span>
-
+    <!-- DARK MODE TOGGLE -->
+    <button class="dark-toggle"
+            [class.dark]="themeService.isDark"
+            (click)="themeService.toggle()"
+            [title]="themeService.isDark ? 'Svijetla tema' : 'Tamna tema'">
+    </button>
     <!-- 🔔 NOTIFIKACIJE -->
     <div class="notif-wrap" *ngIf="currentUser">
       <button class="notif-bell" (click)="toggleNotif()">

@@ -36,6 +36,11 @@
     </div>
 
 
+    <button class="dark-toggle"
+            [class.dark]="themeService.isDark"
+            (click)="themeService.toggle()">
+    </button>
+
 
     <!-- MENU -->
     <nav class="menu">

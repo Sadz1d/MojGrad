@@ -8,7 +8,7 @@ import { VolunteerActionListItem } from '../../../core/models/volunteer-action.m
 import { SurveyService } from '../../../core/services/survey.service';
 import { Router } from '@angular/router';
 import { NotificationService, AppNotification } from '../../../core/services/notification.service';
-
+import { ThemeService } from '../../../core/services/theme.service';
 declare const L: any;
 
 @Component({
@@ -24,6 +24,7 @@ export class PublicLayoutComponent implements OnInit, AfterViewInit, OnDestroy {
   private surveyService = inject(SurveyService);
   private router = inject(Router);
   public notifService = inject(NotificationService);
+  public themeService = inject(ThemeService);
 
   currentYear: string = '2025';
   isLoggedIn$ = this.auth.isAuthenticated$;

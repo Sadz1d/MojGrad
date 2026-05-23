@@ -669,3 +669,185 @@ router-outlet {
   text-overflow: ellipsis;
 }
 .map-tooltip::before { display: none !important; }
+/* =========================================
+   DARK MODE – Dodaj na kraj styles.scss
+   ========================================= */
+
+/* Dark mode varijable */
+body.dark-mode {
+  color-scheme: dark;
+  background-color: #0f1923;
+  color: #e2e8f0;
+
+  /* ── HEADER ── */
+  .app-header {
+    background: rgba(15, 25, 35, 0.95) !important;
+    border-bottom-color: rgba(255,255,255,0.06) !important;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4) !important;
+  }
+
+  .header-title { color: #90caf9 !important; }
+  .header-nav a { color: #90a4ae !important; &:hover, &.active { color: #90caf9 !important; } }
+  .header-user { color: #78909c !important; }
+
+  /* ── LANDING PAGE ── */
+  .landing-page { background: #0f1923; }
+
+  /* ── BROJAČI ── */
+  .counters-section {
+    background: linear-gradient(135deg, #0d2137 0%, #1a3a5c 100%);
+  }
+
+  /* ── PROBLEMI ── */
+  .features-section {
+    background: #131f2e !important;
+  }
+
+  .problem-card {
+    background: #1a2a3a !important;
+    border-color: #1e3a5c !important;
+    &:hover { border-color: #2c5f8a !important; box-shadow: 0 16px 40px rgba(0,0,0,0.4) !important; }
+
+    .no-image-placeholder { background: #0f1923 !important; }
+    .problem-content {
+      h3 { color: #90caf9 !important; }
+      p  { color: #90a4ae !important; }
+      .meta { .category { color: #64b5f6 !important; } .date { color: #546e7a !important; } }
+      .location { color: #42a5f5 !important; }
+    }
+  }
+
+  .section-title   { color: #90caf9 !important; }
+  .section-subtitle { color: #78909c !important; }
+  .title-badge { background: #1e3a5c !important; color: #64b5f6 !important; }
+
+  .view-all-button {
+    background: #1a3a5c !important;
+    &:hover { background: #1e4a72 !important; }
+  }
+
+  /* ── NADOLAZEĆE AKCIJE ── */
+  .upcoming-section { background: #111b27 !important; }
+
+  .upcoming-card {
+    background: #1a2a3a !important;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3) !important;
+    border-top-color: #2c7be5 !important;
+    &:hover { box-shadow: 0 20px 48px rgba(0,0,0,0.5) !important; }
+
+    h3 { color: #90caf9 !important; }
+  }
+
+  .upcoming-location { color: #546e7a !important; }
+  .upcoming-desc     { color: #78909c !important; }
+  .upcoming-date     { background: #1e3a5c !important; color: #64b5f6 !important; }
+  .upcoming-footer   { border-top-color: #1e3a5c !important; }
+
+  /* ── MAPA ── */
+  .map-section { background: #0f1923 !important; }
+  .map-wrapper { border-color: #1e3a5c !important; }
+  .map-legend  { background: #1a2a3a !important; color: #78909c !important; }
+
+  /* ── HOW IT WORKS ── */
+  .how-it-works { background: #131f2e !important; }
+
+  .step-card {
+    background: #1a2a3a !important;
+    border-color: #1e3a5c !important;
+    &:hover { border-color: #2c5f8a !important; }
+
+    h3 { color: #90caf9 !important; }
+    p  { color: #78909c !important; }
+  }
+
+  /* ── TESTIMONIALS ── */
+  .testimonials-section { background: #111b27 !important; }
+
+  .testimonial-card {
+    background: #1a2a3a !important;
+    border-color: #1e3a5c !important;
+    .comment { color: #90a4ae !important; }
+    .user-info { h4 { color: #90caf9 !important; } span { color: #546e7a !important; } }
+  }
+
+  /* ── CTA ── */
+  .cta-section { background: linear-gradient(135deg, #0d1f30, #111b27) !important; }
+
+  .cta-box {
+    background: #1a2a3a !important;
+    border-color: #1e3a5c !important;
+    h2 { color: #90caf9 !important; }
+    p  { color: #78909c !important; }
+  }
+
+  /* ── NOTIFIKACIJE ── */
+  .notif-bell:hover { background: rgba(144, 202, 249, 0.1) !important; }
+
+  .notif-dropdown {
+    background: #1a2a3a !important;
+    border-color: #1e3a5c !important;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5) !important;
+  }
+
+  .notif-dropdown-header {
+    border-bottom-color: #1e3a5c !important;
+    color: #90caf9 !important;
+    button { color: #546e7a !important; &:hover { background: #1e3a5c !important; color: #90caf9 !important; } }
+  }
+
+  .notif-item {
+    border-bottom-color: #0f1923 !important;
+    &:hover { background: #1e3a5c !important; }
+    &.unread { background: #162840 !important; border-left-color: #2c7be5 !important; &:hover { background: #1e3a5c !important; } }
+  }
+
+  .notif-icon { background: #1e3a5c !important; }
+  .notif-title { color: #90caf9 !important; }
+  .notif-msg   { color: #78909c !important; }
+  .notif-time  { color: #546e7a !important; }
+
+  /* ── ANGULAR MATERIAL ── */
+  .mat-mdc-card { background: #1a2a3a !important; }
+  .mat-drawer-container { background: #0f1923 !important; }
+}
+
+/* ── DARK MODE TOGGLE DUGME ── */
+.dark-toggle {
+  width: 44px;
+  height: 24px;
+  background: #e3f2fd;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  transition: background 0.3s ease;
+  flex-shrink: 0;
+
+  &::after {
+    content: '☀️';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    transition: transform 0.3s ease;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    line-height: 20px;
+    text-align: center;
+  }
+
+  &.dark {
+    background: #1e3a5c;
+
+    &::after {
+      content: '🌙';
+      transform: translateX(20px);
+    }
+  }
+}
