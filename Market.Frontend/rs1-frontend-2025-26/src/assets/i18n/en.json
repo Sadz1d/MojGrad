@@ -1,0 +1,79 @@
+{
+  "ADMIN": {
+    "TITLE": "Administration",
+    "DASHBOARD_TITLE": "Admin Panel",
+    "MENU": {
+      "PROBLEMS": "Problem Reports",
+      "CATEGORIES": "Categories",
+      "STATUSES": "Statuses",
+      "ALL_REPORTS": "All Reports",
+      "USERS_TITLE": "Users",
+      "USERS": "User Management",
+      "VOLUNTEERING": "Volunteering",
+      "CREATE_ACTION": "Create Action",
+      "ALL_ACTIONS": "All Volunteer Actions",
+      "SURVEYS": "Surveys",
+      "CREATE_SURVEY": "Create Survey",
+      "ALL_SURVEYS": "All Surveys",
+      "SYSTEM": "System",
+      "STATISTICS": "Statistics",
+      "SETTINGS": "Settings",
+      "HOME": "Back to Home",
+      "LOGOUT": "Logout"
+    },
+    "STATS": {
+      "ACTIVE_ACTIONS": "Active Actions",
+      "SOLVED_PROBLEMS": "Solved Problems",
+      "SATISFACTION": "Satisfaction",
+      "USERS": "Active Users"
+    }
+  },
+  "COMMON": {
+    "SAVE": "Save",
+    "CANCEL": "Cancel",
+    "DELETE": "Delete",
+    "EDIT": "Edit",
+    "CREATE": "Create",
+    "SEARCH": "Search",
+    "LOADING": "Loading...",
+    "NO_DATA": "No data",
+    "YES": "Yes",
+    "NO": "No",
+    "BACK": "Back",
+    "NEXT": "Next",
+    "FILTER": "Filter"
+  },
+  "VOLUNTEERING": {
+    "TITLE": "Volunteer Actions",
+    "SUBTITLE": "Join and help your city.",
+    "JOIN": "Join",
+    "JOINED": "Joined",
+    "FULL": "Full",
+    "FREE_SLOTS": "free slots",
+    "PARTICIPANTS": "volunteers",
+    "CREATE_TITLE": "Create Volunteer Action",
+    "CALENDAR": "Action Calendar"
+  },
+  "SURVEYS": {
+    "TITLE": "Surveys for Citizens",
+    "SUBTITLE": "Your opinion helps improve the city.",
+    "START": "Start",
+    "RESULTS": "Results",
+    "ACTIVE": "Active",
+    "INACTIVE": "Inactive",
+    "RESPONSES": "responses",
+    "ACTIVE_UNTIL": "Active until",
+    "VOTE_TITLE": "Vote",
+    "VOTE_SUBTITLE": "Choose your answer"
+  },
+  "HEADER": {
+    "HOME": "Home",
+    "PROFILE": "My Profile",
+    "VOLUNTEERING": "Volunteering",
+    "SURVEYS": "Surveys",
+    "POINTS": "Points / Leaderboard",
+    "SUPPORT": "Support",
+    "LOGOUT": "Logout",
+    "ADMIN_PANEL": "Admin Panel"
+  }
+}

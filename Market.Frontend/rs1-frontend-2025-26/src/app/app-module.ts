@@ -11,17 +11,24 @@ import { AuthInterceptor } from './core/interceptors/auth.interceptor';
 import { loadingBarInterceptor } from './core/interceptors/loading-bar-interceptor.service';
 import { errorLoggingInterceptor } from './core/interceptors/error-logging-interceptor.service';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
-import { CustomTranslateLoader } from './core/services/custom-translate-loader';
+
 import { materialModules } from './modules/shared/material-modules';
 import { SharedModule } from './modules/shared/shared-module';
 import { TestAuthComponent } from './pages/test-auth/test-auth.component';
-
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ProblemReportService } from './core/services/problem-report.service';
 import { ProblemReportListComponent } from './core/components/problem-report-list/problem-report-list.component';
 import { ProblemReportFormComponent } from './core/components/problem-report-form/problem-report-form.component';
 import { RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
+import { Observable } from 'rxjs';
+
+class CustomLoader implements TranslateLoader {
+  constructor(private http: HttpClient) {}
+  getTranslation(lang: string): Observable<any> {
+    return this.http.get(`/assets/i18n/${lang}.json`);
+  }
+}
 
 @NgModule({
   declarations: [
@@ -36,19 +43,17 @@ import { MatButtonModule } from '@angular/material/button';
     FormsModule,
     RouterModule,
     MatButtonModule,
-
     TestAuthComponent,
     ProblemReportListComponent,
     ProblemReportFormComponent,
-
     TranslateModule.forRoot({
+      defaultLanguage: 'bs',
       loader: {
         provide: TranslateLoader,
-        useFactory: (http: HttpClient) => new CustomTranslateLoader(http),
+        useFactory: (http: HttpClient) => new CustomLoader(http),
         deps: [HttpClient]
       }
     }),
-
     SharedModule,
     materialModules
   ],

@@ -1,0 +1,79 @@
+{
+  "ADMIN": {
+    "TITLE": "Administracija",
+    "DASHBOARD_TITLE": "Admin Panel",
+    "MENU": {
+      "PROBLEMS": "Prijave problema",
+      "CATEGORIES": "Kategorije",
+      "STATUSES": "Statusi",
+      "ALL_REPORTS": "Sve prijave",
+      "USERS_TITLE": "Korisnici",
+      "USERS": "Upravljanje korisnicima",
+      "VOLUNTEERING": "Volontiranje",
+      "CREATE_ACTION": "Kreiraj akciju",
+      "ALL_ACTIONS": "Sve volonterske akcije",
+      "SURVEYS": "Ankete",
+      "CREATE_SURVEY": "Kreiraj anketu",
+      "ALL_SURVEYS": "Sve ankete",
+      "SYSTEM": "Sistem",
+      "STATISTICS": "Statistike",
+      "SETTINGS": "Postavke",
+      "HOME": "Nazad na početnu",
+      "LOGOUT": "Odjava"
+    },
+    "STATS": {
+      "ACTIVE_ACTIONS": "Aktivnih akcija",
+      "SOLVED_PROBLEMS": "Riješenih problema",
+      "SATISFACTION": "Zadovoljstvo",
+      "USERS": "Aktivnih korisnika"
+    }
+  },
+  "COMMON": {
+    "SAVE": "Sačuvaj",
+    "CANCEL": "Odustani",
+    "DELETE": "Obriši",
+    "EDIT": "Uredi",
+    "CREATE": "Kreiraj",
+    "SEARCH": "Pretraži",
+    "LOADING": "Učitavanje...",
+    "NO_DATA": "Nema podataka",
+    "YES": "Da",
+    "NO": "Ne",
+    "BACK": "Nazad",
+    "NEXT": "Dalje",
+    "FILTER": "Filtriraj"
+  },
+  "VOLUNTEERING": {
+    "TITLE": "Volonterske akcije",
+    "SUBTITLE": "Pridružite se i pomozite svom gradu.",
+    "JOIN": "Prijavi se",
+    "JOINED": "Prijavljen/a",
+    "FULL": "Popunjeno",
+    "FREE_SLOTS": "slobodnih mjesta",
+    "PARTICIPANTS": "volontera",
+    "CREATE_TITLE": "Kreiraj volontersku akciju",
+    "CALENDAR": "Kalendar akcija"
+  },
+  "SURVEYS": {
+    "TITLE": "Ankete za građane",
+    "SUBTITLE": "Vaše mišljenje pomaže unapređenju grada.",
+    "START": "Započni",
+    "RESULTS": "Rezultati",
+    "ACTIVE": "Aktivna",
+    "INACTIVE": "Neaktivna",
+    "RESPONSES": "odgovora",
+    "ACTIVE_UNTIL": "Aktivna do",
+    "VOTE_TITLE": "Glasanje",
+    "VOTE_SUBTITLE": "Odaberite vaš odgovor"
+  },
+  "HEADER": {
+    "HOME": "Početna",
+    "PROFILE": "Moj profil",
+    "VOLUNTEERING": "Volontiranje",
+    "SURVEYS": "Ankete",
+    "POINTS": "Bodovi / Rang lista",
+    "SUPPORT": "Podrška",
+    "LOGOUT": "Odjava",
+    "ADMIN_PANEL": "Admin panel"
+  }
+}

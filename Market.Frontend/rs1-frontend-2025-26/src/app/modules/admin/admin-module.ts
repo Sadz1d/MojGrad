@@ -26,7 +26,7 @@ import { SurveyCreateComponent } from './surveys/survey-create/survey-create.com
 import { FormsModule } from '@angular/forms';
 
 import { StatisticsDashboardComponent } from './statistics-dashboard/statistics-dashboard.component';
-
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [
@@ -42,7 +42,8 @@ import { StatisticsDashboardComponent } from './statistics-dashboard/statistics-
     ChangeStatusDialogComponent,
     VolunteerActionCreateComponent,
     SurveyCreateComponent,
-    StatisticsDashboardComponent
+    StatisticsDashboardComponent,
+
 
 
 
@@ -56,6 +57,7 @@ import { StatisticsDashboardComponent } from './statistics-dashboard/statistics-
     MatButtonModule,
     ReactiveFormsModule,
     FormsModule,
+    TranslateModule
 
 
   ],

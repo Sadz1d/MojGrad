@@ -32,6 +32,8 @@ export class AppComponent implements OnInit {
         console.error('Check if files exist at: /i18n/' + savedLang + '.json');
       }
     });
+
+
   }
 
   ngOnInit(): void {
